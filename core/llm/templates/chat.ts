@@ -1,5 +1,5 @@
 import { ChatMessage } from "../../index.js";
-import { stripImages } from "../countTokens.js";
+import { stripImages } from "../images.js";
 
 function templateFactory(
   systemMessage: (msg: ChatMessage) => string,
@@ -166,7 +166,7 @@ function deepseekTemplateMessages(msgs: ChatMessage[]): string {
     prompt += msg.role === "user" ? "### Instruction:\n" : "### Response:\n";
 
     if (system && msg.role === "user" && i === msgs.length - 1) {
-      prompt += system + "\n";
+      prompt += `${system}\n`;
     }
 
     prompt += `${msg.content}`;

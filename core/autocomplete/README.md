@@ -1,6 +1,6 @@
 # Tab Autocomplete (beta)
 
-PearAI now provides support for tab autocomplete in [VS Code](https://marketplace.visualstudio.com/items?itemName=PearAI.continue) and [JetBrains IDEs](https://plugins.jetbrains.com/plugin/22707-continue/edit). We will be greatly improving the experience over the next few releases, and it is always helpful to hear feedback. If you have any problems or suggestions, please let us know in our [Discord](https://discord.gg/vapESyrFmJ).
+Continue now provides support for tab autocomplete in [VS Code](https://marketplace.visualstudio.com/items?itemName=Continue.continue) and [JetBrains IDEs](https://plugins.jetbrains.com/plugin/22707-continue/edit). We will be greatly improving the experience over the next few releases, and it is always helpful to hear feedback. If you have any problems or suggestions, please let us know in our [Discord](https://discord.gg/vapESyrFmJ).
 
 ## Setting up with Ollama (default)
 
@@ -19,8 +19,8 @@ You can also set up tab-autocomplete with a local LM Studio instance by followin
 1. Download the latest version of LM Studio from [here](https://lmstudio.ai/)
 2. Download a model (e.g. search for `second-state/StarCoder2-3B-GGUF` and choose one of the options there)
 3. Go to the server section (button is on the left), select your model from the dropdown at the top, and click "Start Server"
-4. Go to the "My Models" section (button is on the left), find your selected model, and copy the name the path (example: `second-state/StarCoder2-3B-GGUF/starcoder2-3b-Q8_0.gguf`); this will be used as the "model" attribute in PearAI
-5. Go to PearAI and modify the configurations for a [custom model](#setting-up-a-custom-model)
+4. Go to the "My Models" section (button is on the left), find your selected model, and copy the name the path (example: `second-state/StarCoder2-3B-GGUF/starcoder2-3b-Q8_0.gguf`); this will be used as the "model" attribute in Continue
+5. Go to Continue and modify the configurations for a [custom model](#setting-up-a-custom-model)
 6. Set the "provider" to `lmstudio` and the "model" to the path copied earlier
 
 Example:
@@ -90,7 +90,7 @@ This is just another object like the ones in the `"models"` array of `config.jso
 This object allows you to customize the behavior of tab-autocomplete. The available options are:
 
 - `useCopyBuffer`: Determines whether the copy buffer will be considered when constructing the prompt. (Boolean)
-- `useSuffix`: Determines whether to use the file suffix in the prompt. (Boolean)
+- `useFileSuffix`: Determines whether to use the file suffix in the prompt. (Boolean)
 - `maxPromptTokens`: The maximum number of prompt tokens to use. A smaller number will yield faster completions, but less context. (Number)
 - `debounceDelay`: The delay in milliseconds before triggering autocomplete after a keystroke. (Number)
 - `maxSuffixPercentage`: The maximum percentage of the prompt that can be dedicated to the suffix. (Number)
@@ -120,18 +120,18 @@ This object allows you to customize the behavior of tab-autocomplete. The availa
 
 ### I want better completions, should I use GPT-4?
 
-Perhaps surprisingly, the answer is no. The models that we suggest for autocomplete are trained with a highly specific prompt format, which allows them to respond to requests for completing code (see examples of these prompts [here](https://github.com/trypear/pearai-app/blob/d2bc6359e8ebf647892ec953e418042dc7f8a685/core/autocomplete/templates.ts)). Some of the best commercial models like GPT-4 or Claude are not trained with this prompt format, which means that they won't generate useful completions. Luckily, a huge model is not required for great autocomplete. Most of the state-of-the-art autocomplete models are no more than 10b parameters, and increasing beyond this does not significantly improve performance.
+Perhaps surprisingly, the answer is no. The models that we suggest for autocomplete are trained with a highly specific prompt format, which allows them to respond to requests for completing code (see examples of these prompts [here](https://github.com/continuedev/continue/blob/d2bc6359e8ebf647892ec953e418042dc7f8a685/core/autocomplete/templates.ts)). Some of the best commercial models like GPT-4 or Claude are not trained with this prompt format, which means that they won't generate useful completions. Luckily, a huge model is not required for great autocomplete. Most of the state-of-the-art autocomplete models are no more than 10b parameters, and increasing beyond this does not significantly improve performance.
 
 ### I'm not seeing any completions
 
 Follow these steps to ensure that everything is set up correctly:
 
-1. Make sure you have the "Enable Tab Autocomplete" setting checked (in VS Code, you can toggle by clicking the "PearAI" button in the status bar).
+1. Make sure you have the "Enable Tab Autocomplete" setting checked (in VS Code, you can toggle by clicking the "Continue" button in the status bar).
 2. Make sure you have downloaded Ollama.
 3. Run `ollama run starcoder:3b` to verify that the model is downloaded.
 4. Make sure that any other completion providers are disabled (e.g. Copilot), as they may interfere.
 5. Make sure that you aren't also using another Ollama model for chat. This will cause Ollama to constantly load and unload the models from memory, resulting in slow responses (or none at all) for both.
-6. Check the output of the logs to find any potential errors (cmd/ctrl+shift+p -> "Toggle Developer Tools" -> "Console" tab in VS Code, ~/.continue/core.log in JetBrains).
+6. Check the output of the logs to find any potential errors (cmd/ctrl+shift+p -> "Toggle Developer Tools" -> "Console" tab in VS Code, ~/.pearai/core.log in JetBrains).
 7. If you are still having issues, please let us know in our [Discord](https://discord.gg/vapESyrFmJ) and we'll help as soon as possible.
 
 ### Completions are slow
@@ -140,7 +140,7 @@ Depending on your hardware, you may want to try a smaller, faster model. If 3b i
 
 ### Completions don't know about my code
 
-We are working on this! Right now PearAI uses the Language Server Protocol to add definitions to the prompt, as well as using similarity search over recently edited files. We will be improving the accuracy of this system greatly over the next few weeks.
+We are working on this! Right now Continue uses the Language Server Protocol to add definitions to the prompt, as well as using similarity search over recently edited files. We will be improving the accuracy of this system greatly over the next few weeks.
 
 ### Completions contain formatting errors
 
@@ -150,13 +150,13 @@ If you're seeing a common pattern of mistake that might be helpful to report, pl
 
 ### VS Code
 
-Click the "PearAI" button in the status panel at the bottom right of the screen. The checkmark will become a "cancel" symbol and you will no longer see completions. You can click again to turn it back on.
+Click the "Continue" button in the status panel at the bottom right of the screen. The checkmark will become a "cancel" symbol and you will no longer see completions. You can click again to turn it back on.
 
-Alternatively, open VS Code settings, search for "PearAI" and uncheck the box for "Enable Tab Autocomplete".
+Alternatively, open VS Code settings, search for "Continue" and uncheck the box for "Enable Tab Autocomplete".
 
 ### JetBrains
 
-Open Settings -> Tools -> PearAI and uncheck the box for "Enable Tab Autocomplete".
+Open Settings -> Tools -> Continue and uncheck the box for "Enable Tab Autocomplete".
 
 ### Feedback
 

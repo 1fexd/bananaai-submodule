@@ -1,20 +1,13 @@
 package com.github.continuedev.continueintellijextension.services
 
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.PersistentStateComponent
-import com.intellij.openapi.components.ServiceManager
-import com.intellij.openapi.components.State
-import com.intellij.openapi.components.Storage
+import com.intellij.openapi.components.*
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.DumbAware
 import com.intellij.util.messages.Topic
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
-import javax.swing.JCheckBox
-import javax.swing.JComponent
-import javax.swing.JLabel
-import javax.swing.JPanel
-import javax.swing.JTextField
+import javax.swing.*
 
 class ContinueSettingsComponent: DumbAware {
     val panel: JPanel = JPanel(GridBagLayout())
@@ -22,6 +15,7 @@ class ContinueSettingsComponent: DumbAware {
     val remoteConfigSyncPeriod: JTextField = JTextField()
     val userToken: JTextField = JTextField()
     val enableTabAutocomplete: JCheckBox = JCheckBox("Enable Tab Autocomplete")
+    val enableContinueTeamsBeta: JCheckBox = JCheckBox("Enable Continue for Teams Beta (requires restart)")
 
     init {
         val constraints = GridBagConstraints()
@@ -34,7 +28,6 @@ class ContinueSettingsComponent: DumbAware {
 
         panel.add(JLabel("Remote Config Server URL:"), constraints)
         constraints.gridy++
-        constraints.gridy++
         panel.add(remoteConfigServerUrl, constraints)
         constraints.gridy++
         panel.add(JLabel("Remote Config Sync Period (in minutes):"), constraints)
@@ -46,6 +39,8 @@ class ContinueSettingsComponent: DumbAware {
         panel.add(userToken, constraints)
         constraints.gridy++
         panel.add(enableTabAutocomplete, constraints)
+        constraints.gridy++
+        panel.add(enableContinueTeamsBeta, constraints)
         constraints.gridy++
 
         // Add a "filler" component that takes up all remaining vertical space
@@ -67,7 +62,9 @@ open class ContinueExtensionSettings : PersistentStateComponent<ContinueExtensio
         var remoteConfigServerUrl: String? = null
         var remoteConfigSyncPeriod: Int = 60
         var userToken: String? = null
-        var enableTabAutocomplete: Boolean = false
+        var enableTabAutocomplete: Boolean = true
+        var ghAuthToken: String? = null
+        var enableContinueTeamsBeta: Boolean = false
     }
 
     var continueState: ContinueState = ContinueState()
@@ -107,7 +104,8 @@ class ContinueExtensionConfigurable : Configurable {
         val modified = mySettingsComponent?.remoteConfigServerUrl?.text != settings.continueState.remoteConfigServerUrl ||
                 mySettingsComponent?.remoteConfigSyncPeriod?.text?.toInt() != settings.continueState.remoteConfigSyncPeriod ||
                 mySettingsComponent?.userToken?.text != settings.continueState.userToken ||
-                mySettingsComponent?.enableTabAutocomplete?.isSelected != settings.continueState.enableTabAutocomplete
+                mySettingsComponent?.enableTabAutocomplete?.isSelected != settings.continueState.enableTabAutocomplete ||
+                mySettingsComponent?.enableContinueTeamsBeta?.isSelected != settings.continueState.enableContinueTeamsBeta
         return modified;
     }
 
@@ -117,6 +115,7 @@ class ContinueExtensionConfigurable : Configurable {
         settings.continueState.remoteConfigSyncPeriod = mySettingsComponent?.remoteConfigSyncPeriod?.text?.toInt() ?: 60
         settings.continueState.userToken = mySettingsComponent?.userToken?.text
         settings.continueState.enableTabAutocomplete = mySettingsComponent?.enableTabAutocomplete?.isSelected ?: false
+        settings.continueState.enableContinueTeamsBeta = mySettingsComponent?.enableContinueTeamsBeta?.isSelected ?: false
 
         ApplicationManager.getApplication().messageBus.syncPublisher(SettingsListener.TOPIC).settingsUpdated(settings.continueState)
     }
@@ -127,6 +126,7 @@ class ContinueExtensionConfigurable : Configurable {
         mySettingsComponent?.remoteConfigSyncPeriod?.text = settings.continueState.remoteConfigSyncPeriod.toString()
         mySettingsComponent?.userToken?.text = settings.continueState.userToken
         mySettingsComponent?.enableTabAutocomplete?.isSelected = settings.continueState.enableTabAutocomplete
+        mySettingsComponent?.enableContinueTeamsBeta?.isSelected = settings.continueState.enableContinueTeamsBeta
     }
 
     override fun disposeUIResources() {

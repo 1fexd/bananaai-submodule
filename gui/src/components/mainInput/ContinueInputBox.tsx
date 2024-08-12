@@ -47,14 +47,13 @@ const GradientBorder = styled.div<{
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-top: 3px;
+  margin-top: 8px;
 `;
 
 interface ContinueInputBoxProps {
   isLastUserInput: boolean;
   isMainInput?: boolean;
   onEnter: (editorState: JSONContent, modifiers: InputModifiers) => void;
-
   editorState?: JSONContent;
   contextItems?: ContextItemWithId[];
   hidden?: boolean;
@@ -88,7 +87,7 @@ function ContinueInputBox(props: ContinueInputBoxProps) {
   return (
     <div
       style={{
-        paddingTop: "0px",
+        paddingTop: "4px",
         backgroundColor: vscBackground,
         display: props.hidden ? "none" : "inherit",
       }}

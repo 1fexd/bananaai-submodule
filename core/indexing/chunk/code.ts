@@ -1,14 +1,13 @@
 import { SyntaxNode } from "web-tree-sitter";
 import { ChunkWithoutID } from "../../index.js";
-import { countTokens } from "../../llm/countTokens.js";
+import { countTokensAsync } from "../../llm/countTokens.js";
 import { getParserForFile } from "../../util/treeSitter.js";
 
 function collapsedReplacement(node: SyntaxNode): string {
   if (node.type === "statement_block") {
     return "{ ... }";
-  } else {
-    return "...";
   }
+  return "...";
 }
 
 function firstChild(
@@ -19,19 +18,18 @@ function firstChild(
     return (
       node.children.find((child) => grammarName.includes(child.type)) || null
     );
-  } else {
-    return node.children.find((child) => child.type === grammarName) || null;
   }
+  return node.children.find((child) => child.type === grammarName) || null;
 }
 
-function collapseChildren(
+async function collapseChildren(
   node: SyntaxNode,
   code: string,
   blockTypes: string[],
   collapseTypes: string[],
   collapseBlockTypes: string[],
   maxChunkSize: number,
-): string {
+): Promise<string> {
   code = code.slice(0, node.endIndex);
   const block = firstChild(node, blockTypes);
   const collapsedChildren = [];
@@ -59,7 +57,10 @@ function collapseChildren(
   }
   code = code.slice(node.startIndex);
   let removedChild = false;
-  while (countTokens(code) > maxChunkSize && collapsedChildren.length > 0) {
+  while (
+    (await countTokensAsync(code.trim())) > maxChunkSize &&
+    collapsedChildren.length > 0
+  ) {
     removedChild = true;
     // Remove children starting at the end - TODO: Add multiple chunks so no children are missing
     const childCode = collapsedChildren.pop()!;
@@ -102,13 +103,14 @@ export const FUNCTION_DECLARATION_NODE_TYPEs = [
   "function_definition",
   "function_item",
   "function_declaration",
+  "method_declaration",
 ];
 
-function constructClassDefinitionChunk(
+async function constructClassDefinitionChunk(
   node: SyntaxNode,
   code: string,
   maxChunkSize: number,
-): string {
+): Promise<string> {
   return collapseChildren(
     node,
     code,
@@ -119,11 +121,11 @@ function constructClassDefinitionChunk(
   );
 }
 
-function constructFunctionDefinitionChunk(
+async function constructFunctionDefinitionChunk(
   node: SyntaxNode,
   code: string,
   maxChunkSize: number,
-): string {
+): Promise<string> {
   const bodyNode = node.children[node.children.length - 1];
   const funcText =
     code.slice(node.startIndex, bodyNode.startIndex) +
@@ -138,12 +140,10 @@ function constructFunctionDefinitionChunk(
     // If inside a class, include the class header
     const classNode = node.parent.parent;
     const classBlock = node.parent;
-    return (
-      code.slice(classNode.startIndex, classBlock.startIndex) +
-      "...\n\n" +
-      " ".repeat(node.startPosition.column) + // ...
-      funcText
-    );
+    return `${code.slice(
+      classNode.startIndex,
+      classBlock.startIndex,
+    )}...\n\n${" ".repeat(node.startPosition.column)}${funcText}`;
   }
   return funcText;
 }
@@ -153,7 +153,7 @@ const collapsedNodeConstructors: {
     node: SyntaxNode,
     code: string,
     maxChunkSize: number,
-  ) => string;
+  ) => Promise<string>;
 } = {
   // Classes, structs, etc
   class_definition: constructClassDefinitionChunk,
@@ -163,39 +163,61 @@ const collapsedNodeConstructors: {
   function_definition: constructFunctionDefinitionChunk,
   function_declaration: constructFunctionDefinitionChunk,
   function_item: constructFunctionDefinitionChunk,
+  // Methods
+  method_declaration: constructFunctionDefinitionChunk,
+  // Properties
 };
 
-function* getSmartCollapsedChunks(
+async function maybeYieldChunk(
   node: SyntaxNode,
   code: string,
   maxChunkSize: number,
   root = true,
-): Generator<ChunkWithoutID> {
+): Promise<ChunkWithoutID | undefined> {
   // Keep entire text if not over size
-  if (
-    (root || node.type in collapsedNodeConstructors) &&
-    countTokens(node.text) < maxChunkSize
-  ) {
-    yield {
-      content: node.text,
-      startLine: node.startPosition.row,
-      endLine: node.endPosition.row,
-    };
+  if (root || node.type in collapsedNodeConstructors) {
+    const tokenCount = await countTokensAsync(node.text);
+    if (tokenCount < maxChunkSize) {
+      return {
+        content: node.text,
+        startLine: node.startPosition.row,
+        endLine: node.endPosition.row,
+      };
+    }
+  }
+  return undefined;
+}
+
+async function* getSmartCollapsedChunks(
+  node: SyntaxNode,
+  code: string,
+  maxChunkSize: number,
+  root = true,
+): AsyncGenerator<ChunkWithoutID> {
+  const chunk = await maybeYieldChunk(node, code, maxChunkSize, root);
+  if (chunk) {
+    yield chunk;
     return;
   }
-
   // If a collapsed form is defined, use that
   if (node.type in collapsedNodeConstructors) {
     yield {
-      content: collapsedNodeConstructors[node.type](node, code, maxChunkSize),
+      content: await collapsedNodeConstructors[node.type](
+        node,
+        code,
+        maxChunkSize,
+      ),
       startLine: node.startPosition.row,
       endLine: node.endPosition.row,
     };
   }
 
   // Recurse (because even if collapsed version was shown, want to show the children in full somewhere)
-  for (const child of node.children) {
-    yield* getSmartCollapsedChunks(child, code, maxChunkSize, false);
+  const generators = node.children.map((child) =>
+    getSmartCollapsedChunks(child, code, maxChunkSize, false),
+  );
+  for (const generator of generators) {
+    yield* generator;
   }
 }
 
@@ -208,7 +230,7 @@ export async function* codeChunker(
     return;
   }
 
-  let parser = await getParserForFile(filepath);
+  const parser = await getParserForFile(filepath);
   if (parser === undefined) {
     console.warn(`Failed to load parser for file ${filepath}: `);
     return;

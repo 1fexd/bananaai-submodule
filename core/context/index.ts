@@ -1,4 +1,4 @@
-import {
+import type {
   ContextItem,
   ContextProviderDescription,
   ContextProviderExtras,
@@ -6,6 +6,7 @@ import {
   IContextProvider,
   LoadSubmenuItemsArgs,
 } from "../index.js";
+
 export abstract class BaseContextProvider implements IContextProvider {
   options: { [key: string]: any };
 

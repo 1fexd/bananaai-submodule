@@ -1,7 +1,7 @@
 package com.github.continuedev.continueintellijextension.`continue`
 
 import com.github.continuedev.continueintellijextension.activities.ContinuePluginStartupActivity
-import com.github.continuedev.continueintellijextension.constants.getPearAIGlobalPath
+import com.github.continuedev.continueintellijextension.constants.getContinueGlobalPath
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.io.StreamUtil
 import com.intellij.openapi.vfs.LocalFileSystem
@@ -22,7 +22,7 @@ class ConfigJsonSchemaProviderFactory : JsonSchemaProviderFactory {
 
 class ConfigJsonSchemaFileProvider : JsonSchemaFileProvider {
     override fun isAvailable(file: VirtualFile): Boolean {
-        return file.name == "config.json"
+        return file.name == "config.json" || file.name == ".continuerc.json"
     }
 
     override fun getName(): String {
@@ -35,7 +35,7 @@ class ConfigJsonSchemaFileProvider : JsonSchemaFileProvider {
                 throw IOException("Resource not found: config_schema.json")
             }
             val content = StreamUtil.readText(`is`, StandardCharsets.UTF_8)
-            val filepath = Paths.get(getPearAIGlobalPath(), "config_schema.json").toString()
+            val filepath = Paths.get(getContinueGlobalPath(), "config_schema.json").toString()
             File(filepath).writeText(content)
             return LocalFileSystem.getInstance().findFileByPath(filepath)
         }

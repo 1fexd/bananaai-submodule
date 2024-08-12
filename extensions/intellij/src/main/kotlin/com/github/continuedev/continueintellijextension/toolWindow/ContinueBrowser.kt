@@ -3,7 +3,7 @@ package com.github.continuedev.continueintellijextension.toolWindow
 import com.github.continuedev.continueintellijextension.activities.showTutorial
 import com.github.continuedev.continueintellijextension.activities.ContinuePluginStartupActivity
 import com.github.continuedev.continueintellijextension.constants.getConfigJsonPath
-import com.github.continuedev.continueintellijextension.constants.getPearAIGlobalPath
+import com.github.continuedev.continueintellijextension.constants.getContinueGlobalPath
 import com.github.continuedev.continueintellijextension.`continue`.*
 import com.github.continuedev.continueintellijextension.factories.CustomSchemeHandlerFactory
 import com.github.continuedev.continueintellijextension.services.ContinuePluginService
@@ -35,30 +35,49 @@ class ContinueBrowser(val project: Project, url: String, useOsr: Boolean = false
     }
 
     private val PASS_THROUGH_TO_CORE = listOf(
-            "abort",
-            "getContinueDir",
-            "history/list",
-            "history/save",
-            "history/delete",
-            "history/load",
-            "devdata/log",
-            "config/addModel",
-            "config/deleteModel",
-            "config/addOpenAIKey",
-            "llm/streamComplete",
-            "llm/streamChat",
-            "llm/complete",
-            "command/run",
-            "context/loadSubmenuItems",
-            "context/getContextItems",
-            "context/addDocs",
-            "config/getBrowserSerialized",
+        "update/modelChange",
+        "ping",
+        "abort",
+        "history/list",
+        "history/delete",
+        "history/load",
+        "history/save",
+        "devdata/log",
+        "config/addOpenAiKey",
+        "config/addModel",
+        "config/ideSettingsUpdate",
+        "config/getSerializedProfileInfo",
+        "config/deleteModel",
+        "config/newPromptFile",
+        "config/reload",
+        "context/getContextItems",
+        "context/loadSubmenuItems",
+        "context/addDocs",
+        "autocomplete/complete",
+        "autocomplete/cancel",
+        "autocomplete/accept",
+        "command/run",
+        "llm/complete",
+        "llm/streamComplete",
+        "llm/streamChat",
+        "llm/listModels",
+        "streamDiffLines",
+        "stats/getTokensPerDay",
+        "stats/getTokensPerModel",
+        "index/setPaused",
+        "index/forceReIndex",
+        "index/indexingProgressBarInitialized",
+        "completeOnboarding",
+        "addAutocompleteModel",
+        "config/listProfiles",
+        "profiles/switch",
+        "didChangeSelectedProfile",
     )
 
     private fun registerAppSchemeHandler() {
         CefApp.getInstance().registerSchemeHandlerFactory(
                 "http",
-                "continue",
+                "pearai",
                 CustomSchemeHandlerFactory()
         )
     }
@@ -136,6 +155,7 @@ class ContinueBrowser(val project: Project, url: String, useOsr: Boolean = false
                 }
                 "showLines" -> {
                     val data = data.asJsonObject
+                    ide?.setFileOpen(data.get("filepath").asString)
                     ide?.highlightCode(RangeInFile(
                             data.get("filepath").asString,
                             Range(Position(

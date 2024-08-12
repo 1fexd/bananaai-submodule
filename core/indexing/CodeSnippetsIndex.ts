@@ -1,6 +1,4 @@
-import fs from "fs";
-import path from "path";
-import {
+import type {
   ChunkWithoutID,
   ContextItem,
   ContextSubmenuItem,
@@ -8,21 +6,22 @@ import {
   IndexTag,
   IndexingProgressUpdate,
 } from "../index.js";
-import { getBasename } from "../util/index.js";
+import { getBasename, getLastNPathParts } from "../util/index.js";
 import {
-  getLanguageForFile,
+  TSQueryType,
   getParserForFile,
-  supportedLanguages,
+  getQueryForFile,
 } from "../util/treeSitter.js";
 import { DatabaseConnection, SqliteDb, tagToString } from "./refreshIndex.js";
 import {
-  CodebaseIndex,
   IndexResultType,
   MarkCompleteCallback,
   RefreshIndexResults,
+  type CodebaseIndex,
 } from "./types.js";
 
 export class CodeSnippetsCodebaseIndex implements CodebaseIndex {
+  relativeExpectedTime: number = 1;
   artifactId = "codeSnippets";
 
   constructor(private readonly ide: IDE) {}
@@ -46,35 +45,16 @@ export class CodeSnippetsCodebaseIndex implements CodebaseIndex {
     )`);
   }
 
-  private getQuerySource(filepath: string) {
-    const fullLangName = supportedLanguages[filepath.split(".").pop() ?? ""];
-    const sourcePath = path.join(
-      __dirname,
-      "..",
-      "tree-sitter",
-      "code-snippet-queries",
-      `tree-sitter-${fullLangName}-tags.scm`,
-    );
-    if (!fs.existsSync(sourcePath)) {
-      return "";
-    }
-    return fs.readFileSync(sourcePath).toString();
-  }
-
   async getSnippetsInFile(
     filepath: string,
     contents: string,
   ): Promise<(ChunkWithoutID & { title: string })[]> {
-    const lang = await getLanguageForFile(filepath);
-    if (!lang) {
-      return [];
-    }
     const parser = await getParserForFile(filepath);
     if (!parser) {
       return [];
     }
     const ast = parser.parse(contents);
-    const query = lang?.query(this.getQuerySource(filepath));
+    const query = await getQueryForFile(filepath, TSQueryType.CodeSnippets);
     const matches = query?.matches(ast.rootNode);
 
     return (
@@ -136,7 +116,7 @@ export class CodeSnippetsCodebaseIndex implements CodebaseIndex {
       }
 
       yield {
-        desc: `Indexing ${compute.path}`,
+        desc: `Indexing ${getBasename(compute.path)}`,
         progress: i / results.compute.length,
         status: "indexing",
       };
@@ -194,7 +174,7 @@ export class CodeSnippetsCodebaseIndex implements CodebaseIndex {
 
     return {
       name: row.title,
-      description: getBasename(row.path, 2),
+      description: getLastNPathParts(row.path, 2),
       content: `\`\`\`${getBasename(row.path)}\n${row.content}\n\`\`\``,
     };
   }
@@ -214,7 +194,7 @@ export class CodeSnippetsCodebaseIndex implements CodebaseIndex {
 
       return rows.map((row) => ({
         title: row.title,
-        description: getBasename(row.path, 2),
+        description: getLastNPathParts(row.path, 2),
         id: row.id.toString(),
       }));
     } catch (e) {

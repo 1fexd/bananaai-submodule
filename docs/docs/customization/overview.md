@@ -6,7 +6,7 @@ keywords: [custom, slash commands, models, context providers]
 
 # Overview
 
-PearAI can be deeply customized by editing `config.json` and `config.ts` on your machine. You can find these files in the `~/.continue/` directory on MacOS and the `%userprofile%\.continue` directory on Windows. These files are created the first time you run Continue.
+PearAI can be deeply customized by editing `config.json` and `config.ts` on your machine. You can find these files in the `~/.pearai/` directory on MacOS and the `%userprofile%\.continue` directory on Windows. These files are created the first time you run Continue.
 
 Currently, you can customize the following:
 

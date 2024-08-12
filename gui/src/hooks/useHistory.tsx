@@ -2,12 +2,13 @@ import { Dispatch } from "@reduxjs/toolkit";
 import { PersistedSessionInfo, SessionInfo } from "core";
 
 import { llmCanGenerateInParallel } from "core/llm/autodetect";
-import { stripImages } from "core/llm/countTokens";
+import { stripImages } from "core/llm/images";
+import { useContext } from "react";
 import { useSelector } from "react-redux";
+import { IdeMessengerContext } from "../context/IdeMessenger";
 import { defaultModelSelector } from "../redux/selectors/modelSelectors";
 import { newSession } from "../redux/slices/stateSlice";
 import { RootState } from "../redux/store";
-import { ideRequest } from "../util/ide";
 import { getLocalStorage, setLocalStorage } from "../util/localStorage";
 
 function truncateText(text: string, maxLength: number) {
@@ -23,28 +24,32 @@ function useHistory(dispatch: Dispatch) {
   const disableSessionTitles = useSelector(
     (store: RootState) => store.state.config.disableSessionTitles,
   );
+  const ideMessenger = useContext(IdeMessengerContext);
 
   async function getHistory(
     offset?: number,
     limit?: number,
   ): Promise<SessionInfo[]> {
-    return await ideRequest("history/list", { offset, limit });
+    return await ideMessenger.request("history/list", { offset, limit });
   }
 
-  async function saveSession(sessionId?: string) {
+  async function saveSession() {
     if (state.history.length === 0) return;
 
     const stateCopy = { ...state };
     dispatch(newSession());
     await new Promise((resolve) => setTimeout(resolve, 10));
 
-    let title = truncateText(
-      stripImages(stateCopy.history[0].message.content)
-        .split("\n")
-        .filter((l) => l.trim() !== "")
-        .slice(-1)[0] || "",
-      50,
-    );
+    let title =
+      stateCopy.title === "New Session"
+        ? truncateText(
+            stripImages(stateCopy.history[0].message.content)
+              .split("\n")
+              .filter((l) => l.trim() !== "")
+              .slice(-1)[0] || "",
+            50,
+          )
+        : (await getSession(stateCopy.sessionId)).title; // to ensure titles are synced with updates from history page.
 
     if (
       false && // Causing maxTokens to be set to 20 for main requests sometimes, so disabling until resolved
@@ -76,28 +81,39 @@ function useHistory(dispatch: Dispatch) {
       sessionId: stateCopy.sessionId,
       workspaceDirectory: window.workspacePaths?.[0] || "",
     };
+    setLocalStorage("lastSessionId", stateCopy.sessionId);
+    return await ideMessenger.request("history/save", sessionInfo);
+  }
 
-    if (!sessionId) {
-      setLocalStorage("lastSessionId", stateCopy.sessionId);
-    }
-    else if (sessionId && sessionId !== stateCopy.sessionId) {
-      // we update the lastsessionId only if the sessionId is different from current sessionId
-      setLocalStorage("lastSessionId", stateCopy.sessionId);
-    }
-    return await ideRequest("history/save", sessionInfo);
+  async function getSession(id: string): Promise<PersistedSessionInfo> {
+    const json: PersistedSessionInfo = await ideMessenger.request(
+      "history/load",
+      { id },
+    );
+    return json;
+  }
+
+  async function updateSession(sessionInfo: PersistedSessionInfo) {
+    return await ideMessenger.request("history/save", sessionInfo);
   }
 
   async function deleteSession(id: string) {
-    return await ideRequest("history/delete", { id });
+    return await ideMessenger.request("history/delete", { id });
   }
 
   async function loadSession(id: string): Promise<PersistedSessionInfo> {
-    if (state.sessionId && id !== state.sessionId) {
-      setLocalStorage("lastSessionId", state.sessionId);
-    }
-    const json: PersistedSessionInfo = await ideRequest("history/load", { id });
+    setLocalStorage("lastSessionId", state.sessionId);
+
+    const json: PersistedSessionInfo = await ideMessenger.request(
+      "history/load",
+      { id },
+    );
     dispatch(newSession(json));
     return json;
+  }
+
+  async function loadMostRecentChat(): Promise<PersistedSessionInfo> {
+    return await loadLastSession();
   }
 
   async function loadLastSession(): Promise<PersistedSessionInfo> {
@@ -105,9 +121,6 @@ function useHistory(dispatch: Dispatch) {
     if (lastSessionId) {
       return await loadSession(lastSessionId);
     }
-  }
-  async function loadMostRecentChat(): Promise<PersistedSessionInfo> {
-    return await loadLastSession();
   }
 
   function getLastSessionId(): string {
@@ -121,7 +134,9 @@ function useHistory(dispatch: Dispatch) {
     loadSession,
     loadLastSession,
     getLastSessionId,
-    loadMostRecentChat,
+    updateSession,
+    getSession,
+    loadMostRecentChat
   };
 }
 

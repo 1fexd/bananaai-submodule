@@ -10,8 +10,20 @@ import {
   PromptLog,
 } from "core";
 import { BrowserSerializedContinueConfig } from "core/config/load";
-import { stripImages } from "core/llm/countTokens";
+import { stripImages } from "core/llm/images";
+import { createSelector } from "reselect";
 import { v4 } from "uuid";
+import { RootState } from "../store";
+
+export const memoizedContextItemsSelector = createSelector(
+  [(state: RootState) => state.state.history],
+  (history) => {
+    return history.reduce<ContextItemWithId[]>((acc, item) => {
+      acc.push(...item.contextItems);
+      return acc;
+    }, []);
+  },
+);
 
 const TEST_CONTEXT_ITEMS: ContextItemWithId[] = [
   {
@@ -92,6 +104,7 @@ type State = {
   sessionId: string;
   defaultModelTitle: string;
   mainEditorContent?: JSONContent;
+  selectedProfileId: string;
 };
 
 const initialState: State = {
@@ -123,6 +136,7 @@ const initialState: State = {
   title: "New Session",
   sessionId: v4(),
   defaultModelTitle: "GPT-4",
+  selectedProfileId: "local",
 };
 
 export const stateSlice = createSlice({
@@ -226,10 +240,27 @@ export const stateSlice = createSlice({
         contextItems: [],
       });
 
-      // https://github.com/trypear/pearai-app/pull/1021
+      // https://github.com/continuedev/continue/pull/1021
       // state.contextItems = [];
       state.active = true;
     },
+    deleteMessage: (state, action: PayloadAction<number>) => {
+      const index = action.payload + 1;
+
+      if (index >= 0 && index < state.history.length) {
+        // Delete the current message
+        state.history.splice(index, 1);
+
+        // If the next message is an assistant message, delete it too
+        if (
+          index < state.history.length &&
+          state.history[index].message.role === "assistant"
+        ) {
+          state.history.splice(index, 1);
+        }
+      }
+    },
+
     initNewActiveMessage: (
       state,
       {
@@ -250,7 +281,7 @@ export const stateSlice = createSlice({
         },
         contextItems: [],
       });
-      // https://github.com/trypear/pearai-app/pull/1021
+      // https://github.com/continuedev/continue/pull/1021
       // state.contextItems = [];
       state.active = true;
     },
@@ -456,6 +487,12 @@ export const stateSlice = createSlice({
         defaultModelTitle: payload.title,
       };
     },
+    setSelectedProfileId: (state, { payload }: PayloadAction<string>) => {
+      return {
+        ...state,
+        selectedProfileId: payload,
+      };
+    },
   },
 });
 
@@ -479,5 +516,7 @@ export const {
   setMessageAtIndex,
   clearLastResponse,
   consumeMainEditorContent,
+  setSelectedProfileId,
+  deleteMessage,
 } = stateSlice.actions;
 export default stateSlice.reducer;

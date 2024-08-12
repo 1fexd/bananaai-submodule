@@ -5,6 +5,7 @@ export enum IndexResultType {
   Delete = "del",
   AddTag = "addTag",
   RemoveTag = "removeTag",
+  UpdateLastUpdated = "updateLastUpdated"
 }
 
 export type MarkCompleteCallback = (
@@ -14,6 +15,7 @@ export type MarkCompleteCallback = (
 
 export interface CodebaseIndex {
   artifactId: string;
+  relativeExpectedTime: number;
   update(
     tag: IndexTag,
     results: RefreshIndexResults,

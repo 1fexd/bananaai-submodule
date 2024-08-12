@@ -135,13 +135,11 @@ cached_embeddings.pkl
 .ruff_cache
 codeql
 
-**/.continue
+**/.pearai
 .DS_Store
 .continue
 .test
 .tiktoken_cache
-**/.pearai
-.pearai
 
 
 # IntelliJ Plugin 
@@ -166,3 +164,8 @@ Icon
 Icon?
 
 .continue
+
+# Sandbox env default file
+extensions/vscode/manual-testing-sandbox/example.ts
+
+.prompts/

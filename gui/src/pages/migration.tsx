@@ -10,7 +10,7 @@ function MigrationPage() {
       </h1>
 
       <p>
-        PearAI now uses a .json config file. We hope that this takes the
+        Continue now uses a .json config file. We hope that this takes the
         guesswork out of setting up.
       </p>
 
@@ -22,11 +22,17 @@ function MigrationPage() {
       <p>
         For a summary of what changed and examples of <code>config.json</code>,
         please see the{" "}
-        <a href="https://trypear.ai/walkthroughs/config-file-migration">
+        <a
+          href="https://trypear.ai/walkthroughs/config-file-migration"
+          target="_blank"
+        >
           migration walkthrough
         </a>
         , and if you have any questions please reach out to us on{" "}
-        <a href="https://discord.gg/Y83xkG3uUW">Discord</a>.
+        <a href="https://discord.gg/Y83xkG3uUW" target="_blank">
+          Discord
+        </a>
+        .
       </p>
 
       <i>

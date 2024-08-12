@@ -1,5 +1,5 @@
 import { SlashCommand } from "../../index.js";
-import { stripImages } from "../../llm/countTokens.js";
+import { stripImages } from "../../llm/images.js";
 
 const CommitMessageCommand: SlashCommand = {
   name: "commit",
@@ -8,7 +8,7 @@ const CommitMessageCommand: SlashCommand = {
     const diff = await ide.getDiff();
 
     if (!diff || diff.trim() === "") {
-      yield "No changes detected. Make sure you are in a git repository with current changes."
+      yield "No changes detected. Make sure you are in a git repository with current changes.";
       return;
     }
 

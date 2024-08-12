@@ -74,7 +74,7 @@ const osModelsEditPrompt: PromptTemplate = (history, otherData) => {
     !firstCharOfFirstLine;
   const suffixTag = isSuffix ? "<STOP EDITING HERE>" : "";
   const suffixExplanation = isSuffix
-    ? " When you get to \"<STOP EDITING HERE>\", end your response."
+    ? ' When you get to "<STOP EDITING HERE>", end your response.'
     : "";
 
   // If neither prefilling nor /v1/completions are supported, we have to use a chat prompt without putting words in the model's mouth
@@ -95,7 +95,7 @@ ${otherData.codeToEdit}
 ${suffixTag}
 \`\`\`
 
-Please rewrite the entire code block above in order to satisfy the following request: "${otherData.userInput}".${suffixExplanation}`,
+Please rewrite the entire code block above in order to satisfy the following request: "${otherData.userInput}". You should rewrite the entire code block without leaving placeholders, even if the code is the same as before.${suffixExplanation}`,
       },
       {
         role: "assistant",
@@ -115,7 +115,7 @@ ${otherData.codeToEdit}
 ${suffixTag}
 \`\`\`
 
-Please rewrite the entire code block above, editing the portion below "${START_TAG}" in order to satisfy the following request: "${otherData.userInput}".${suffixExplanation}
+Please rewrite the entire code block above, editing the portion below "${START_TAG}" in order to satisfy the following request: "${otherData.userInput}". You should rewrite the entire code block without leaving placeholders, even if the code is the same as before.${suffixExplanation}
 `,
     },
     {

@@ -1,7 +1,7 @@
 import { Octokit } from "@octokit/rest";
 import cheerio from "cheerio";
 import fetch from "node-fetch";
-import { URL } from "url";
+import { URL } from "node:url";
 
 const IGNORE_PATHS_ENDING_IN = [
   "favicon.ico",
@@ -16,7 +16,18 @@ const IGNORE_PATHS_ENDING_IN = [
   "changelog.html",
 ];
 
-const GITHUB_PATHS_TO_TRAVERSE = ["/blob/", "/tree/"];
+const markdownRegex = new RegExp(/\.(md|mdx)$/);
+
+async function getDefaultBranch(owner: string, repo: string): Promise<string> {
+  const octokit = new Octokit({ auth: undefined });
+
+  const repoInfo = await octokit.repos.get({
+    owner,
+    repo,
+  });
+
+  return repoInfo.data.default_branch;
+}
 
 async function crawlGithubRepo(baseUrl: URL) {
   const octokit = new Octokit({
@@ -25,17 +36,15 @@ async function crawlGithubRepo(baseUrl: URL) {
 
   const [_, owner, repo] = baseUrl.pathname.split("/");
 
-  let dirContentsConfig = {
-    owner: owner,
-    repo: repo,
-  };
+  const branch = await getDefaultBranch(owner, repo);
+  console.log("Github repo detected. Crawling", branch, "branch");
 
   const tree = await octokit.request(
     "GET /repos/{owner}/{repo}/git/trees/{tree_sha}",
     {
       owner,
       repo,
-      tree_sha: "main",
+      tree_sha: branch,
       headers: {
         "X-GitHub-Api-Version": "2022-11-28",
       },
@@ -44,7 +53,10 @@ async function crawlGithubRepo(baseUrl: URL) {
   );
 
   const paths = tree.data.tree
-    .filter((file: any) => file.type === "blob" && file.path?.endsWith(".md"))
+    .filter(
+      (file: any) =>
+        file.type === "blob" && markdownRegex.test(file.path ?? ""),
+    )
     .map((file: any) => baseUrl.pathname + "/tree/main/" + file.path);
 
   return paths;
@@ -54,6 +66,7 @@ async function getLinksFromUrl(url: string, path: string) {
   const baseUrl = new URL(url);
   const location = new URL(path, url);
   let response;
+
   try {
     response = await fetch(location.toString());
   } catch (error: unknown) {
@@ -63,13 +76,12 @@ async function getLinksFromUrl(url: string, path: string) {
         html: "",
         links: [],
       };
-    } else {
-      console.error(error);
-      return {
-        html: "",
-        links: [],
-      };
     }
+    console.error(error);
+    return {
+      html: "",
+      links: [],
+    };
   }
 
   const html = await response.text();
@@ -130,46 +142,72 @@ export type PageData = {
   html: string;
 };
 
-export async function* crawlPage(url: URL): AsyncGenerator<PageData> {
+export async function* crawlPage(
+  url: URL,
+  maxDepth: number = 3,
+): AsyncGenerator<PageData> {
+  console.log(
+    `Starting crawl from: ${url.toString()} - Max Depth: ${maxDepth}`,
+  );
+
   const { baseUrl, basePath } = splitUrl(url);
-  let paths: string[] = [basePath];
+  let paths: { path: string; depth: number }[] = [{ path: basePath, depth: 0 }];
 
   if (url.hostname === "github.com") {
     const githubLinks = await crawlGithubRepo(url);
-    paths = [...paths, ...githubLinks];
+    const githubLinkObjects = githubLinks.map((link) => ({
+      path: link,
+      depth: 0,
+    }));
+    paths = [...paths, ...githubLinkObjects];
   }
 
   let index = 0;
-
   while (index < paths.length) {
-    const promises = paths
-      .slice(index, index + 50)
-      .map((path) => getLinksFromUrl(baseUrl, path));
+    const batch = paths.slice(index, index + 50);
 
-    const results = await Promise.all(promises);
+    try {
+      const promises = batch.map(({ path, depth }) =>
+        getLinksFromUrl(baseUrl, path).then((links) => ({
+          links,
+          path,
+          depth,
+        })),
+      ); // Adjust for depth tracking
 
-    for (const { html, links } of results) {
-      if (html !== "") {
-        yield {
-          url: url.toString(),
-          path: paths[index],
-          html: html,
-        };
-      }
+      const results = await Promise.all(promises);
+      for (const {
+        links: { html, links: linksArray },
+        path,
+        depth,
+      } of results) {
+        if (html !== "" && depth <= maxDepth) {
+          // Check depth
+          yield {
+            url: url.toString(),
+            path,
+            html,
+          };
+        }
 
-      for (let link of links) {
-        if (!paths.includes(link)) {
-          paths.push(link);
+        // Ensure we only add links if within depth limit
+        if (depth < maxDepth) {
+          for (let link of linksArray) {
+            if (!paths.some((p) => p.path === link)) {
+              paths.push({ path: link, depth: depth + 1 }); // Increment depth for new paths
+            }
+          }
         }
       }
-
-      index++;
+    } catch (e) {
+      if (e instanceof TypeError) {
+        console.warn("Error while crawling page: ", e); // Likely an invalid url, continue with process
+      } else {
+        console.error("Error while crawling page: ", e);
+      }
     }
 
-    paths = paths.filter((path) =>
-      results.some(
-        (result) => result.html !== "" && result.links.includes(path),
-      ),
-    );
+    index += batch.length; // Proceed to next batch
   }
+  console.log("Crawl completed");
 }

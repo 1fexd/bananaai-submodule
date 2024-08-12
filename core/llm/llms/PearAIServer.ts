@@ -11,22 +11,19 @@ import { Telemetry } from "../../util/posthog.js";
 import { BaseLLM } from "../index.js";
 import { streamResponse, streamJSON } from "../stream.js";
 import { checkTokens } from "../../db/token.js";
-import { stripImages } from "../countTokens.js";
+import { stripImages } from "../images.js";
 
 class PearAIServer extends BaseLLM {
   getCredentials: (() => Promise<PearAuth | undefined>) | undefined = undefined;
   setCredentials: (auth: PearAuth) => Promise<void> = async () => {};
 
-  static providerName: ModelProvider = "pearai-server";
+  static providerName: ModelProvider = "pearai_server";
   constructor(options: LLMOptions) {
     super(options);
   }
   
   private async _getHeaders() {
     return {
-      uniqueId: this.uniqueId || "None",
-      extensionVersion: Telemetry.extensionVersion ?? "Unknown",
-      os: Telemetry.os ?? "Unknown",
       "Content-Type": "application/json",
       ...(await getHeaders()),
     };
@@ -97,6 +94,8 @@ class PearAIServer extends BaseLLM {
     options: CompletionOptions,
   ): AsyncGenerator<ChatMessage> {
     const args = this._convertArgs(this.collectArgs(options));
+
+    console.log("IMHDERIJFIJEFIJIJE")
 
     await this._countTokens(
       messages.map((m) => m.content).join("\n"),

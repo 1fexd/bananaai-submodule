@@ -2,6 +2,7 @@ import { ContextProviderName } from "../../index.js";
 import { BaseContextProvider } from "../index.js";
 import CodeContextProvider from "./CodeContextProvider.js";
 import CodebaseContextProvider from "./CodebaseContextProvider.js";
+import ContinueProxyContextProvider from "./ContinueProxyContextProvider.js";
 import CurrentFileContextProvider from "./CurrentFileContextProvider.js";
 import DatabaseContextProvider from "./DatabaseContextProvider.js";
 import DiffContextProvider from "./DiffContextProvider.js";
@@ -22,6 +23,13 @@ import SearchContextProvider from "./SearchContextProvider.js";
 import TerminalContextProvider from "./TerminalContextProvider.js";
 import URLContextProvider from "./URLContextProvider.js";
 
+/**
+ * Note: We are currently omitting the following providers due to bugs:
+ * - `CodeOutlineContextProvider`
+ * - `CodeHighlightsContextProvider`
+ *
+ * See this issue for details: https://github.com/continuedev/continue/issues/1365
+ */
 const Providers: (typeof BaseContextProvider)[] = [
   DiffContextProvider,
   FileTreeContextProvider,
@@ -33,29 +41,21 @@ const Providers: (typeof BaseContextProvider)[] = [
   HttpContextProvider,
   SearchContextProvider,
   OSContextProvider,
-  CodebaseContextProvider,
   ProblemsContextProvider,
   FolderContextProvider,
   DocsContextProvider,
   GitLabMergeRequestContextProvider,
-  // CodeHighlightsContextProvider,
-  // CodeOutlineContextProvider,
   JiraIssuesContextProvider,
   PostgresContextProvider,
   DatabaseContextProvider,
   CodeContextProvider,
   CurrentFileContextProvider,
   URLContextProvider,
+  ContinueProxyContextProvider,
 ];
 
 export function contextProviderClassFromName(
   name: ContextProviderName,
 ): typeof BaseContextProvider | undefined {
-  const cls = Providers.find((cls) => cls.description.title === name);
-
-  if (!cls) {
-    return undefined;
-  }
-
-  return cls;
+  return Providers.find((cls) => cls.description.title === name);
 }

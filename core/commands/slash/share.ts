@@ -1,9 +1,9 @@
+import * as fs from "node:fs";
+import { homedir } from "node:os";
 import path from "path";
-import * as fs from "fs";
-import { homedir } from "os";
-import { SlashCommand } from "../../index.js";
 import { languageForFilepath } from "../../autocomplete/constructPrompt.js";
-import { stripImages } from "../../llm/countTokens.js";
+import { SlashCommand } from "../../index.js";
+import { stripImages } from "../../llm/images.js";
 
 // If useful elsewhere, helper funcs should move to core/util/index.ts or similar
 function getOffsetDatetime(date: Date): Date {
@@ -24,10 +24,11 @@ function asBasicISOString(date: Date): string {
 
 function reformatCodeBlocks(msgText: string): string {
   const codeBlockFenceRegex = /```((.*?\.(\w+))\s*.*)\n/g;
-  msgText = msgText.replace(codeBlockFenceRegex,
+  msgText = msgText.replace(
+    codeBlockFenceRegex,
     (match, metadata, filename, extension) => {
       const lang = languageForFilepath(filename);
-      return `\`\`\`${extension}\n${lang.comment} ${metadata}\n`;
+      return `\`\`\`${extension}\n${lang.singleLineComment} ${metadata}\n`;
     },
   );
   // Appease the markdown linter
@@ -40,7 +41,7 @@ const ShareSlashCommand: SlashCommand = {
   run: async function* ({ ide, history, params }) {
     const now = new Date();
 
-    let content = `### [Continue](https://trypear.ai) session transcript\n Exported: ${now.toLocaleString()}`;
+    let content = `### [Continue](https://continue.dev) session transcript\n Exported: ${now.toLocaleString()}`;
 
     // As currently implemented, the /share command is by definition the last
     // message in the chat history, this will omit it

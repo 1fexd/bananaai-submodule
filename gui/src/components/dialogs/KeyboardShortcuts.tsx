@@ -6,11 +6,11 @@ import {
   lightGray,
   vscForeground,
 } from "..";
-import { getPlatform } from "../../util";
+import { getPlatform, isJetBrains } from "../../util";
 
 const GridDiv = styled.div`
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   grid-gap: 2rem;
   padding: 1rem;
   justify-items: center;
@@ -71,15 +71,15 @@ interface KeyboardShortcutProps {
 function KeyboardShortcut(props: KeyboardShortcutProps) {
   const shortcut = getPlatform() === "mac" ? props.mac : props.windows;
   return (
-    <div className='flex justify-between w-full items-center gap-3'>
-      <div
+    <div className="flex justify-between w-full items-center">
+      <span
         style={{
           color: vscForeground,
         }}
       >
         {props.description}
-      </div>
-      <div className='flex gap-2'>
+      </span>
+      <div className="flex gap-2 float-right">
         {shortcut.split(" ").map((key, i) => {
           return <KeyDiv key={i} text={key}></KeyDiv>;
         })}
@@ -93,16 +93,6 @@ const vscodeShortcuts: KeyboardShortcutProps[] = [
     mac: "⌘ L",
     windows: "⌃ L",
     description: "Select Code + New Session",
-  },
-  {
-    mac: "⌘ [",
-    windows: "⌃ [",
-    description: "Enlarge Pear chat",
-  },
-  {
-    mac: "⌘ ;",
-    windows: "⌃ ;",
-    description: "Close Pear chat",
   },
   {
     mac: "⌘ I",
@@ -218,20 +208,19 @@ function KeyboardShortcutsDialog() {
   return (
     <div className="p-2">
       <h3 className="my-3 mx-auto text-center">Keyboard Shortcuts</h3>
-      <GridDiv className='overflow-x-auto'>
-        {(localStorage.getItem("ide") === "jetbrains"
-          ? jetbrainsShortcuts
-          : vscodeShortcuts
-        ).map((shortcut, i) => {
-          return (
-            <KeyboardShortcut
-              key={i}
-              mac={shortcut.mac}
-              windows={shortcut.windows}
-              description={shortcut.description}
-            />
-          );
-        })}
+      <GridDiv>
+        {(isJetBrains() ? jetbrainsShortcuts : vscodeShortcuts).map(
+          (shortcut, i) => {
+            return (
+              <KeyboardShortcut
+                key={i}
+                mac={shortcut.mac}
+                windows={shortcut.windows}
+                description={shortcut.description}
+              />
+            );
+          },
+        )}
       </GridDiv>
     </div>
   );

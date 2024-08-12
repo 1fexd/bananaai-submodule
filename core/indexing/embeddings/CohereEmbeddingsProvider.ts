@@ -1,19 +1,17 @@
 import { Response } from "node-fetch";
-import { EmbedOptions } from "../../index.js";
+import { EmbeddingsProviderName, EmbedOptions } from "../../index.js";
 import { withExponentialBackoff } from "../../util/withExponentialBackoff.js";
 import BaseEmbeddingsProvider from "./BaseEmbeddingsProvider.js";
 
 class CohereEmbeddingsProvider extends BaseEmbeddingsProvider {
   static maxBatchSize = 96;
 
+  static providerName: EmbeddingsProviderName = "cohere";
+
   static defaultOptions: Partial<EmbedOptions> | undefined = {
     apiBase: "https://api.cohere.ai/v1/",
     model: "embed-english-v3.0",
   };
-
-  get id(): string {
-    return this.options.model ?? "cohere";
-  }
 
   async embed(chunks: string[]) {
     if (!this.options.apiBase?.endsWith("/")) {

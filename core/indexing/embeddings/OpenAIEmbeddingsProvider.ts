@@ -1,9 +1,10 @@
 import { Response } from "node-fetch";
-import { EmbedOptions } from "../../index.js";
+import { EmbeddingsProviderName, EmbedOptions } from "../../index.js";
 import { withExponentialBackoff } from "../../util/withExponentialBackoff.js";
 import BaseEmbeddingsProvider from "./BaseEmbeddingsProvider.js";
 
 class OpenAIEmbeddingsProvider extends BaseEmbeddingsProvider {
+  static providerName: EmbeddingsProviderName = "openai";
   // https://platform.openai.com/docs/api-reference/embeddings/create is 2048
   // but Voyage is 128
   static maxBatchSize = 128;
@@ -13,15 +14,27 @@ class OpenAIEmbeddingsProvider extends BaseEmbeddingsProvider {
     model: "text-embedding-3-small",
   };
 
-  get id(): string {
-    return this.options.model ?? "openai";
+  private _getEndpoint() {
+    if (!this.options.apiBase) {
+      throw new Error(
+        "No API base URL provided. Please set the 'apiBase' option in config.json",
+      );
+    }
+
+    this.options.apiBase = this.options.apiBase.endsWith("/")
+      ? this.options.apiBase
+      : `${this.options.apiBase}/`;
+
+    if (this.options.apiType === "azure") {
+      return new URL(
+        `openai/deployments/${this.options.engine}/embeddings?api-version=${this.options.apiVersion}`,
+        this.options.apiBase,
+      );
+    }
+    return new URL("embeddings", this.options.apiBase);
   }
 
   async embed(chunks: string[]) {
-    if (!this.options.apiBase?.endsWith("/")) {
-      this.options.apiBase += "/";
-    }
-
     const batchedChunks = [];
     for (
       let i = 0;
@@ -35,9 +48,13 @@ class OpenAIEmbeddingsProvider extends BaseEmbeddingsProvider {
     return (
       await Promise.all(
         batchedChunks.map(async (batch) => {
+          if (batch.length === 0) {
+            return [];
+          }
+
           const fetchWithBackoff = () =>
             withExponentialBackoff<Response>(() =>
-              this.fetch(new URL("embeddings", this.options.apiBase), {
+              this.fetch(this._getEndpoint(), {
                 method: "POST",
                 body: JSON.stringify({
                   input: batch,
@@ -46,6 +63,7 @@ class OpenAIEmbeddingsProvider extends BaseEmbeddingsProvider {
                 headers: {
                   Authorization: `Bearer ${this.options.apiKey}`,
                   "Content-Type": "application/json",
+                  "api-key": this.options.apiKey ?? "", // For Azure
                 },
               }),
             );

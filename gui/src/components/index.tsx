@@ -1,7 +1,6 @@
 import { Tooltip } from "react-tooltip";
 import styled, { keyframes } from "styled-components";
-import { getFontSize } from "../util";
-import { isJetBrains } from "../util/ide";
+import { getFontSize, isJetBrains } from "../util";
 
 export const VSC_INPUT_BACKGROUND_VAR = "--vscode-input-background";
 export const VSC_BACKGROUND_VAR = "--vscode-sideBar-background";
@@ -40,8 +39,8 @@ export const VSC_THEME_COLOR_VARS = [
 ];
 
 export const defaultBorderRadius = "5px";
-export const lightGray = "#646464";
-export const greenButtonColor = "#1bbe84";
+export const lightGray = "#999998";
+export const greenButtonColor = "#189e72";
 
 export const vscInputBackground = `var(${VSC_INPUT_BACKGROUND_VAR}, rgb(45 45 45))`;
 export const vscQuickInputBackground = `var(${VSC_QUICK_INPUT_BACKGROUND_VAR}, ${VSC_INPUT_BACKGROUND_VAR}, rgb(45 45 45))`;
@@ -58,6 +57,8 @@ export const vscInputBorderFocus = `var(${VSC_INPUT_BORDER_FOCUS_VAR}, ${lightGr
 export const vscBadgeBackground = `var(${VSC_BADGE_BACKGROUND_VAR}, #1bbe84)`;
 export const vscBadgeForeground = `var(${VSC_BADGE_FOREGROUND_VAR}, #fff)`;
 export const vscSidebarBorder = `var(${VSC_SIDEBAR_BORDER_VAR}, transparent)`;
+
+// cececd
 
 if (typeof document !== "undefined") {
   for (const colorVar of VSC_THEME_COLOR_VARS) {
@@ -136,6 +137,25 @@ export const Button = styled.button`
   &:hover:enabled {
     cursor: pointer;
     filter: brightness(1.2);
+  }
+`;
+
+export const SecondaryButton = styled.button`
+  padding: 10px 12px;
+  margin: 8px 0;
+  border-radius: ${defaultBorderRadius};
+
+  border: 1px solid ${vscInputBorder};
+  color: ${vscForeground};
+  background-color: ${vscBackground};
+
+  &:disabled {
+    color: gray;
+  }
+
+  &:hover:enabled {
+    cursor: pointer;
+    background-color: ${vscInputBackground};
   }
 `;
 
@@ -225,6 +245,12 @@ export const H3 = styled.h3`
 
 export const Hr = styled.hr`
   border: 0.5px solid ${lightGray};
+`;
+
+export const HelperText = styled.p`
+  margin-top: 2.5px;
+  font-size: ${getFontSize() - 2}px;
+  color: ${lightGray};
 `;
 
 export const Input = styled.input`

@@ -14,7 +14,9 @@ import {
 } from '../components';
 import KeyboardShortcutsDialog from '../components/dialogs/KeyboardShortcuts';
 import { useNavigationListener } from '../hooks/useNavigationListener';
-import { postToIde } from '../util/ide';
+import { useContext } from 'react';
+
+import { IdeMessengerContext } from "../context/IdeMessenger";
 
 const ResourcesDiv = styled.div`
   margin: 4px;
@@ -61,6 +63,7 @@ const TutorialButton = styled(Button)`
 function HelpPage() {
   useNavigationListener();
   const navigate = useNavigate();
+  const ideMessenger = useContext(IdeMessengerContext);
 
   return (
     <div className='overflow-y-scroll overflow-x-hidden'>
@@ -80,7 +83,7 @@ function HelpPage() {
         <h3 className='text-lg font-bold m-2 inline-block'>Help</h3>
         <TutorialButton
           onClick={() => {
-            postToIde('showTutorial', undefined);
+            ideMessenger.post('showTutorial', undefined);
             navigate('/onboarding');
           }}
         >

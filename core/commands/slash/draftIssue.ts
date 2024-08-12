@@ -1,5 +1,5 @@
 import { ChatMessage, SlashCommand } from "../../index.js";
-import { stripImages } from "../../llm/countTokens.js";
+import { stripImages } from "../../llm/images.js";
 import { removeQuotesAndEscapes } from "../../util/index.js";
 
 const PROMPT = (
@@ -34,7 +34,7 @@ const DraftIssueCommand: SlashCommand = {
       { maxTokens: 20 },
     );
 
-    title = removeQuotesAndEscapes(title.trim()) + "\n\n";
+    title = `${removeQuotesAndEscapes(title.trim())}\n\n`;
     yield title;
 
     let body = "";

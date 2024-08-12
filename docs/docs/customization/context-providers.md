@@ -122,7 +122,7 @@ Type '@issue' to reference the conversation in a GitHub issue. Make sure to incl
     "repos": [
       {
         "owner": "continuedev",
-        "repo": "continue"
+        "repo": "pearai"
       }
     ],
     "githubToken": "ghp_xxx"
@@ -317,7 +317,7 @@ As an example, let's say you have a set of internal documents that have been ind
 - `description`: A longer description of the context item
 - `content`: The actual content of the context item, which will be fed to the LLM as context
 
-```typescript title="~/.continue/config.ts"
+```typescript title="~/.pearai/config.ts"
 const RagContextProvider: CustomContextProvider = {
   title: "rag",
   displayTitle: "RAG",
@@ -346,7 +346,7 @@ const RagContextProvider: CustomContextProvider = {
 
 It can then be added in `config.ts` like so:
 
-```typescript title="~/.continue/config.ts"
+```typescript title="~/.pearai/config.ts"
 export function modifyConfig(config: Config): Config {
   if (!config.contextProviders) {
     config.contextProviders = [];
@@ -366,7 +366,7 @@ The **"query"** type is used when you want to display a text box to the user, an
 
 The **"submenu"** type is used when you want to display a list of searchable items in the dropdown. Built-in examples include ["issue"](#github-issues) and ["folder"](#folders). To implement a "submenu" context provider, set `"type": "submenu"` and implement the `loadSubmenuItems` and `getContextItems` functions. Here is an example that shows a list of all README files in the current workspace:
 
-```typescript title="~/.continue/config.ts"
+```typescript title="~/.pearai/config.ts"
 const ReadMeContextProvider: CustomContextProvider = {
   title: "readme",
   displayTitle: "README",
@@ -437,7 +437,7 @@ The flow of information in the above example is as follows:
 
 ### Importing outside modules
 
-To include outside Node modules in your config.ts, run `npm install <module_name>` from the `~/.continue` directory, and then import them in config.ts.
+To include outside Node modules in your config.ts, run `npm install <module_name>` from the `~/.pearai` directory, and then import them in config.ts.
 
 PearAI will use [esbuild](https://esbuild.github.io/) to bundle your `config.ts` and any dependencies into a single Javascript file. The exact configuration used can be found [here](https://github.com/trypear/pearai-app/blob/5c9874400e223bbc9786a8823614a2e501fbdaf7/extensions/vscode/src/ideProtocol.ts#L45-L52).
 

@@ -1,3 +1,4 @@
+import * as JSONC from "comment-json";
 import * as fs from "fs";
 import path from "path";
 import {
@@ -20,20 +21,25 @@ import {
   EmbeddingsProviderDescription,
   IContextProvider,
   IDE,
+  IdeSettings,
   IdeType,
   ModelDescription,
-  PearAuth,
   Reranker,
   RerankerDescription,
   SerializedContinueConfig,
   SlashCommand,
+  PearAuth,
 } from "../index.js";
 import TransformersJsEmbeddingsProvider from "../indexing/embeddings/TransformersJsEmbeddingsProvider.js";
-import { AllEmbeddingsProviders } from "../indexing/embeddings/index.js";
+import { allEmbeddingsProviders } from "../indexing/embeddings/index.js";
 import { BaseLLM } from "../llm/index.js";
 import CustomLLMClass from "../llm/llms/CustomLLM.js";
+import FreeTrial from "../llm/llms/FreeTrial.js";
 import { llmFromDescription } from "../llm/llms/index.js";
-import { IdeSettings } from "../protocol.js";
+
+import { execSync } from "child_process";
+import CodebaseContextProvider from "../context/providers/CodebaseContextProvider.js";
+import ContinueProxyContextProvider from "../context/providers/ContinueProxyContextProvider.js";
 import { fetchwithRequestOptions } from "../util/fetchWithOptions.js";
 import { copyOf } from "../util/index.js";
 import mergeJson from "../util/merge.js";
@@ -44,6 +50,7 @@ import {
   getConfigJsonPathForRemote,
   getConfigTsPath,
   getContinueDotEnv,
+  readAllGlobalPromptFiles,
 } from "../util/paths.js";
 import {
   defaultContextProvidersJetBrains,
@@ -51,13 +58,16 @@ import {
   defaultSlashCommandsJetBrains,
   defaultSlashCommandsVscode,
 } from "./default.js";
-import { getPromptFiles, slashCommandFromPromptFile } from "./promptFile.js";
+import {
+  DEFAULT_PROMPTS_FOLDER,
+  getPromptFiles,
+  slashCommandFromPromptFile,
+} from "./promptFile.js";
 import PearAIServer from "../llm/llms/PearAIServer.js";
-const { execSync } = require("child_process");
 
 function resolveSerializedConfig(filepath: string): SerializedContinueConfig {
   let content = fs.readFileSync(filepath, "utf8");
-  let config = JSON.parse(content) as SerializedContinueConfig;
+  const config = JSONC.parse(content) as unknown as SerializedContinueConfig;
   if (config.env && Array.isArray(config.env)) {
     const env = {
       ...process.env,
@@ -66,7 +76,7 @@ function resolveSerializedConfig(filepath: string): SerializedContinueConfig {
 
     config.env.forEach((envVar) => {
       if (envVar in env) {
-        content = content.replaceAll(
+        content = (content as any).replaceAll(
           new RegExp(`"${envVar}"`, "g"),
           `"${env[envVar]}"`,
         );
@@ -74,7 +84,7 @@ function resolveSerializedConfig(filepath: string): SerializedContinueConfig {
     });
   }
 
-  return JSON.parse(content);
+  return JSONC.parse(content) as unknown as SerializedContinueConfig;
 }
 
 const configMergeKeys = {
@@ -88,13 +98,16 @@ function loadSerializedConfig(
   workspaceConfigs: ContinueRcJson[],
   ideSettings: IdeSettings,
   ideType: IdeType,
+  overrideConfigJson: SerializedContinueConfig | undefined,
 ): SerializedContinueConfig {
   const configPath = getConfigJsonPath(ideType);
-  let config: SerializedContinueConfig;
-  try {
-    config = resolveSerializedConfig(configPath);
-  } catch (e) {
-    throw new Error(`Failed to parse config.json: ${e}`);
+  let config: SerializedContinueConfig = overrideConfigJson!;
+  if (!config) {
+    try {
+      config = resolveSerializedConfig(configPath);
+    } catch (e) {
+      throw new Error(`Failed to parse config.json: ${e}`);
+    }
   }
 
   if (config.allowAnonymousTelemetry === undefined) {
@@ -124,12 +137,12 @@ function loadSerializedConfig(
   // Set defaults if undefined (this lets us keep config.json uncluttered for new users)
   config.contextProviders ??=
     ideType === "vscode"
-      ? defaultContextProvidersVsCode
-      : defaultContextProvidersJetBrains;
+      ? [...defaultContextProvidersVsCode]
+      : [...defaultContextProvidersJetBrains];
   config.slashCommands ??=
     ideType === "vscode"
-      ? defaultSlashCommandsVscode
-      : defaultSlashCommandsJetBrains;
+      ? [...defaultSlashCommandsVscode]
+      : [...defaultSlashCommandsJetBrains];
 
   return config;
 }
@@ -137,6 +150,7 @@ function loadSerializedConfig(
 async function serializedToIntermediateConfig(
   initial: SerializedContinueConfig,
   ide: IDE,
+  loadPromptFiles: boolean = true,
 ): Promise<Config> {
   const slashCommands: SlashCommand[] = [];
   for (const command of initial.slashCommands || []) {
@@ -150,17 +164,29 @@ async function serializedToIntermediateConfig(
   }
 
   const workspaceDirs = await ide.getWorkspaceDirs();
-  const promptFiles = (
-    await Promise.all(
-      workspaceDirs.map((dir) =>
-        getPromptFiles(ide, path.join(dir, ".prompts")),
-      ),
+  const promptFolder = initial.experimental?.promptPath;
+
+  if (loadPromptFiles) {
+    let promptFiles: { path: string; content: string }[] = [];
+    promptFiles = (
+      await Promise.all(
+        workspaceDirs.map((dir) =>
+          getPromptFiles(
+            ide,
+            path.join(dir, promptFolder ?? DEFAULT_PROMPTS_FOLDER),
+          ),
+        ),
+      )
     )
-  )
-    .flat()
-    .filter(({ path }) => path.endsWith(".prompt"));
-  for (const file of promptFiles) {
-    slashCommands.push(slashCommandFromPromptFile(file.path, file.content));
+      .flat()
+      .filter(({ path }) => path.endsWith(".prompt"));
+
+    // Also read from ~/.pearai/.prompts
+    promptFiles.push(...readAllGlobalPromptFiles());
+
+    for (const file of promptFiles) {
+      slashCommands.push(slashCommandFromPromptFile(file.path, file.content));
+    }
   }
 
   const config: Config = {
@@ -191,9 +217,11 @@ async function intermediateToFinalConfig(
   ideSettings: IdeSettings,
   uniqueId: string,
   writeLog: (log: string) => Promise<void>,
+  workOsAccessToken: string | undefined,
+  allowFreeTrial: boolean = false,
 ): Promise<ContinueConfig> {
   // Auto-detect models
-  const models: BaseLLM[] = [];
+  let models: BaseLLM[] = [];
   for (const desc of config.models) {
     if (isModelDescription(desc)) {
       const llm = await llmFromDescription(
@@ -231,7 +259,7 @@ async function intermediateToFinalConfig(
                 {
                   ...desc,
                   model: modelName,
-                  title: llm.title + " - " + modelName,
+                  title: `${llm.title} - ${modelName}`,
                 },
                 ide.readFile.bind(ide),
                 uniqueId,
@@ -287,34 +315,94 @@ async function intermediateToFinalConfig(
     };
   }
 
-  // Tab autocomplete model
-  let autocompleteLlm: BaseLLM | undefined = undefined;
-  if (config.tabAutocompleteModel) {
-    if (isModelDescription(config.tabAutocompleteModel)) {
-      autocompleteLlm = await llmFromDescription(
-        config.tabAutocompleteModel,
-        ide.readFile.bind(ide),
-        uniqueId,
-        ideSettings,
-        writeLog,
-        config.completionOptions,
-        config.systemMessage,
-      );
-    } else {
-      autocompleteLlm = new CustomLLMClass(config.tabAutocompleteModel);
+  if (allowFreeTrial) {
+    // Obtain auth token (iff free trial being used)
+    const freeTrialModels = models.filter(
+      (model) => model.providerName === "free-trial",
+    );
+    if (freeTrialModels.length > 0) {
+      const ghAuthToken = await ide.getGitHubAuthToken();
+      for (const model of freeTrialModels) {
+        (model as FreeTrial).setupGhAuthToken(ghAuthToken);
+      }
     }
+    console.log("Free trial models:", freeTrialModels);
+  } else {
+    // Remove free trial models
+    models = models.filter((model) => model.providerName !== "free-trial");
+    console.log("Models:", models);
   }
 
+  // Tab autocomplete model
+  let tabAutocompleteModels: BaseLLM[] = [];
+  if (config.tabAutocompleteModel) {
+    tabAutocompleteModels = (
+      await Promise.all(
+        (Array.isArray(config.tabAutocompleteModel)
+          ? config.tabAutocompleteModel
+          : [config.tabAutocompleteModel]
+        ).map(async (desc) => {
+          if (isModelDescription(desc)) {
+            const llm = await llmFromDescription(
+              desc,
+              ide.readFile.bind(ide),
+              uniqueId,
+              ideSettings,
+              writeLog,
+              config.completionOptions,
+              config.systemMessage,
+            );
+
+            // if (llm?.providerName === "free-trial") {
+            //   if (!allowFreeTrial) {
+            //     // This shouldn't happen
+            //     throw new Error("Free trial cannot be used with control plane");
+            //   }
+            //   const ghAuthToken = await ide.getGitHubAuthToken();
+            //   (llm as FreeTrial).setupGhAuthToken(ghAuthToken);
+            // }
+            return llm;
+          } else {
+            return new CustomLLMClass(desc);
+          }
+        }),
+      )
+    ).filter((x) => x !== undefined) as BaseLLM[];
+  }
+
+  // These context providers are always included, regardless of what, if anything,
+  // the user has configured in config.json
+  const DEFAULT_CONTEXT_PROVIDERS = [
+    new FileContextProvider({}),
+    new CodebaseContextProvider({}),
+  ];
+
+  const DEFAULT_CONTEXT_PROVIDERS_TITLES = DEFAULT_CONTEXT_PROVIDERS.map(
+    ({ description: { title } }) => title,
+  );
+
   // Context providers
-  const contextProviders: IContextProvider[] = [new FileContextProvider({})];
+  const contextProviders: IContextProvider[] = DEFAULT_CONTEXT_PROVIDERS;
+
   for (const provider of config.contextProviders || []) {
     if (isContextProviderWithParams(provider)) {
       const cls = contextProviderClassFromName(provider.name) as any;
       if (!cls) {
-        console.warn(`Unknown context provider ${provider.name}`);
+        if (!DEFAULT_CONTEXT_PROVIDERS_TITLES.includes(provider.name)) {
+          console.warn(`Unknown context provider ${provider.name}`);
+        }
+
         continue;
       }
-      contextProviders.push(new cls(provider.params));
+      const instance: IContextProvider = new cls(provider.params);
+
+      // Handle continue-proxy
+      if (instance.description.title === "continue-proxy") {
+        (instance as ContinueProxyContextProvider).workOsAccessToken =
+          workOsAccessToken;
+      }
+
+      contextProviders.push(instance);
     } else {
       contextProviders.push(new CustomContextProviderClass(provider));
     }
@@ -326,16 +414,22 @@ async function intermediateToFinalConfig(
     | undefined;
   if (embeddingsProviderDescription?.provider) {
     const { provider, ...options } = embeddingsProviderDescription;
-    const embeddingsProviderClass = AllEmbeddingsProviders[provider];
+    const embeddingsProviderClass = allEmbeddingsProviders[provider];
     if (embeddingsProviderClass) {
-      config.embeddingsProvider = new embeddingsProviderClass(
-        options,
-        (url: string | URL, init: any) =>
-          fetchwithRequestOptions(url, init, {
-            ...config.requestOptions,
-            ...options.requestOptions,
-          }),
-      );
+      if (
+        embeddingsProviderClass.name === "_TransformersJsEmbeddingsProvider"
+      ) {
+        config.embeddingsProvider = new embeddingsProviderClass();
+      } else {
+        config.embeddingsProvider = new embeddingsProviderClass(
+          options,
+          (url: string | URL, init: any) =>
+            fetchwithRequestOptions(url, init, {
+              ...config.requestOptions,
+              ...options.requestOptions,
+            }),
+        );
+      }
     }
   }
 
@@ -365,7 +459,7 @@ async function intermediateToFinalConfig(
     contextProviders,
     models,
     embeddingsProvider: config.embeddingsProvider as any,
-    tabAutocompleteModel: autocompleteLlm,
+    tabAutocompleteModels,
     reranker: config.reranker as any,
   };
 }
@@ -386,7 +480,8 @@ function finalToBrowserConfig(
       completionOptions: m.completionOptions,
       systemMessage: m.systemMessage,
       requestOptions: m.requestOptions,
-      promptTemplates: m.promptTemplates,
+      promptTemplates: m.promptTemplates as any,
+      capabilities: m.capabilities,
     })),
     systemMessage: final.systemMessage,
     completionOptions: final.completionOptions,
@@ -454,18 +549,17 @@ async function buildConfigTs() {
   try {
     if (process.env.IS_BINARY === "true") {
       execSync(
-        escapeSpacesInPath(path.dirname(process.execPath)) +
-          `/esbuild${
-            getTarget().startsWith("win32") ? ".exe" : ""
-          } ${escapeSpacesInPath(
-            getConfigTsPath(),
-          )} --bundle --outfile=${escapeSpacesInPath(
-            getConfigJsPath(),
-          )} --platform=node --format=cjs --sourcemap --external:fetch --external:fs --external:path --external:os --external:child_process`,
+        `${escapeSpacesInPath(path.dirname(process.execPath))}/esbuild${
+          getTarget().startsWith("win32") ? ".exe" : ""
+        } ${escapeSpacesInPath(
+          getConfigTsPath(),
+        )} --bundle --outfile=${escapeSpacesInPath(
+          getConfigJsPath(),
+        )} --platform=node --format=cjs --sourcemap --external:fetch --external:fs --external:path --external:os --external:child_process`,
       );
     } else {
       // Dynamic import esbuild so potentially disastrous errors can be caught
-      const esbuild = require("esbuild");
+      const esbuild = await import("esbuild");
 
       await esbuild.build({
         entryPoints: [getConfigTsPath()],
@@ -479,7 +573,7 @@ async function buildConfigTs() {
     }
   } catch (e) {
     console.log(
-      "Build error. Please check your ~/.continue/config.ts file: " + e,
+      `Build error. Please check your ~/.pearai/config.ts file: ${e}`,
     );
     return undefined;
   }
@@ -497,16 +591,27 @@ async function loadFullConfigNode(
   ideType: IdeType,
   uniqueId: string,
   writeLog: (log: string) => Promise<void>,
+  workOsAccessToken: string | undefined,
+  overrideConfigJson: SerializedContinueConfig | undefined,
 ): Promise<ContinueConfig> {
-  let serialized = loadSerializedConfig(workspaceConfigs, ideSettings, ideType);
+  // Serialized config
+  let serialized = loadSerializedConfig(
+    workspaceConfigs,
+    ideSettings,
+    ideType,
+    overrideConfigJson,
+  );
+
+  // Convert serialized to intermediate config
   let intermediate = await serializedToIntermediateConfig(serialized, ide);
 
+  // Apply config.ts to modify intermediate config
   const configJsContents = await buildConfigTs();
   if (configJsContents) {
     try {
       // Try config.ts first
       const configJsPath = getConfigJsPath();
-      const module = await require(configJsPath);
+      const module = await import(configJsPath);
       delete require.cache[require.resolve(configJsPath)];
       if (!module.modifyConfig) {
         throw new Error("config.ts does not export a modifyConfig function.");
@@ -517,13 +622,13 @@ async function loadFullConfigNode(
     }
   }
 
-  // Remote config.js
+  // Apply remote config.js to modify intermediate config
   if (ideSettings.remoteConfigServerUrl) {
     try {
       const configJsPathForRemote = getConfigJsPathForRemote(
         ideSettings.remoteConfigServerUrl,
       );
-      const module = await require(configJsPathForRemote);
+      const module = await import(configJsPathForRemote);
       delete require.cache[require.resolve(configJsPathForRemote)];
       if (!module.modifyConfig) {
         throw new Error("config.ts does not export a modifyConfig function.");
@@ -534,12 +639,14 @@ async function loadFullConfigNode(
     }
   }
 
+  // Convert to final config format
   const finalConfig = await intermediateToFinalConfig(
     intermediate,
     ide,
     ideSettings,
     uniqueId,
     writeLog,
+    workOsAccessToken,
   );
   return finalConfig;
 }

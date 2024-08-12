@@ -1,16 +1,25 @@
 // Fill in the middle prompts
 
 import { CompletionOptions } from "../index.js";
+import { getLastNPathParts, shortestRelativePaths } from "../util/index.js";
 import { AutocompleteSnippet } from "./ranking.js";
 
 interface AutocompleteTemplate {
+  compilePrefixSuffix?: (
+    prefix: string,
+    suffix: string,
+    filepath: string,
+    reponame: string,
+    snippets: AutocompleteSnippet[],
+  ) => [string, string];
   template:
     | string
     | ((
         prefix: string,
         suffix: string,
-        filename: string,
+        filepath: string,
         reponame: string,
+        language: string,
         snippets: AutocompleteSnippet[],
       ) => string);
   completionOptions?: Partial<CompletionOptions>;
@@ -20,7 +29,63 @@ interface AutocompleteTemplate {
 const stableCodeFimTemplate: AutocompleteTemplate = {
   template: "<fim_prefix>{{{prefix}}}<fim_suffix>{{{suffix}}}<fim_middle>",
   completionOptions: {
-    stop: ["<fim_prefix>", "<fim_suffix>", "<fim_middle>", "<|endoftext|>"],
+    stop: [
+      "<fim_prefix>",
+      "<fim_suffix>",
+      "<fim_middle>",
+      "<|endoftext|>",
+      "<file_sep>",
+      "</fim_middle>",
+      "</code>",
+    ],
+  },
+};
+
+const codestralFimTemplate: AutocompleteTemplate = {
+  template: "[SUFFIX]{{{suffix}}}[PREFIX]{{{prefix}}}",
+  completionOptions: {
+    stop: ["[PREFIX]", "[SUFFIX]"],
+  },
+};
+
+const codestralMultifileFimTemplate: AutocompleteTemplate = {
+  compilePrefixSuffix: (
+    prefix: string,
+    suffix: string,
+    filepath: string,
+    reponame: string,
+    snippets: AutocompleteSnippet[],
+  ): [string, string] => {
+    if (snippets.length === 0) {
+      if (suffix.trim().length === 0 && prefix.trim().length === 0) {
+        return [`+++++ ${getLastNPathParts(filepath, 2)}\n${prefix}`, suffix];
+      }
+      return [prefix, suffix];
+    }
+    const relativePaths = shortestRelativePaths([
+      ...snippets.map((snippet) => snippet.filepath),
+      filepath,
+    ]);
+    const otherFiles = snippets
+      .map((snippet, i) => `+++++ ${relativePaths[i]}\n${snippet.contents}`)
+      .join("\n\n");
+    return [
+      `${otherFiles}\n\n+++++ ${relativePaths[relativePaths.length - 1]}\n${prefix}`,
+      suffix,
+    ];
+  },
+  template: (
+    prefix: string,
+    suffix: string,
+    filepath: string,
+    reponame: string,
+    language: string,
+    snippets: AutocompleteSnippet[],
+  ): string => {
+    return `[SUFFIX]${suffix}[PREFIX]${prefix}`;
+  },
+  completionOptions: {
+    stop: ["[PREFIX]", "[SUFFIX]"],
   },
 };
 
@@ -46,21 +111,20 @@ const starcoder2FimTemplate: AutocompleteTemplate = {
     suffix: string,
     filename: string,
     reponame: string,
+    language: string,
     snippets: AutocompleteSnippet[],
   ): string => {
     const otherFiles =
       snippets.length === 0
         ? ""
-        : "<file_sep>" +
-          snippets
+        : `<file_sep>${snippets
             .map((snippet) => {
               return snippet.contents;
               // return `${getBasename(snippet.filepath)}\n${snippet.contents}`;
             })
-            .join("<file_sep>") +
-          "<file_sep>";
+            .join("<file_sep>")}<file_sep>`;
 
-    let prompt = `${otherFiles}<fim_prefix>${prefix}<fim_suffix>${suffix}<fim_middle>`;
+    const prompt = `${otherFiles}<fim_prefix>${prefix}<fim_suffix>${suffix}<fim_middle>`;
     return prompt;
   },
   completionOptions: {
@@ -94,9 +158,40 @@ const deepseekFimTemplate: AutocompleteTemplate = {
   },
 };
 
-const deepseekFimTemplateWrongPipeChar: AutocompleteTemplate = {
-  template: "<|fim▁begin|>{{{prefix}}}<|fim▁hole|>{{{suffix}}}<|fim▁end|>",
-  completionOptions: { stop: ["<|fim▁begin|>", "<|fim▁hole|>", "<|fim▁end|>"] },
+// https://github.com/THUDM/CodeGeeX4/blob/main/guides/Infilling_guideline.md
+const codegeexFimTemplate: AutocompleteTemplate = {
+  template: (
+    prefix: string,
+    suffix: string,
+    filepath: string,
+    reponame: string,
+    language: string,
+    snippets: AutocompleteSnippet[],
+  ): string => {
+    const relativePaths = shortestRelativePaths([
+      ...snippets.map((snippet) => snippet.filepath),
+      filepath,
+    ]);
+    const baseTemplate = `###PATH:${relativePaths[relativePaths.length - 1]}\n###LANGUAGE:${language}\n###MODE:BLOCK\n<|code_suffix|>${suffix}<|code_prefix|>${prefix}<|code_middle|>`;
+    if (snippets.length == 0) {
+      return `<|user|>\n${baseTemplate}<|assistant|>\n`;
+    }
+    const references = `###REFERENCE:\n${snippets
+      .map((snippet, i) => `###PATH:${relativePaths[i]}\n${snippet.contents}\n`)
+      .join("###REFERENCE:\n")}`;
+    const prompt = `<|user|>\n${references}\n${baseTemplate}<|assistant|>\n`;
+    return prompt;
+  },
+  completionOptions: {
+    stop: [
+      "<|user|>",
+      "<|code_suffix|>",
+      "<|code_prefix|>",
+      "<|code_middle|>",
+      "<|assistant|>",
+      "<|endoftext|>",
+    ],
+  },
 };
 
 const gptAutocompleteTemplate: AutocompleteTemplate = {
@@ -114,6 +209,7 @@ const holeFillerTemplate: AutocompleteTemplate = {
     suffix: string,
     filename: string,
     reponame: string,
+    language: string,
     snippets: AutocompleteSnippet[],
   ) => {
     // From https://github.com/VictorTaelin/AI-scripts
@@ -185,11 +281,11 @@ function sum(tree: Tree<number>): number {
 
 ## EXAMPLE QUERY:
 
-The 4th {{FILL_HERE}} is Jupiter.
+The 5th {{FILL_HERE}} is Jupiter.
 
 ## CORRECT COMPLETION:
 
-<COMPLETION>the 4th planet after Mars</COMPLETION>
+<COMPLETION>planet from the Sun</COMPLETION>
 
 ## EXAMPLE QUERY:
 
@@ -224,9 +320,14 @@ export function getTemplateForModel(model: string): AutocompleteTemplate {
     lowerCaseModel.includes("starchat") ||
     lowerCaseModel.includes("octocoder") ||
     lowerCaseModel.includes("stable") ||
-    lowerCaseModel.includes("codeqwen")
+    lowerCaseModel.includes("codeqwen") ||
+    lowerCaseModel.includes("qwen")
   ) {
     return stableCodeFimTemplate;
+  }
+
+  if (lowerCaseModel.includes("codestral")) {
+    return codestralMultifileFimTemplate;
   }
 
   if (lowerCaseModel.includes("codegemma")) {
@@ -239,6 +340,10 @@ export function getTemplateForModel(model: string): AutocompleteTemplate {
 
   if (lowerCaseModel.includes("deepseek")) {
     return deepseekFimTemplate;
+  }
+
+  if (lowerCaseModel.includes("codegeex")) {
+    return codegeexFimTemplate;
   }
 
   if (

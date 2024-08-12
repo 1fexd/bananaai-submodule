@@ -23,7 +23,7 @@ All data is anonymous and cleaned of PII before being sent to PostHog.
 
 ## How to opt out
 
-The `~/.continue` directory contains a `config.json` file that looks like this:
+The `~/.pearai` directory contains a `config.json` file that looks like this:
 
 ```json title="~/.pearai/config.json"
 {

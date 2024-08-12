@@ -1,15 +1,17 @@
-import { ILLM } from "core";
-import { ConfigHandler } from "core/config/handler";
+import type { ILLM } from "core";
+import { ConfigHandler } from "core/config/ConfigHandler";
 import Ollama from "core/llm/llms/Ollama";
+import { GlobalContext } from "core/util/GlobalContext";
 import * as vscode from "vscode";
 
 export class TabAutocompleteModel {
   private _llm: ILLM | undefined;
-  private defaultTag: string = "starcoder2:3b";
-  private defaultTagName: string = "Starcoder2 3b";
+  private defaultTag = "starcoder2:3b";
+  private defaultTagName = "Starcoder2 3b";
+  private globalContext: GlobalContext = new GlobalContext();
 
-  private shownOllamaWarning: boolean = false;
-  private shownDeepseekWarning: boolean = false;
+  private shownOllamaWarning = false;
+  private shownDeepseekWarning = false;
 
   private configHandler: ConfigHandler;
 
@@ -40,7 +42,7 @@ export class TabAutocompleteModel {
               if (value === "Documentation") {
                 vscode.env.openExternal(
                   vscode.Uri.parse(
-                    "https://trypear.ai/walkthroughs/tab-autocomplete",
+                    "https://trypear.ai/features/tab-autocomplete",
                   ),
                 );
               } else if (value === "Copy Command") {
@@ -55,7 +57,7 @@ export class TabAutocompleteModel {
       if (!this.shownOllamaWarning) {
         vscode.window
           .showWarningMessage(
-            "PearAI failed to connect to Ollama, which is used by default for tab-autocomplete. If you haven't downloaded it yet, you can do so at https://ollama.ai (recommended). If you'd like to use a custom model for tab autocomplete, learn more in the docs",
+            "Continue failed to connect to Ollama, which is used by default for tab-autocomplete. If you haven't downloaded it yet, you can do so at https://ollama.ai (recommended). If you'd like to use a custom model for tab autocomplete, learn more in the docs",
             "Download Ollama",
             "Documentation",
           )
@@ -63,7 +65,7 @@ export class TabAutocompleteModel {
             if (value === "Documentation") {
               vscode.env.openExternal(
                 vscode.Uri.parse(
-                  "https://trypear.ai/walkthroughs/tab-autocomplete",
+                  "https://trypear.ai/features/tab-autocomplete",
                 ),
               );
             } else if (value === "Download Ollama") {
@@ -81,8 +83,22 @@ export class TabAutocompleteModel {
   async get() {
     if (!this._llm) {
       const config = await this.configHandler.loadConfig();
-      if (config.tabAutocompleteModel) {
-        this._llm = config.tabAutocompleteModel;
+      if (config.tabAutocompleteModels?.length) {
+        const selected = this.globalContext.get("selectedTabAutocompleteModel");
+        if (selected) {
+          this._llm =
+            config.tabAutocompleteModels?.find(
+              (model) => model.title === selected,
+            ) ?? config.tabAutocompleteModels?.[0];
+        } else {
+          if (config.tabAutocompleteModels[0].title) {
+            this.globalContext.update(
+              "selectedTabAutocompleteModel",
+              config.tabAutocompleteModels[0].title,
+            );
+          }
+          this._llm = config.tabAutocompleteModels[0];
+        }
       } else {
         this._llm = await this.getDefaultTabAutocompleteModel();
       }

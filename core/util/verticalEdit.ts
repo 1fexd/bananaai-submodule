@@ -13,7 +13,6 @@ import {
   DiffLine,
   ILLM,
   LLMFullCompletionOptions,
-  ModelProvider,
 } from "../index.js";
 import { gptEditPrompt } from "../llm/templates/edit.js";
 import { Telemetry } from "./posthog.js";
@@ -52,10 +51,6 @@ function modelIsInept(model: string): boolean {
   return !(model.includes("gpt") || model.includes("claude"));
 }
 
-function isGpt4Trial(model: string, provider: ModelProvider): boolean {
-  return provider === "free-trial" && model.startsWith("gpt-4");
-}
-
 export async function* streamDiffLines(
   prefix: string,
   highlighted: string,
@@ -65,10 +60,14 @@ export async function* streamDiffLines(
   language: string | undefined,
   onlyOneInsertion?: boolean,
 ): AsyncGenerator<DiffLine> {
-  Telemetry.capture("inlineEdit", {
-    model: llm.model,
-    provider: llm.providerName,
-  });
+  Telemetry.capture(
+    "inlineEdit",
+    {
+      model: llm.model,
+      provider: llm.providerName,
+    },
+    true,
+  );
 
   // Strip common indentation for the LLM, then add back after generation
   let oldLines =
@@ -93,9 +92,6 @@ export async function* streamDiffLines(
   const inept = modelIsInept(llm.model);
 
   const options: LLMFullCompletionOptions = {};
-  if (isGpt4Trial(llm.model, llm.providerName)) {
-    options.maxTokens = 2048;
-  }
   const completion =
     typeof prompt === "string"
       ? llm.streamComplete(prompt, { raw: true })
@@ -105,7 +101,7 @@ export async function* streamDiffLines(
 
   lines = filterEnglishLinesAtStart(lines);
   lines = filterCodeBlockLines(lines);
-  lines = stopAtLines(lines);
+  lines = stopAtLines(lines, () => {});
   lines = skipLines(lines);
   if (inept) {
     // lines = fixCodeLlamaFirstLineIndentation(lines);
@@ -121,7 +117,7 @@ export async function* streamDiffLines(
   }
 
   let seenGreen = false;
-  for await (let diffLine of diffLines) {
+  for await (const diffLine of diffLines) {
     yield diffLine;
     if (diffLine.type === "new") {
       seenGreen = true;

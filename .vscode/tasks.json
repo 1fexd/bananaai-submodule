@@ -14,14 +14,12 @@
         // Start the React app that is used in the extension
         "gui:dev"
       ],
-      "dependsOrder": "sequence",
       "group": {
         "kind": "build",
         "isDefault": true
       }
     },
     {
-      // ESBuild task
       "label": "vscode-extension:esbuild",
       "type": "npm",
       "script": "esbuild-watch",
@@ -45,8 +43,7 @@
             "endsPattern": ">"
           }
         }
-      ],
-      "dependsOn": "vscode-extension:continue-ui:build"
+      ]
     },
     // Tsc currently errors out due to testing setup issues, will be resolved in a different PR
     // This will be useful for preventing debugging if there are compile errors
@@ -66,31 +63,15 @@
       "label": "vscode-extension:continue-ui:build",
       "type": "shell",
       "command": "node",
-      "args": ["./scripts/prepackage.js"],
-      "osx": {
-        "options": {
-          "cwd": "${workspaceFolder}/extensions/vscode"
-        }
-      },
-      "linux": {
-        "options": {
-          "cwd": "${workspaceFolder}/extensions/vscode"
-        }
-      },
-      "windows": {
-        "options": {
-          "cwd": "${workspaceFolder}\\extensions\\vscode"
-        }
-      },
+      "args": ["${workspaceFolder}/extensions/vscode/scripts/prepackage.js"],
       "problemMatcher": ["$tsc"],
       "presentation": {
         "revealProblems": "onProblem",
         "clear": true
       },
       "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "dependsOn": "vscode-extension:tsc"
+        "cwd": "${workspaceFolder}/extensions/vscode"
+      }
     },
     //
     // Compile and bundle tests
@@ -160,8 +141,7 @@
             "endsPattern": "."
           }
         }
-      ],
-      "dependsOn": "vscode-extension:esbuild"
+      ]
     },
     //
     // esbuild for the core binary
@@ -173,6 +153,16 @@
       "problemMatcher": [],
       "options": {
         "cwd": "binary"
+      }
+    },
+    {
+      "label": "docs:start",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "start", "--", "--no-open"],
+      "problemMatcher": [],
+      "options": {
+        "cwd": "docs"
       }
     }
   ]

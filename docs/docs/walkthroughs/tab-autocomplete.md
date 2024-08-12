@@ -35,7 +35,7 @@ You can also set up tab-autocomplete with a local LM Studio instance by followin
 1. Download the latest version of LM Studio from [here](https://lmstudio.ai/)
 2. Download a model (e.g. search for `second-state/StarCoder2-3B-GGUF` and choose one of the options there)
 3. Go to the server section (button is on the left), select your model from the dropdown at the top, and click "Start Server"
-4. Go to the "My Models" section (button is on the left), find your selected model, and copy the name the path (example: `second-state/StarCoder2-3B-GGUF/starcoder2-3b-Q8_0.gguf`); this will be used as the "model" attribute in Continue
+4. Go to the "My Models" section (button is on the left), find your selected model, and copy the name the path (example: `second-state/StarCoder2-3B-GGUF/starcoder2-3b-Q8_0.gguf`); this will be used as the "model" attribute in PearAI
 5. Go to PearAI and modify the configurations for a [custom model](#setting-up-a-custom-model)
 6. Set the "provider" to `lmstudio` and the "model" to the path copied earlier
 
@@ -132,11 +132,11 @@ Perhaps surprisingly, the answer is no. The models that we suggest for autocompl
 
 Follow these steps to ensure that everything is set up correctly:
 
-1. Make sure you have the "Enable Tab Autocomplete" setting checked (in VS Code, you can toggle by clicking the "Continue" button in the status bar, and in JetBrains by going to Settings -> Tools -> Continue).
+1. Make sure you have the "Enable Tab Autocomplete" setting checked (in VS Code, you can toggle by clicking the "PearAI" button in the status bar, and in JetBrains by going to Settings -> Tools -> PearAI).
 2. Make sure you have downloaded Ollama.
 3. Run `ollama run starcoder2:3b` to verify that the model is downloaded.
 4. Make sure that any other completion providers are disabled (e.g. Copilot), as they may interfere.
-5. Check the output of the logs to find any potential errors (cmd/ctrl+shift+p -> "Toggle Developer Tools" -> "Console" tab in VS Code, ~/.continue/core.log in JetBrains).
+5. Check the output of the logs to find any potential errors (cmd/ctrl+shift+p -> "Toggle Developer Tools" -> "Console" tab in VS Code, ~/.pearai/core.log in JetBrains).
 6. Check VS Code settings to make sure that `"editor.inlineSuggest.enabled"` is set to `true` (use cmd/ctrl+, then search for this and check the box)
 7. If you are still having issues, please let us know in our [Discord](https://discord.gg/vapESyrFmJ) and we'll help as soon as possible.
 
@@ -160,9 +160,9 @@ To ensure that you receive multi-line completions, you can set `"multilineComple
 
 ### VS Code
 
-Click the "Continue" button in the status panel at the bottom right of the screen. The checkmark will become a "cancel" symbol and you will no longer see completions. You can click again to turn it back on.
+Click the "PearAI" button in the status panel at the bottom right of the screen. The checkmark will become a "cancel" symbol and you will no longer see completions. You can click again to turn it back on.
 
-Alternatively, open VS Code settings, search for "Continue" and uncheck the box for "Enable Tab Autocomplete".
+Alternatively, open VS Code settings, search for "PearAI" and uncheck the box for "Enable Tab Autocomplete".
 
 ### JetBrains
 

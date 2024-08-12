@@ -1,24 +1,13 @@
 import {
   BranchAndDir,
-  Chunk,
   ContextItem,
   ContextProviderExtras,
 } from "../../index.js";
-import { LanceDbIndex } from "../../indexing/LanceDbIndex.js";
-
-import { deduplicateArray, getBasename } from "../../util/index.js";
-import { RETRIEVAL_PARAMS } from "../../util/parameters.js";
-import { retrieveFts } from "./fullTextSearch.js";
-
-function deduplicateChunks(chunks: Chunk[]): Chunk[] {
-  return deduplicateArray(chunks, (a, b) => {
-    return (
-      a.filepath === b.filepath &&
-      a.startLine === b.startLine &&
-      a.endLine === b.endLine
-    );
-  });
-}
+import TransformersJsEmbeddingsProvider from "../../indexing/embeddings/TransformersJsEmbeddingsProvider.js";
+import { getRelativePath } from "../../util/index.js";
+import { RetrievalPipelineOptions } from "./pipelines/BaseRetrievalPipeline.js";
+import NoRerankerRetrievalPipeline from "./pipelines/NoRerankerRetrievalPipeline.js";
+import RerankerRetrievalPipeline from "./pipelines/RerankerRetrievalPipeline.js";
 
 export async function retrieveContextItemsFromEmbeddings(
   extras: ContextProviderExtras,
@@ -29,12 +18,20 @@ export async function retrieveContextItemsFromEmbeddings(
     return [];
   }
 
-  const nFinal = options?.nFinal || RETRIEVAL_PARAMS.nFinal;
-  const useReranking = extras.reranker !== undefined;
-  const nRetrieve =
-    useReranking === false
-      ? nFinal
-      : options?.nRetrieve || RETRIEVAL_PARAMS.nRetrieve;
+  // transformers.js not supported in JetBrains IDEs right now
+
+  const isJetBrainsAndTransformersJs =
+    extras.embeddingsProvider.id === TransformersJsEmbeddingsProvider.model &&
+    (await extras.ide.getIdeInfo()).ideType === "jetbrains";
+
+  if (isJetBrainsAndTransformersJs) {
+    throw new Error(
+      "The 'transformers.js' context provider is not currently supported in JetBrains. " +
+        "For now, you can use Ollama to set up local embeddings, or use our 'free-trial' " +
+        "embeddings provider. See here to learn more: " +
+        "https://trypear.ai/walkthroughs/codebase-embeddings#embeddings-providers",
+    );
+  }
 
   // Get tags to retrieve for
   const workspaceDirs = await extras.ide.getWorkspaceDirs();
@@ -42,6 +39,14 @@ export async function retrieveContextItemsFromEmbeddings(
   if (workspaceDirs.length === 0) {
     throw new Error("No workspace directories found");
   }
+
+  // Fill half of the context length, up to a max of 100 snippets
+  const contextLength = extras.llm.contextLength;
+  const tokensPerSnippet = 512;
+  const nFinal =
+    options?.nFinal ?? Math.min(50, contextLength / tokensPerSnippet / 2);
+  const useReranking = !!extras.reranker;
+  const nRetrieve = useReranking ? options?.nRetrieve || 2 * nFinal : nFinal;
 
   const branches = (await Promise.race([
     Promise.all(workspaceDirs.map((dir) => extras.ide.getBranch(dir))),
@@ -51,85 +56,29 @@ export async function retrieveContextItemsFromEmbeddings(
       }, 500);
     }),
   ])) as string[];
+
   const tags: BranchAndDir[] = workspaceDirs.map((directory, i) => ({
     directory,
     branch: branches[i],
   }));
 
-  // Get all retrieval results
-  const retrievalResults: Chunk[] = [];
+  const pipelineType = useReranking
+    ? RerankerRetrievalPipeline
+    : NoRerankerRetrievalPipeline;
 
-  // Source: Full-text search
-  let ftsResults = await retrieveFts(
-    extras.fullInput,
-    nRetrieve / 2,
-    tags,
-    filterDirectory,
-  );
-  retrievalResults.push(...ftsResults);
-
-  // Source: expansion with code graph
-  // consider doing this after reranking? Or just having a lower reranking threshold
-  // This is VS Code only until we use PSI for JetBrains or build our own general solution
-  // TODO: Need to pass in the expandSnippet function as a function argument
-  // because this import causes `tsc` to fail
-  // if ((await extras.ide.getIdeInfo()).ideType === "vscode") {
-  //   const { expandSnippet } = await import(
-  //     "../../../extensions/vscode/src/util/expandSnippet"
-  //   );
-  //   let expansionResults = (
-  //     await Promise.all(
-  //       extras.selectedCode.map(async (rif) => {
-  //         return expandSnippet(
-  //           rif.filepath,
-  //           rif.range.start.line,
-  //           rif.range.end.line,
-  //           extras.ide,
-  //         );
-  //       }),
-  //     )
-  //   ).flat() as Chunk[];
-  //   retrievalResults.push(...expansionResults);
-  // }
-
-  // Source: Open file exact match
-  // Source: Class/function name exact match
-
-  // Source: Embeddings
-  const lanceDbIndex = new LanceDbIndex(extras.embeddingsProvider, (path) =>
-    extras.ide.readFile(path),
-  );
-  let vecResults = await lanceDbIndex.retrieve(
-    extras.fullInput,
+  const pipelineOptions: RetrievalPipelineOptions = {
+    nFinal,
     nRetrieve,
     tags,
+    embeddingsProvider: extras.embeddingsProvider,
+    reranker: extras.reranker,
     filterDirectory,
-  );
-  retrievalResults.push(...vecResults);
+    ide: extras.ide,
+    input: extras.fullInput,
+  };
 
-  // De-duplicate
-  let results: Chunk[] = deduplicateChunks(retrievalResults);
-
-  // Re-rank
-  if (useReranking && extras.reranker) {
-    let scores: number[] = await extras.reranker.rerank(
-      extras.fullInput,
-      results,
-    );
-
-    // Filter out low-scoring results
-    results = results.filter(
-      (_, i) => scores[i] >= RETRIEVAL_PARAMS.rerankThreshold,
-    );
-    scores = scores.filter(
-      (score) => score >= RETRIEVAL_PARAMS.rerankThreshold,
-    );
-
-    results.sort(
-      (a, b) => scores[results.indexOf(a)] - scores[results.indexOf(b)],
-    );
-    results = results.slice(-nFinal);
-  }
+  const pipeline = new pipelineType(pipelineOptions);
+  const results = await pipeline.run();
 
   if (results.length === 0) {
     throw new Error(
@@ -139,7 +88,9 @@ export async function retrieveContextItemsFromEmbeddings(
 
   return [
     ...results.map((r) => {
-      const name = `${getBasename(r.filepath)} (${r.startLine}-${r.endLine})`;
+      const name = `${getRelativePath(r.filepath, workspaceDirs)} (${
+        r.startLine
+      }-${r.endLine})`;
       const description = `${r.filepath} (${r.startLine}-${r.endLine})`;
       return {
         name,

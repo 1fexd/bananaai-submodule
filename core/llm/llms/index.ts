@@ -1,17 +1,22 @@
 import Handlebars from "handlebars";
+import { v4 as uuidv4 } from "uuid";
 import {
   BaseCompletionOptions,
+  IdeSettings,
   ILLM,
   LLMOptions,
   ModelDescription,
 } from "../../index.js";
-import { IdeSettings } from "../../protocol.js";
 import { DEFAULT_MAX_TOKENS } from "../constants.js";
 import { BaseLLM } from "../index.js";
 import Anthropic from "./Anthropic.js";
+import Azure from "./Azure.js";
 import Bedrock from "./Bedrock.js";
+import Cloudflare from "./Cloudflare.js";
 import Cohere from "./Cohere.js";
 import DeepInfra from "./DeepInfra.js";
+import Deepseek from "./Deepseek.js";
+import Fireworks from "./Fireworks.js";
 import Flowise from "./Flowise.js";
 import FreeTrial from "./FreeTrial.js";
 import Gemini from "./Gemini.js";
@@ -22,13 +27,14 @@ import LMStudio from "./LMStudio.js";
 import LlamaCpp from "./LlamaCpp.js";
 import Llamafile from "./Llamafile.js";
 import Mistral from "./Mistral.js";
+import Msty from "./Msty.js";
 import Ollama from "./Ollama.js";
 import OpenAI from "./OpenAI.js";
-import OpenAIFreeTrial from "./OpenAIFreeTrial.js";
 import Replicate from "./Replicate.js";
 import TextGenWebUI from "./TextGenWebUI.js";
 import Together from "./Together.js";
-import PearAIProxy from "./stubs/PearAIProxy.js";
+import WatsonX from "./WatsonX.js";
+import ContinueProxy from "./stubs/ContinueProxy.js";
 import PearAIServer from "./PearAIServer.js";
 
 function convertToLetter(num: number): string {
@@ -46,14 +52,14 @@ const getHandlebarsVars = (
 ): [string, { [key: string]: string }] => {
   const ast = Handlebars.parse(value);
 
-  let keysToFilepath: { [key: string]: string } = {};
+  const keysToFilepath: { [key: string]: string } = {};
   let keyIndex = 1;
-  for (let i in ast.body) {
+  for (const i in ast.body) {
     if (ast.body[i].type === "MustacheStatement") {
       const letter = convertToLetter(keyIndex);
       keysToFilepath[letter] = (ast.body[i] as any).path.original;
       value = value.replace(
-        new RegExp("{{\\s*" + (ast.body[i] as any).path.original + "\\s*}}"),
+        new RegExp(`{{\\s*${(ast.body[i] as any).path.original}\\s*}}`),
         `{{${letter}}}`,
       );
       keyIndex++;
@@ -66,7 +72,19 @@ export async function renderTemplatedString(
   template: string,
   readFile: (filepath: string) => Promise<string>,
   inputData: any,
+  helpers?: [string, Handlebars.HelperDelegate][],
 ): Promise<string> {
+  const promises: { [key: string]: Promise<string> } = {};
+  if (helpers) {
+    for (const [name, helper] of helpers) {
+      Handlebars.registerHelper(name, (...args) => {
+        const id = uuidv4();
+        promises[id] = helper(...args);
+        return `__${id}__`;
+      });
+    }
+  }
+
   const [newTemplate, vars] = getHandlebarsVars(template);
   const data: any = { ...inputData };
   for (const key in vars) {
@@ -74,7 +92,13 @@ export async function renderTemplatedString(
     data[key] = fileContents || (inputData[vars[key]] ?? vars[key]);
   }
   const templateFn = Handlebars.compile(newTemplate);
-  const final = templateFn(data);
+  let final = templateFn(data);
+
+  await Promise.all(Object.values(promises));
+  for (const id in promises) {
+    final = final.replace(`__${id}__`, await promises[id]);
+  }
+
   return final;
 }
 
@@ -96,10 +120,15 @@ const LLMs = [
   Mistral,
   Bedrock,
   DeepInfra,
-  OpenAIFreeTrial,
   Flowise,
   Groq,
-  PearAIProxy,
+  Fireworks,
+  ContinueProxy,
+  Cloudflare,
+  Deepseek,
+  Msty,
+  Azure,
+  WatsonX,
   PearAIServer,
 ];
 
@@ -143,7 +172,7 @@ export async function llmFromDescription(
     uniqueId,
   };
 
-  if (desc.provider === "pearai-proxy") {
+  if (desc.provider === "continue-proxy") {
     options.apiKey = ideSettings.userToken;
     if (ideSettings.remoteConfigServerUrl) {
       options.apiBase = new URL(
@@ -152,8 +181,6 @@ export async function llmFromDescription(
       ).toString();
     }
   }
-
-  
 
   return new cls(options);
 }

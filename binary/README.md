@@ -1,4 +1,4 @@
-# PearAI Core Binary
+# Continue Core Binary
 
 The purpose of this folder is to package Typescript code in a way that can be run from any IDE or platform. We first bundle with `esbuild` and then package into binaries with `pkg`.
 
@@ -26,3 +26,7 @@ The build process is otherwise defined entirely in `build.js`.
 - tree-sitter-wasms/
 
 (\*) = need to download for each platform manually
+
+## Debugging
+
+To debug the binary with IntelliJ, set `useTcp` to `true` in `CoreMessenger.kt`, and then in VS Code run the "Core Binary" debug script. Instead of starting a subprocess for the binary and communicating over stdin/stdout, the IntelliJ extension will connect over TCP to the server started from the VS Code window. You can place breakpoints anywhere in the `core` or `binary` folders.

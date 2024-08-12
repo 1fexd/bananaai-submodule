@@ -7,6 +7,7 @@ import {
   pruneLinesFromBottom,
   pruneLinesFromTop,
 } from "../llm/countTokens.js";
+import { ImportDefinitionsService } from "./ImportDefinitionsService.js";
 import { getAst, getTreePathAtCursor } from "./ast.js";
 import {
   AutocompleteLanguageInfo,
@@ -14,10 +15,11 @@ import {
   Typescript,
 } from "./languages.js";
 import {
-  AutocompleteSnippet,
   fillPromptWithSnippets,
+  getSymbolsForSnippet,
   rankSnippets,
   removeRangeFromSnippets,
+  type AutocompleteSnippet,
 } from "./ranking.js";
 import { RecentlyEditedRange, findMatchingRange } from "./recentlyEdited.js";
 
@@ -56,19 +58,28 @@ function shouldCompleteMultilineAst(
   return false;
 }
 
+function isMidlineCompletion(prefix: string, suffix: string): boolean {
+  return !suffix.startsWith("\n");
+}
+
 async function shouldCompleteMultiline(
   filepath: string,
   fullPrefix: string,
   fullSuffix: string,
   language: AutocompleteLanguageInfo,
 ): Promise<boolean> {
+  // Don't complete multi-line if you are mid-line
+  if (isMidlineCompletion(fullPrefix, fullSuffix)) {
+    return false;
+  }
+
   // Don't complete multi-line for single-line comments
   if (
     fullPrefix
       .split("\n")
       .slice(-1)[0]
       ?.trimStart()
-      .startsWith(language.comment)
+      .startsWith(language.singleLineComment)
   ) {
     return false;
   }
@@ -97,7 +108,7 @@ async function shouldCompleteMultiline(
 
   let completeMultiline = false;
   if (treePath) {
-    let cursorLine = fullPrefix.split("\n").length - 1;
+    const cursorLine = fullPrefix.split("\n").length - 1;
     completeMultiline = shouldCompleteMultilineAst(treePath, cursorLine);
   }
   return completeMultiline;
@@ -115,6 +126,7 @@ export async function constructAutocompletePrompt(
   recentlyEditedFiles: RangeInFileWithContents[],
   modelName: string,
   extraSnippets: AutocompleteSnippet[],
+  importDefinitionsService: ImportDefinitionsService,
 ): Promise<{
   prefix: string;
   suffix: string;
@@ -124,14 +136,14 @@ export async function constructAutocompletePrompt(
 }> {
   // Construct basic prefix
   const maxPrefixTokens = options.maxPromptTokens * options.prefixPercentage;
-  let prefix = pruneLinesFromTop(fullPrefix, maxPrefixTokens, modelName);
+  const prefix = pruneLinesFromTop(fullPrefix, maxPrefixTokens, modelName);
 
   // Construct suffix
   const maxSuffixTokens = Math.min(
     options.maxPromptTokens - countTokens(prefix, modelName),
     options.maxSuffixPercentage * options.maxPromptTokens,
   );
-  let suffix = pruneLinesFromBottom(fullSuffix, maxSuffixTokens, modelName);
+  const suffix = pruneLinesFromBottom(fullSuffix, maxSuffixTokens, modelName);
 
   // Find external snippets
   let snippets: AutocompleteSnippet[] = [];
@@ -178,6 +190,29 @@ export async function constructAutocompletePrompt(
           });
         }
       }
+    }
+
+    // Use imports
+    if (options.useImports) {
+      const importSnippets = [];
+      const fileInfo = importDefinitionsService.get(filepath);
+      if (fileInfo) {
+        const { imports } = fileInfo;
+        // Look for imports of any symbols around the current range
+        const textAroundCursor =
+          fullPrefix.split("\n").slice(-5).join("\n") +
+          fullSuffix.split("\n").slice(0, 3).join("\n");
+        const symbols = Array.from(
+          getSymbolsForSnippet(textAroundCursor),
+        ).filter((symbol) => !language.topLevelKeywords.includes(symbol));
+        for (const symbol of symbols) {
+          const rifs = imports[symbol];
+          if (Array.isArray(rifs)) {
+            importSnippets.push(...rifs);
+          }
+        }
+      }
+      snippets.push(...importSnippets);
     }
 
     // Filter out empty snippets and ones that are already in the prefix/suffix

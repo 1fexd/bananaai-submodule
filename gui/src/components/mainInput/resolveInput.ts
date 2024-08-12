@@ -6,10 +6,8 @@ import {
   MessagePart,
   RangeInFile,
 } from "core";
-import { stripImages } from "core/llm/countTokens";
-import { getBasename } from "core/util";
-import { ideRequest } from "../../util/ide";
-import { WebviewIde } from "../../util/webviewIde";
+import { stripImages } from "core/llm/images";
+import { IIdeMessenger } from "../../context/IdeMessenger";
 
 interface MentionAttrs {
   label: string;
@@ -28,6 +26,7 @@ interface MentionAttrs {
 async function resolveEditorContent(
   editorState: JSONContent,
   modifiers: InputModifiers,
+  ideMessenger: IIdeMessenger,
 ): Promise<[ContextItemWithId[], RangeInFile[], MessageContent]> {
   let parts: MessagePart[] = [];
   let contextItemAttrs: MentionAttrs[] = [];
@@ -42,6 +41,9 @@ async function resolveEditorContent(
       if (foundSlashCommand && typeof slashCommand === "undefined") {
         slashCommand = foundSlashCommand;
       }
+
+      contextItemAttrs.push(...ctxItems);
+
       if (text === "") {
         continue;
       }
@@ -51,11 +53,14 @@ async function resolveEditorContent(
       } else {
         parts.push({ type: "text", text });
       }
-      contextItemAttrs.push(...ctxItems);
     } else if (p.type === "codeBlock") {
       if (!p.attrs.item.editing) {
         const text =
-          "```" + p.attrs.item.name + "\n" + p.attrs.item.content + "\n```";
+          "```" +
+          p.attrs.item.description +
+          "\n" +
+          p.attrs.item.content +
+          "\n```";
         if (parts[parts.length - 1]?.type === "text") {
           parts[parts.length - 1].text += "\n" + text;
         } else {
@@ -93,45 +98,33 @@ async function resolveEditorContent(
   let contextItemsText = "";
   let contextItems: ContextItemWithId[] = [];
   for (const item of contextItemAttrs) {
-    if (item.itemType === "file") {
-      const ide = new WebviewIde();
-      // This is a quick way to resolve @file references
-      const basename = getBasename(item.id);
-      const rawContent = await ide.readFile(item.id);
-      const content = `\`\`\`title="${basename}"\n${rawContent}\n\`\`\`\n`;
-      contextItemsText += content;
-      contextItems.push({
-        name: basename,
-        description: item.id,
-        content,
-        id: {
-          providerTitle: "file",
-          itemId: item.id,
-        },
-      });
-    } else {
-      const data = {
-        name: item.itemType === "contextProvider" ? item.id : item.itemType,
-        query: item.query,
-        fullInput: stripImages(parts),
-        selectedCode,
-      };
-      const resolvedItems = await ideRequest("context/getContextItems", data);
-      contextItems.push(...resolvedItems);
-      for (const resolvedItem of resolvedItems) {
-        contextItemsText += resolvedItem.content + "\n\n";
-      }
+    const data = {
+      name: item.itemType === "contextProvider" ? item.id : item.itemType,
+      query: item.query,
+      fullInput: stripImages(parts),
+      selectedCode,
+    };
+    const resolvedItems = await ideMessenger.request(
+      "context/getContextItems",
+      data,
+    );
+    contextItems.push(...resolvedItems);
+    for (const resolvedItem of resolvedItems) {
+      contextItemsText += resolvedItem.content + "\n\n";
     }
   }
 
   // cmd+enter to use codebase
   if (modifiers.useCodebase) {
-    const codebaseItems = await ideRequest("context/getContextItems", {
-      name: "codebase",
-      query: "",
-      fullInput: stripImages(parts),
-      selectedCode,
-    });
+    const codebaseItems = await ideMessenger.request(
+      "context/getContextItems",
+      {
+        name: "codebase",
+        query: "",
+        fullInput: stripImages(parts),
+        selectedCode,
+      },
+    );
     contextItems.push(...codebaseItems);
     for (const codebaseItem of codebaseItems) {
       contextItemsText += codebaseItem.content + "\n\n";

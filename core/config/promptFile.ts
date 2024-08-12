@@ -1,15 +1,25 @@
+import Handlebars from "handlebars";
+import path from "path";
 import * as YAML from "yaml";
-import { IDE, SlashCommand } from "..";
-import { stripImages } from "../llm/countTokens";
-import { renderTemplatedString } from "../llm/llms";
-import { getBasename } from "../util";
+import type { IDE, SlashCommand } from "..";
+import { walkDir } from "../indexing/walkDir";
+import { stripImages } from "../llm/images";
+import { renderTemplatedString } from "../llm/llms/index";
+import { getBasename } from "../util/index";
+
+export const DEFAULT_PROMPTS_FOLDER = ".prompts";
 
 export async function getPromptFiles(
   ide: IDE,
   dir: string,
 ): Promise<{ path: string; content: string }[]> {
   try {
-    const paths = await ide.listWorkspaceContents(dir);
+    const exists = await ide.fileExists(dir);
+    if (!exists) {
+      return [];
+    }
+
+    const paths = await walkDir(dir, ide, { ignoreFiles: [] });
     const results = paths.map(async (path) => {
       const content = await ide.readFile(path);
       return { path, content };
@@ -19,6 +29,60 @@ export async function getPromptFiles(
     console.error(e);
     return [];
   }
+}
+
+const DEFAULT_PROMPT_FILE = `# This is an example ".prompt" file
+# It is used to define and reuse prompts within Continue
+# Continue will automatically create a slash command for each prompt in the .prompts folder
+# To learn more, see the full .prompt file reference: https://trypear.ai/features/prompt-files
+temperature: 0.0
+---
+{{{ diff }}}
+
+Give me feedback on the above changes. For each file, you should output a markdown section including the following:
+- If you found any problems, an h3 like "❌ <filename>"
+- If you didn't find any problems, an h3 like "✅ <filename>"
+- If you found any problems, add below a bullet point description of what you found, including a minimal code snippet explaining how to fix it
+- If you didn't find any problems, you don't need to add anything else
+
+Here is an example. The example is surrounded in backticks, but your response should not be:
+
+\`\`\`
+### ✅ <Filename1>
+
+### ❌ <Filename2>
+
+<Description>
+\`\`\`
+
+You should look primarily for the following types of issues, and only mention other problems if they are highly pressing.
+
+- console.logs that have been left after debugging
+- repeated code
+- algorithmic errors that could fail under edge cases
+- something that could be refactored
+
+Make sure to review ALL files that were changed, do not skip any.
+`;
+
+export async function createNewPromptFile(
+  ide: IDE,
+  promptPath: string | undefined,
+): Promise<void> {
+  const workspaceDirs = await ide.getWorkspaceDirs();
+  if (workspaceDirs.length === 0) {
+    throw new Error(
+      "No workspace directories found. Make sure you've opened a folder in your IDE.",
+    );
+  }
+  const promptFilePath = path.join(
+    workspaceDirs[0],
+    promptPath ?? DEFAULT_PROMPTS_FOLDER,
+    "new-prompt-file.prompt",
+  );
+
+  await ide.writeFile(promptFilePath, DEFAULT_PROMPT_FILE);
+  await ide.openFile(promptFilePath);
 }
 
 export function slashCommandFromPromptFile(
@@ -44,7 +108,16 @@ export function slashCommandFromPromptFile(
   return {
     name,
     description,
-    run: async function* ({ input, llm, history, ide }) {
+    run: async function* ({
+      input,
+      llm,
+      history,
+      ide,
+      config,
+      fetch,
+      selectedCode,
+      addContextItem,
+    }) {
       // Remove slash command prefix from input
       let userInput = input;
       if (userInput.startsWith(`/${name}`)) {
@@ -54,11 +127,49 @@ export function slashCommandFromPromptFile(
       }
 
       // Render prompt template
+      const helpers: [string, Handlebars.HelperDelegate][] | undefined =
+        config.contextProviders?.map((provider) => {
+          return [
+            provider.description.title,
+            async (context: any) => {
+              const items = await provider.getContextItems(context, {
+                config,
+                embeddingsProvider: config.embeddingsProvider,
+                fetch,
+                fullInput: userInput,
+                ide,
+                llm,
+                reranker: config.reranker,
+                selectedCode,
+              });
+              items.forEach((item) =>
+                addContextItem({
+                  ...item,
+                  id: {
+                    itemId: item.description,
+                    providerTitle: provider.description.title,
+                  },
+                }),
+              );
+              return items.map((item) => item.content).join("\n\n");
+            },
+          ];
+        });
+
+      // A few context providers that don't need to be in config.json to work in .prompt files
       const diff = await ide.getDiff();
+      const currentFilePath = await ide.getCurrentFile();
       const promptUserInput = await renderTemplatedString(
         prompt,
         ide.readFile.bind(ide),
-        { input: userInput, diff },
+        {
+          input: userInput,
+          diff,
+          currentFile: currentFilePath
+            ? await ide.readFile(currentFilePath)
+            : undefined,
+        },
+        helpers,
       );
 
       const messages = [...history];

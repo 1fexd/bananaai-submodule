@@ -1,4 +1,4 @@
-import { ModelProvider, TemplateType } from "../index.js";
+import { ModelCapability, ModelProvider, TemplateType } from "../index.js";
 import {
   anthropicTemplateMessages,
   chatmlTemplateMessages,
@@ -39,10 +39,11 @@ const PROVIDER_HANDLES_TEMPLATING: ModelProvider[] = [
   "openai",
   "ollama",
   "together",
+  "msty",
   "anthropic",
   "bedrock",
-  "pearai-proxy",
-  "pearai-server",
+  "continue-proxy",
+  "mistral",
 ];
 
 const PROVIDER_SUPPORTS_IMAGES: ModelProvider[] = [
@@ -50,32 +51,36 @@ const PROVIDER_SUPPORTS_IMAGES: ModelProvider[] = [
   "ollama",
   "gemini",
   "free-trial",
+  "msty",
   "anthropic",
   "bedrock",
-  "pearai-proxy",
-  "pearai-server",
+  "continue-proxy",
+  "pearai_server",
 ];
 
 const MODEL_SUPPORTS_IMAGES: string[] = [
   "llava",
   "gpt-4-turbo",
   "gpt-4o",
+  "gpt-4o-mini",
   "gpt-4-vision",
   "claude-3",
-  "claude-3-5",
   "gemini-ultra",
   "gemini-1.5-pro",
+  "gemini-1.5-flash",
   "sonnet",
   "opus",
   "haiku",
-  "pearai-latest"
+  "pearai-latest",
 ];
 
 function modelSupportsImages(
   provider: ModelProvider,
   model: string,
   title: string | undefined,
+  capabilities: ModelCapability | undefined
 ): boolean {
+  if (capabilities?.uploadImage !== undefined) return capabilities.uploadImage
   if (!PROVIDER_SUPPORTS_IMAGES.includes(provider)) {
     return false;
   }
@@ -95,7 +100,6 @@ const PARALLEL_PROVIDERS: ModelProvider[] = [
   "anthropic",
   "bedrock",
   "deepinfra",
-  "gemini",
   "gemini",
   "huggingface-inference-api",
   "huggingface-tgi",
@@ -175,6 +179,10 @@ function autodetectTemplateType(model: string): TemplateType | undefined {
 
   // Claude requests always sent through Messages API, so formatting not necessary
   if (lower.includes("claude")) {
+    return "none";
+  }
+
+  if (lower.includes("codestral")) {
     return "none";
   }
 
@@ -305,10 +313,12 @@ function autodetectPromptTemplates(
     editTemplate = null;
   } else if (templateType) {
     editTemplate = gptEditPrompt;
+  } else if (model.includes("codestral")) {
+    editTemplate = osModelsEditPrompt;
   }
 
   if (editTemplate !== null) {
-    templates["edit"] = editTemplate;
+    templates.edit = editTemplate;
   }
 
   return templates;
@@ -319,6 +329,5 @@ export {
   autodetectTemplateFunction,
   autodetectTemplateType,
   llmCanGenerateInParallel,
-  modelSupportsImages
+  modelSupportsImages,
 };
-

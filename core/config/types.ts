@@ -70,7 +70,7 @@ declare global {
     llmRequestHook?: (model: string, prompt: string) => any;
     apiKey?: string;
     apiBase?: string;
-    refreshToken?: string;
+  
     engine?: string;
     apiVersion?: string;
     apiType?: string;
@@ -292,7 +292,6 @@ declare global {
     llmRequestHook?: (model: string, prompt: string) => any;
     apiKey?: string;
     apiBase?: string;
-    refreshToken?: string;
   
     useLegacyCompletionsEndpoint?: boolean;
   
@@ -386,7 +385,6 @@ declare global {
       stackDepth: number,
     ): Promise<string[]>;
     getAvailableThreads(): Promise<Thread[]>;
-    listWorkspaceContents(directory?: string): Promise<string[]>;
     listFolders(): Promise<string[]>;
     getWorkspaceDirs(): Promise<string[]>;
     getWorkspaceConfigs(): Promise<ContinueRcJson[]>;
@@ -414,7 +412,6 @@ declare global {
     subprocess(command: string): Promise<[string, string]>;
     getProblems(filepath?: string | undefined): Promise<Problem[]>;
     getBranch(dir: string): Promise<string>;
-    getStats(directory: string): Promise<{ [path: string]: number }>;
     getTags(artifactId: string): Promise<IndexTag[]>;
     getRepoName(dir: string): Promise<string | undefined>;
   }
@@ -513,7 +510,9 @@ declare global {
     | "deepinfra"
     | "flowise"
     | "groq"
-    | "custom";
+    | "custom"
+    | "msty"
+    | "pearai_server";
   
   export type ModelName =
     | "AUTODETECT"
@@ -525,6 +524,7 @@ declare global {
     | "gpt-4-32k"
     | "gpt-4-turbo"
     | "gpt-4o"
+    | "gpt-4o-mini"
     | "gpt-4-turbo-preview"
     | "gpt-4-vision-preview"
     // Mistral
@@ -556,7 +556,6 @@ declare global {
     | "claude-2"
     | "claude-3-opus-20240229"
     | "claude-3-sonnet-20240229"
-    | "claude-3-5-sonnet-20240620"
     | "claude-3-haiku-20240307"
     | "claude-2.1"
     // Cohere
@@ -565,6 +564,9 @@ declare global {
     // Gemini
     | "gemini-pro"
     | "gemini-1.5-pro-latest"
+    | "gemini-1.5-pro"
+    | "gemini-1.5-flash-latest"
+    | "gemini-1.5-flash"
     // Mistral
     | "mistral-tiny"
     | "mistral-small"
@@ -575,7 +577,7 @@ declare global {
     | "starcoder-3b"
     | "starcoder2-3b"
     | "stable-code-3b"
-    | "pearai-latest";
+    | "pearai_model";
   
   export interface RequestOptions {
     timeout?: number;
@@ -640,6 +642,7 @@ declare global {
   }
   
   export type EmbeddingsProviderName =
+    | "huggingface-tei"
     | "transformers.js"
     | "ollama"
     | "openai"
@@ -648,8 +651,8 @@ declare global {
   
   export interface EmbedOptions {
     apiBase?: string;
-    apiKey?: string;
     refreshToken?: string;
+    apiKey?: string;
     model?: string;
     requestOptions?: RequestOptions;
   }
@@ -678,7 +681,7 @@ declare global {
   export interface TabAutocompleteOptions {
     disable: boolean;
     useCopyBuffer: boolean;
-    useSuffix: boolean;
+    useFileSuffix: boolean;
     maxPromptTokens: number;
     debounceDelay: number;
     maxSuffixPercentage: number;
@@ -711,7 +714,7 @@ declare global {
     inlineEdit?: string;
   }
   
-  interface ExperimantalConfig {
+  interface ExperimentalConfig {
     contextMenuPrompts?: ContextMenuConfig;
     modelRoles?: ModelRoles;
   }
@@ -734,7 +737,7 @@ declare global {
     tabAutocompleteOptions?: Partial<TabAutocompleteOptions>;
     ui?: ContinueUIConfig;
     reranker?: RerankerDescription;
-    experimental?: ExperimantalConfig;
+    experimental?: ExperimentalConfig;
   }
   
   export type ConfigMergeType = "merge" | "overwrite";
@@ -744,11 +747,11 @@ declare global {
   };
   
   export interface Config {
-    /** If set to true, PearAI will collect anonymous usage data to improve the product. If set to false, we will collect nothing. Read here to learn more: https://trypear.ai */
+    /** If set to true, Continue will collect anonymous usage data to improve the product. If set to false, we will collect nothing. Read here to learn more: https://trypear.ai/telemetry */
     allowAnonymousTelemetry?: boolean;
     /** Each entry in this array will originally be a ModelDescription, the same object from your config.json, but you may add CustomLLMs.
      * A CustomLLM requires you only to define an AsyncGenerator that calls the LLM and yields string updates. You can choose to define either \`streamCompletion\` or \`streamChat\` (or both).
-     * PearAI will do the rest of the work to construct prompt templates, handle context items, prune context, etc.
+     * Continue will do the rest of the work to construct prompt templates, handle context items, prune context, etc.
      */
     models: (CustomLLM | ModelDescription)[];
     /** A system message to be followed by all of your models */
@@ -760,18 +763,18 @@ declare global {
     /** The list of slash commands that will be available in the sidebar */
     slashCommands?: SlashCommand[];
     /** Each entry in this array will originally be a ContextProviderWithParams, the same object from your config.json, but you may add CustomContextProviders.
-     * A CustomContextProvider requires you only to define a title and getContextItems function. When you type '@title <query>', PearAI will call \`getContextItems(query)\`.
+     * A CustomContextProvider requires you only to define a title and getContextItems function. When you type '@title <query>', Continue will call \`getContextItems(query)\`.
      */
     contextProviders?: (CustomContextProvider | ContextProviderWithParams)[];
-    /** If set to true, PearAI will not index your codebase for retrieval */
+    /** If set to true, Continue will not index your codebase for retrieval */
     disableIndexing?: boolean;
-    /** If set to true, PearAI will not make extra requests to the LLM to generate a summary title of each session. */
+    /** If set to true, Continue will not make extra requests to the LLM to generate a summary title of each session. */
     disableSessionTitles?: boolean;
     /** An optional token to identify a user. Not used by Continue unless you write custom coniguration that requires such a token */
     userToken?: string;
-    /** The provider used to calculate embeddings. If left empty, PearAI will use transformers.js to calculate the embeddings with all-MiniLM-L6-v2 */
+    /** The provider used to calculate embeddings. If left empty, Continue will use transformers.js to calculate the embeddings with all-MiniLM-L6-v2 */
     embeddingsProvider?: EmbeddingsProviderDescription | EmbeddingsProvider;
-    /** The model that PearAI will use for tab autocompletions. */
+    /** The model that Continue will use for tab autocompletions. */
     tabAutocompleteModel?: CustomLLM | ModelDescription;
     /** Options for tab autocomplete */
     tabAutocompleteOptions?: Partial<TabAutocompleteOptions>;
@@ -780,7 +783,7 @@ declare global {
     /** Options for the reranker */
     reranker?: RerankerDescription | Reranker;
     /** Experimental configuration */
-    experimental?: ExperimantalConfig;
+    experimental?: ExperimentalConfig;
   }
   
   export interface ContinueConfig {
@@ -799,7 +802,7 @@ declare global {
     tabAutocompleteOptions?: Partial<TabAutocompleteOptions>;
     ui?: ContinueUIConfig;
     reranker?: Reranker;
-    experimental?: ExperimantalConfig;
+    experimental?: ExperimentalConfig;
   }
   
   export interface BrowserSerializedContinueConfig {
@@ -816,7 +819,7 @@ declare global {
     embeddingsProvider?: string;
     ui?: ContinueUIConfig;
     reranker?: RerankerDescription;
-    experimental?: ExperimantalConfig;
+    experimental?: ExperimentalConfig;
   }  
 }
 

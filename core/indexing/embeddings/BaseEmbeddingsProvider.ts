@@ -1,24 +1,79 @@
-import { EmbedOptions, EmbeddingsProvider, FetchFunction } from "../../index.js";
+import {
+  EmbedOptions,
+  EmbeddingsProvider,
+  EmbeddingsProviderName,
+  FetchFunction,
+} from "../../index.js";
 
-class BaseEmbeddingsProvider implements EmbeddingsProvider {
+import { MAX_CHUNK_SIZE } from "../../llm/constants.js";
+
+export interface IBaseEmbeddingsProvider extends EmbeddingsProvider {
   options: EmbedOptions;
   fetch: FetchFunction;
-  static defaultOptions: Partial<EmbedOptions> | undefined = undefined;
+  defaultOptions?: EmbedOptions;
+  maxBatchSize?: number;
+}
 
-  get id(): string {
-    throw new Error("Method not implemented.");
+abstract class BaseEmbeddingsProvider implements IBaseEmbeddingsProvider {
+  static maxBatchSize: IBaseEmbeddingsProvider["maxBatchSize"];
+  static defaultOptions: IBaseEmbeddingsProvider["defaultOptions"];
+
+  static providerName: EmbeddingsProviderName;
+  get providerName(): EmbeddingsProviderName {
+    return (this.constructor as typeof BaseEmbeddingsProvider).providerName;
   }
 
-  constructor(options: EmbedOptions, fetch: FetchFunction) {
+  options: IBaseEmbeddingsProvider["options"];
+  fetch: IBaseEmbeddingsProvider["fetch"];
+  id: IBaseEmbeddingsProvider["id"];
+
+  constructor(
+    options: IBaseEmbeddingsProvider["options"],
+    fetch: IBaseEmbeddingsProvider["fetch"],
+  ) {
+    // Overwrite default options with any runtime options
     this.options = {
       ...(this.constructor as typeof BaseEmbeddingsProvider).defaultOptions,
       ...options,
     };
     this.fetch = fetch;
+    // Include the `max_chunk_size` if it is not the default, since we need to create other indices for different chunk_sizes
+    if (this.maxChunkSize !== MAX_CHUNK_SIZE) {
+      this.id = `${this.constructor.name}::${this.options.model}::${this.maxChunkSize}`;
+    } else {
+      this.id = `${this.constructor.name}::${this.options.model}`;
+    }
+  }
+  defaultOptions?: EmbedOptions | undefined;
+  maxBatchSize?: number | undefined;
+
+  abstract embed(chunks: string[]): Promise<number[][]>;
+
+  get maxChunkSize(): number {
+    return this.options.maxChunkSize ?? MAX_CHUNK_SIZE;
   }
 
-  embed(chunks: string[]): Promise<number[][]> {
-    throw new Error("Method not implemented.");
+  static getBatchedChunks(chunks: string[]): string[][] {
+    if (!this.maxBatchSize) {
+      console.warn(
+        `${this.getBatchedChunks.name} should only be called if 'maxBatchSize' is defined`,
+      );
+
+      return [chunks];
+    }
+
+    if (chunks.length > this.maxBatchSize) {
+      return [chunks];
+    }
+
+    const batchedChunks = [];
+
+    for (let i = 0; i < chunks.length; i += this.maxBatchSize) {
+      const batchSizedChunk = chunks.slice(i, i + this.maxBatchSize);
+      batchedChunks.push(batchSizedChunk);
+    }
+
+    return batchedChunks;
   }
 }
 

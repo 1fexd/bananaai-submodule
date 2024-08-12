@@ -32,7 +32,7 @@ If you're getting a response from the LLM that doesn't seem to make sense, you c
 
 ### JetBrains
 
-Open `~/.continue/core.log`. The most recent logs are found at the bottom of the file.
+Open `~/.pearai/core.log`. The most recent logs are found at the bottom of the file.
 
 ## Networking Issues
 

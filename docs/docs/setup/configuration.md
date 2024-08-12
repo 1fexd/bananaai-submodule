@@ -118,7 +118,7 @@ function templateAlpacaMessages(msgs: ChatMessage[]): string {
 
 It can then be used like this:
 
-```typescript title="~/.continue/config.ts"
+```typescript title="~/.pearai/config.ts"
 function modifyConfig(config: Config): Config {
   const model = config.models.find(
     (model) => model.title === "My Alpaca Model",
@@ -138,7 +138,7 @@ You also have access to customize the prompt used in the '/edit' slash command. 
 
 To customize the prompt, use the `promptTemplates` property of any model, which is a dictionary, and set the "edit" key to a template string with Mustache syntax. The 'filePrefix', 'fileSuffix', 'codeToEdit', 'language', 'contextItems', and 'userInput' variables are available in the template. Here is an example of how it can be set in `config.ts`:
 
-```typescript title="~/.continue/config.ts"
+```typescript title="~/.pearai/config.ts"
 const codellamaEditPrompt = `\`\`\`{{{language}}}
 {{{codeToEdit}}}
 \`\`\`
@@ -160,7 +160,7 @@ You can find all existing templates for /edit in [`core/llm/templates/edit.ts`](
 
 If you are using an LLM API that isn't already [supported by Continue](./select-provider.md), and is not an OpenAI-compatible API, you'll need to define a `CustomLLM` object in `config.ts`. This object only requires one of (or both of) a `streamComplete` or `streamChat` function. Here is an example:
 
-```typescript title="~/.continue/config.ts"
+```typescript title="~/.pearai/config.ts"
 export function modifyConfig(config: Config): Config {
   config.models.push({
     options: {

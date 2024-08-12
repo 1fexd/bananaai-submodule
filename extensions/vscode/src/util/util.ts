@@ -1,9 +1,13 @@
-const os = require("os");
+const os = require("node:os");
 import * as vscode from "vscode";
 
 function charIsEscapedAtIndex(index: number, str: string): boolean {
-  if (index === 0) return false;
-  if (str[index - 1] !== "\\") return false;
+  if (index === 0) {
+    return false;
+  }
+  if (str[index - 1] !== "\\") {
+    return false;
+  }
   return !charIsEscapedAtIndex(index - 1, str);
 }
 
@@ -51,9 +55,9 @@ export function convertSingleToDoubleQuoteJSON(json: string): string {
   return newJson;
 }
 
-export function debounced(delay: number, fn: Function) {
+export function debounced(delay: number, fn: (...args: any[]) => void) {
   let timerId: NodeJS.Timeout | null;
-  return function (...args: any[]) {
+  return (...args: any[]) => {
     if (timerId) {
       clearTimeout(timerId);
     }
@@ -114,6 +118,6 @@ export function getMetaKeyName() {
 }
 
 export function getExtensionVersion(): string {
-  const extension = vscode.extensions.getExtension("pearai.pearai");
+  const extension = vscode.extensions.getExtension("pearai.continue");
   return extension?.packageJSON.version || "0.1.0";
 }

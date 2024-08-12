@@ -21,7 +21,7 @@ const config = {
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: "continuedev", // Usually your GitHub org/user name.
-  projectName: "continue", // Usually your repo name.
+  projectName: "pearai", // Usually your repo name.
 
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
@@ -153,7 +153,7 @@ const config = {
         // Public API key: it is safe to commit it
         apiKey: "6795de0f612eebe17018f8061a9ef18e",
 
-        indexName: "continue",
+        indexName: "pearai",
 
         // Optional: see doc section below
         contextualSearch: true,
