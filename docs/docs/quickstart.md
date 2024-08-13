@@ -1,6 +1,6 @@
 ---
 title: ⚡️ Quickstart
-description: Getting started with Continue
+description: Getting started with PearAI
 keywords: [quickstart, start, install, vscode, jetbrains]
 ---
 
@@ -8,7 +8,7 @@ keywords: [quickstart, start, install, vscode, jetbrains]
 
 ## VS Code
 
-1. Click `Install` on the **[PearAI extension in the Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=Continue.continue)**
+1. Click `Install` on the **[PearAI extension in the Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=Pearai.pearai)**
 
 2. This will open the PearAI extension page in VS Code, where you will need to click `Install` again
 
@@ -24,7 +24,7 @@ keywords: [quickstart, start, install, vscode, jetbrains]
 
 2. Select **Plugins** on the sidebar.
 
-3. Search for "Continue" in the marketplace and click `Install`. Once installed you'll see PearAI show up on the right toolbar:
+3. Search for "PearAI" in the marketplace and click `Install`. Once installed you'll see PearAI show up on the right toolbar:
 
 ![jetbrains-quickstart](/img/jetbrains-quickstart.png)
 

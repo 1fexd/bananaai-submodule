@@ -18,7 +18,7 @@ IPEX-LLM supports accelerated Ollama backend to be hosted on Intel GPU. Refer to
 }
 ```
 
-If you would like to reach the Ollama service from another machine, make sure you set or export the environment variable `OLLAMA_HOST=0.0.0.0` before executing the command `ollama serve`. Then, in the Continue configuration, set `'apiBase'` to correspond with the IP address / port of the remote machine. That is, Continue can be configured to be:
+If you would like to reach the Ollama service from another machine, make sure you set or export the environment variable `OLLAMA_HOST=0.0.0.0` before executing the command `ollama serve`. Then, in the PearAI configuration, set `'apiBase'` to correspond with the IP address / port of the remote machine. That is, PearAI can be configured to be:
 
 ```json title="~/.pearai/config.json"
 {
@@ -35,5 +35,5 @@ If you would like to reach the Ollama service from another machine, make sure yo
 
 :::tip
 - For more configuration options regarding completion or authentication, you could refer to [here](./ollama.md#completion-options) for Ollama provider.
-- If you would like to preload the model before your first conversation with that model in Continue, you could refer to [here](https://ipex-llm.readthedocs.io/en/latest/doc/LLM/Quickstart/continue_quickstart.html#pull-and-prepare-the-model) for more information.
+- If you would like to preload the model before your first conversation with that model in PearAI, you could refer to [here](https://ipex-llm.readthedocs.io/en/latest/doc/LLM/Quickstart/continue_quickstart.html#pull-and-prepare-the-model) for more information.
 :::

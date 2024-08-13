@@ -1,6 +1,6 @@
 # Cloudflare Workers AI
 
-Cloudflare Workers AI can be used for both chat and tab autocompletion in Continue. To setup Cloudflare Workers AI, add the following to your `config.json` file:
+Cloudflare Workers AI can be used for both chat and tab autocompletion in PearAI. To setup Cloudflare Workers AI, add the following to your `config.json` file:
 
 ```json title="~/.pearai/config.json"
 {

@@ -143,7 +143,7 @@ The `prompt` property supports templating with Handlebars syntax. You can use th
 
 If you want to go a step further than writing custom commands with natural language, you can write a custom function that returns the response. This requires using `config.ts` instead of `config.json`.
 
-To do this, push a new `SlashCommand` object to the `slashCommands` list. This object contains "name", the name that you will type to invoke the slash command, "description", the description seen in the dropdown menu, and "run". The `run` function is any async generator that should yield strings as you want them to be streamed to the UI. As an argument to the function, you have access to a `ContinueSDK` object with utilities such as access to certain information/actions within the IDE, the current language model, and a few other utilities. For example, here is a slash command that generates a commit message:
+To do this, push a new `SlashCommand` object to the `slashCommands` list. This object contains "name", the name that you will type to invoke the slash command, "description", the description seen in the dropdown menu, and "run". The `run` function is any async generator that should yield strings as you want them to be streamed to the UI. As an argument to the function, you have access to a `PearAISDK` object with utilities such as access to certain information/actions within the IDE, the current language model, and a few other utilities. For example, here is a slash command that generates a commit message:
 
 ```typescript title="~/.pearai/config.ts"
 export function modifyConfig(config: Config): Config {

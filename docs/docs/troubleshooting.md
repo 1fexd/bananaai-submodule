@@ -69,7 +69,7 @@ PearAI can be used in [code-server](https://coder.com/), but if you are running 
 
 ### VS Code
 
-We are constantly making fixes and improvements to Continue, but the latest changes remain in a "pre-release" version for roughly a week so that we can test their stability. If you are experiencing issues, you can try the pre-release by going to the PearAI extension page in VS Code and selecting "Switch to Pre-Release" as shown below.
+We are constantly making fixes and improvements to PearAI, but the latest changes remain in a "pre-release" version for roughly a week so that we can test their stability. If you are experiencing issues, you can try the pre-release by going to the PearAI extension page in VS Code and selecting "Switch to Pre-Release" as shown below.
 
 ![Pre-Release](../static/img/prerelease.png)
 
@@ -87,7 +87,7 @@ On JetBrains, the "pre-release" happens through their Early Access Program (EAP)
 
 If you've tried everything, reported an error, know that a previous version was working for you, and are waiting to hear back, you can try downloading an older version of the extension.
 
-For VS Code, All versions are hosted on the Open VSX Registry [here](https://open-vsx.org/extension/Continue/continue). Once you've downloaded the extension, which will be a .vsix file, you can install it manually by following the instructions [here](https://code.visualstudio.com/docs/editor/extension-gallery#_install-from-a-vsix).
+For VS Code, All versions are hosted on the Open VSX Registry [here](https://open-vsx.org/extension/PearAI/continue). Once you've downloaded the extension, which will be a .vsix file, you can install it manually by following the instructions [here](https://code.visualstudio.com/docs/editor/extension-gallery#_install-from-a-vsix).
 
 You can find older versions of the JetBrains extension on their [marketplace](https://plugins.jetbrains.com/plugin/22707-continue), which will walk you through installing from disk.
 

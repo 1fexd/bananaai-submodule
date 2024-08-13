@@ -1,6 +1,6 @@
 ---
 title: 🧑‍🎓 How to use PearAI
-description: Using LLMs as you code with Continue
+description: Using LLMs as you code with PearAI
 keywords: [how to, edit, refactor, boilerplate, context]
 ---
 

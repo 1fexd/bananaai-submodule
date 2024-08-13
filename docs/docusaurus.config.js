@@ -7,7 +7,7 @@ const darkCodeTheme = themes.dracula;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "Continue",
+  title: "PearAI",
   tagline:
     "the open-source library for accelerating software development with language models",
   favicon: "img/favicon.ico",
@@ -20,7 +20,7 @@ const config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: "continuedev", // Usually your GitHub org/user name.
+  organizationName: "trypearai", // Usually your GitHub org/user name.
   projectName: "pearai", // Usually your repo name.
 
   onBrokenLinks: "throw",
@@ -69,9 +69,9 @@ const config = {
       // Replace with your project's social card
       image: "https://trypear.ai/img/continue-social-card.png",
       navbar: {
-        title: "Continue",
+        title: "PearAI",
         logo: {
-          alt: "Continue Logo",
+          alt: "PearAI Logo",
           src: "img/logo.png",
           href: "https://trypear.ai",
         },
@@ -104,7 +104,7 @@ const config = {
             items: [
               {
                 label: "VS Code",
-                to: "https://marketplace.visualstudio.com/items?itemName=Continue.continue",
+                to: "https://marketplace.visualstudio.com/items?itemName=PearAI.continue",
               },
               {
                 label: "JetBrains",
@@ -139,7 +139,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Continue Dev, Inc.`,
+        copyright: `Copyright © ${new Date().getFullYear()} PearAI Dev, Inc.`,
       },
       prism: {
         theme: lightCodeTheme,

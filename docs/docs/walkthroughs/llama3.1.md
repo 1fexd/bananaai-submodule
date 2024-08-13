@@ -1,14 +1,14 @@
 ---
-title: Using Llama 3.1 with Continue
-description: How to use Llama 3.1 with Continue
+title: Using Llama 3.1 with PearAI
+description: How to use Llama 3.1 with PearAI
 keywords: [llama, meta, togetherai, ollama, replicate]
 ---
 
-# Using Llama 3.1 with Continue
+# Using Llama 3.1 with PearAI
 
-Continue makes it easy to code with the latest open-source models, including the entire Llama 3.1 family of models.
+PearAI makes it easy to code with the latest open-source models, including the entire Llama 3.1 family of models.
 
-If you haven't already installed Continue, you can do that [here for VS Code](https://marketplace.visualstudio.com/items?itemName=Continue.continue) or [here for JetBrains](https://plugins.jetbrains.com/plugin/22707-continue). For more general information on customizing Continue, read [our customization docs](../customization/overview.md).
+If you haven't already installed PearAI, you can do that [here for VS Code](https://marketplace.visualstudio.com/items?itemName=PearAI.continue) or [here for JetBrains](https://plugins.jetbrains.com/plugin/22707-continue). For more general information on customizing PearAI, read [our customization docs](../customization/overview.md).
 
 Below we share some of the easiest ways to get up and running, depending on your use-case.
 
@@ -18,7 +18,7 @@ Ollama is the fastest way to get up and running with local language models. We r
 
 1. Download Ollama [here](https://ollama.ai/) (it should walk you through the rest of these steps)
 2. Open a terminal and run `ollama run llama3.1-8b`
-3. Change your Continue config file like this:
+3. Change your PearAI config file like this:
 
 ```json title="~/.pearai/config.json"
 {
@@ -37,7 +37,7 @@ Ollama is the fastest way to get up and running with local language models. We r
 Groq provides the fastest available inference for open-source language models, including the entire Llama 3.1 family.
 
 1. Obtain an API key [here](https://console.groq.com/keys)
-2. Update your Continue config file like this:
+2. Update your PearAI config file like this:
 
 ```json title="~/.pearai/config.json"
 {
@@ -58,7 +58,7 @@ Together AI provides fast and reliable inference of open-source models. You'll b
 
 1. Create an account [here](https://api.together.xyz/signup)
 2. Copy your API key that appears on the welcome screen
-3. Update your Continue config file like this:
+3. Update your PearAI config file like this:
 
 ```json title="~/.pearai/config.json"
 {
@@ -78,7 +78,7 @@ Together AI provides fast and reliable inference of open-source models. You'll b
 Replicate makes it easy to host and run open-source AI with an API.
 
 1. Get your Replicate API key [here](https://replicate.ai/)
-2. Change your Continue config file like this:
+2. Change your PearAI config file like this:
 
 ```json title="~/.pearai/config.json"
 {
