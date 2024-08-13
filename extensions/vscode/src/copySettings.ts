@@ -3,9 +3,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 
-const pearAISettingsDir = path.join(os.homedir(), '.pearai-dev');
+const pearAISettingsDir = path.join(os.homedir(), '.pearai');
 const firstLaunchFlag = path.join(pearAISettingsDir, 'firstLaunch.flag');
-const pearAIDevExtensionsDir = path.join(os.homedir(), '.pearai-dev', 'extensions');
+const pearAIDevExtensionsDir = path.join(os.homedir(), '.pearai', 'extensions');
 
 function getPearAISettingsDir() {
     const platform = process.platform;
