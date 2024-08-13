@@ -1,5 +1,5 @@
 {
-  "name": "@pearaidev/fetch",
+  "name": "@continuedev/fetch",
   "version": "1.0.3",
   "description": "",
   "main": "dist/index.js",
@@ -11,7 +11,7 @@
   },
   "author": "PearAI",  "license": "EE",
   "dependencies": {
-    "@pearaidev/config-types": "^1.0.5",
+    "@continuedev/config-types": "^1.0.5",
     "follow-redirects": "^1.15.6",
     "http-proxy-agent": "^7.0.2",
     "https-proxy-agent": "^7.0.5",

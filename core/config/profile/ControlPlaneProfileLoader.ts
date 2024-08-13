@@ -1,4 +1,4 @@
-import { ConfigJson } from "@pearaidev/config-types";
+import { ConfigJson } from "@continuedev/config-types";
 import { ControlPlaneClient } from "../../control-plane/client.js";
 import {
   ContinueConfig,

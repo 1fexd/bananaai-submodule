@@ -1,4 +1,4 @@
-import { RequestOptions } from "@pearaidev/config-types/src/index.js";
+import { RequestOptions } from "@continuedev/config-types/src/index.js";
 import * as followRedirects from "follow-redirects";
 import { HttpProxyAgent } from "http-proxy-agent";
 import { globalAgent } from "https";

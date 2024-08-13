@@ -1,4 +1,4 @@
-import { Analytics } from "@pearaidev/config-types";
+import { Analytics } from "@continuedev/config-types";
 import os from "node:os";
 import ContinueProxyAnalyticsProvider from "./analytics/ContinueProxyAnalyticsProvider.js";
 import { IAnalyticsProvider } from "./analytics/IAnalyticsProvider.js";

@@ -1,4 +1,4 @@
-import { ConfigJson } from "@pearaidev/config-types";
+import { ConfigJson } from "@continuedev/config-types";
 import fetch, { RequestInit, Response } from "node-fetch";
 import { ModelDescription } from "../index.js";
 

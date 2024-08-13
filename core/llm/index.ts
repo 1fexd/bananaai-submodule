@@ -1,4 +1,4 @@
-import { findLlmInfo } from "@pearaidev/llm-info";
+import { findLlmInfo } from "@continuedev/llm-info";
 import Handlebars from "handlebars";
 import {
   ChatMessage,

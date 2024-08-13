@@ -1,4 +1,4 @@
-import { Analytics } from "@pearaidev/config-types";
+import { Analytics } from "@continuedev/config-types";
 import net from "node:net";
 import { IAnalyticsProvider } from "./IAnalyticsProvider.js";
 

@@ -1,4 +1,4 @@
-import { Analytics } from "@pearaidev/config-types";
+import { Analytics } from "@continuedev/config-types";
 import { IAnalyticsProvider } from "./IAnalyticsProvider.js";
 
 export default class PostHogAnalyticsProvider implements IAnalyticsProvider {

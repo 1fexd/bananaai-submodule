@@ -1,4 +1,4 @@
-import { Analytics } from "@pearaidev/config-types";
+import { Analytics } from "@continuedev/config-types";
 
 export interface AnalyticsMetadata {
   extensionVersion: string;

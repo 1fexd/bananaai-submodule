@@ -1,4 +1,4 @@
-import { Analytics } from "@pearaidev/config-types";
+import { Analytics } from "@continuedev/config-types";
 import fetch from "node-fetch";
 import { CONTROL_PLANE_URL } from "../client.js";
 import { IAnalyticsProvider } from "./IAnalyticsProvider.js";

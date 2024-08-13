@@ -1,5 +1,5 @@
 {
-  "name": "@pearaidev/core",
+  "name": "@continuedev/core",
   "version": "1.0.13",
   "description": "The PearAI Core contains functionality that can be shared across web, VS Code, or Node.js",
   "scripts": {
@@ -40,8 +40,8 @@
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.620.1",
     "@aws-sdk/credential-providers": "^3.620.1",
-    "@pearaidev/config-types": "^1.0.10",
-    "@pearaidev/llm-info": "^1.0.1",
+    "@continuedev/config-types": "^1.0.10",
+    "@continuedev/llm-info": "^1.0.1",
     "@mozilla/readability": "^0.5.0",
     "@octokit/rest": "^20.0.2",
     "@supabase/supabase-js": "^2.45.1",

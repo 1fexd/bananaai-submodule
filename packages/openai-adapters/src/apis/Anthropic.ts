@@ -1,4 +1,4 @@
-import { streamSse } from "@pearaidev/fetch";
+import { streamSse } from "@continuedev/fetch";
 import fetch from "node-fetch";
 import { OpenAI } from "openai/index.mjs";
 import {

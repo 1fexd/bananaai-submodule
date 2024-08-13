@@ -1,4 +1,4 @@
-import { streamSse } from "@pearaidev/fetch";
+import { streamSse } from "@continuedev/fetch";
 import fetch from "node-fetch";
 import { ChatCompletionChunk } from "openai/resources/index.mjs";
 import { LlmApiConfig } from "../index.js";

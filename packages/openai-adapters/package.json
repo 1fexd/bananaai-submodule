@@ -1,5 +1,5 @@
 {
-  "name": "@pearaidev/openai-adapters",
+  "name": "@continuedev/openai-adapters",
   "version": "1.0.8",
   "description": "",
   "main": "dist/index.js",
@@ -12,8 +12,8 @@
   "author": "PearAI",  "license": "EE",
   "dependencies": {
     "@azure/openai": "^1.0.0-beta.12",
-    "@pearaidev/config-types": "^1.0.5",
-    "@pearaidev/fetch": "^1.0.3",
+    "@continuedev/config-types": "^1.0.5",
+    "@continuedev/fetch": "^1.0.3",
     "node-fetch": "^3.3.2",
     "openai": "^4.52.5"
   },
