@@ -1,15 +1,10 @@
-# 👋 Welcome to PearAI
+# 🍐 Welcome to PearAI
 
-Welcome! Select a model on the right side to get started. 
+Welcome to PearAI, your AI code editor! Select a model on the right side to get started. 
 
-**If you want to take a quick tutorial on what PearAI can do you can head over to <span style="font-size: 1.2em;">[tutorial.py](../pearai_tutorial.py)</span>.**
-
-
-If you want to skip the tutorial you can just start coding immediately - Happy Coding!
+**For a quick tutorial on what PearAI can do, open <span style="font-size: 1.2em;">[tutorial.py](../pearai_tutorial.py)</span>.**
 
 ## 🔑 Important Shortcuts
-
-> If you'd prefer different keys, these shortcuts can be customized in PearAI settings.
 
 | Description                        | Keybinds                                    |
 |------------------------------------|---------------------------------------------|
@@ -21,3 +16,5 @@ If you want to skip the tutorial you can just start coding immediately - Happy C
 | Bring Latest Terminal Error to Chat| <kbd>Cmd/Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> |
 | Toggle History                     | <kbd>Cmd/Ctrl</kbd> + <kbd>O</kbd>          |
 | Go To Previous Chat                | <kbd>Cmd/Ctrl</kbd> + <kbd>0</kbd>          |
+
+> If you'd prefer different keys, these shortcuts can be customized in PearAI settings.
