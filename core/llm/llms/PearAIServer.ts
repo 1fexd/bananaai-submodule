@@ -95,8 +95,6 @@ class PearAIServer extends BaseLLM {
   ): AsyncGenerator<ChatMessage> {
     const args = this._convertArgs(this.collectArgs(options));
 
-    console.log("IMHDERIJFIJEFIJIJE")
-
     await this._countTokens(
       messages.map((m) => m.content).join("\n"),
       args.model,
@@ -172,11 +170,13 @@ class PearAIServer extends BaseLLM {
       }
 
       if (value.content) {
+        let content = value.content.replaceAll("<|im_end|>", " ");
+        content = value.content.replaceAll("<|im_start|> ", "\n");
         yield {
           role: "assistant",
-          content: value.content,
+          content: content,
         };
-        completion += value.content;
+        completion += content;
       }
     }
     this._countTokens(completion, args.model, false);
