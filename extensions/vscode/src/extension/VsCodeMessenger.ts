@@ -117,6 +117,12 @@ export class VsCodeMessenger {
     this.onWebview("closeChat", (msg) => {
       vscode.commands.executeCommand("pearai.closeChat");
     });
+    this.onWebview("openHistory", (msg) => {
+      vscode.commands.executeCommand("pearai.viewHistory");
+    });
+    this.onWebview("appendSelected", (msg) => {
+      vscode.commands.executeCommand("pearai.focusContinueInputWithoutClear");
+    });
     // History
     this.onWebview("saveFile", async (msg) => {
       return await ide.saveFile(msg.data.filepath);
