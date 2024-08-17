@@ -71,7 +71,7 @@ const MODEL_SUPPORTS_IMAGES: string[] = [
   "sonnet",
   "opus",
   "haiku",
-  "pearai-latest",
+  "pearai_model",
 ];
 
 function modelSupportsImages(

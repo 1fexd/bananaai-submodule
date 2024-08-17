@@ -711,6 +711,11 @@ const commandsMap: (
         ),
       );
     },
+    "pearai.logout": async () => {
+      await extensionContext.secrets.delete("pearai-token");
+      await extensionContext.secrets.delete("pearai-refresh");
+      vscode.window.showInformationMessage("PearAI: Successfully logged out!");
+    },
     "pearai.updateUserAuth": async (data: {
       accessToken: string;
       refreshToken: string;

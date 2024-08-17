@@ -16,7 +16,7 @@ class Calculator {
   multiply(number) {
     this.result *= number;
     return this;
-    sadfsf}
+    }
   }
 
   divide(number) {
