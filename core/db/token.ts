@@ -2,7 +2,7 @@ import { createClient, SupabaseClient, Session } from '@supabase/supabase-js';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
 
 const supabasePublicUrl: string = 'https://wmqwxxjpjphbspkcxtjt.supabase.co';
-const supabasePublicKey: string = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtcXd4eGpwanBoYnNwa2N4dGp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTc5NzM2MzUsImV4cCI6MjAzMzU0OTYzNX0.wasgwu6xzGioGJ1MGNjtGBc0SNWEZq9yII4bioSF_f4';
+const supabasePublicKey: string = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtcXd4eGpwanBoYnNwa2N4dGp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjQxOTYyMDQsImV4cCI6MjAzOTc3MjIwNH0.YE01nW2o31wjAHoay1OcIbyeYdfqzBWJuyi3AWtWOJY';
 const supabase: SupabaseClient = createClient(supabasePublicUrl, supabasePublicKey);
 
 interface DecodedToken extends JwtPayload {
@@ -16,7 +16,7 @@ function isTokenExpired(token: string): boolean {
 }
 
 export async function checkTokens(
-  accessToken: string | undefined, 
+  accessToken: string | undefined,
   refreshToken: string | undefined
 ): Promise<{ accessToken: string, refreshToken: string }> {
 
