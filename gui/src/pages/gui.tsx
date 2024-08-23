@@ -543,7 +543,7 @@ function GUI() {
                 }}
                 className="mr-auto"
               >
-                New Session ({getMetaKeyLabel()} {isJetBrains() ? "J" : "L"})
+                New Session ({getMetaKeyLabel()} ⇧ {isJetBrains() ? "J" : "L"})
               </NewSessionButton>{" "}
             </div>
           ) : (
