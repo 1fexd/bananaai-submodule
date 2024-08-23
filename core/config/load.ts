@@ -546,15 +546,18 @@ function getTarget() {
 }
 
 function escapeSpacesInPath(p: string): string {
-  return p.split("").map(char => {
-    if (char === " ") {
-      return "\\ ";
-    } else if (char === "\\") {
-      return "\\\\";
-    } else {
-      return char;
-    }
-  }).join("");
+  return p
+    .split("")
+    .map((char) => {
+      if (char === " ") {
+        return "\\ ";
+      } else if (char === "\\") {
+        return "\\\\";
+      } else {
+        return char;
+      }
+    })
+    .join("");
 }
 
 async function buildConfigTs() {
