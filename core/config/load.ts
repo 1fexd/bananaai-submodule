@@ -71,7 +71,7 @@ function resolveSerializedConfig(filepath: string): SerializedContinueConfig {
   // Replace "pearai-server" with "pearai_server" at the beginning
   // This is to make v0.0.3 backwards compatible with v0.0.2
   content = content.replace(/"pearai-server"/g, '"pearai_server"');
-  
+
   const config = JSONC.parse(content) as unknown as SerializedContinueConfig;
   if (config.env && Array.isArray(config.env)) {
     const env = {
@@ -358,6 +358,16 @@ async function intermediateToFinalConfig(
               config.systemMessage,
             );
 
+          if (llm instanceof PearAIServer) {
+            llm.getCredentials = async () => {
+              return await ide.getPearAuth();
+            };
+
+            llm.setCredentials = async (auth: PearAuth) => {
+              await ide.updatePearCredentials(auth);
+            };
+          }
+
             // if (llm?.providerName === "free-trial") {
             //   if (!allowFreeTrial) {
             //     // This shouldn't happen
@@ -475,11 +485,12 @@ function finalToBrowserConfig(
   return {
     allowAnonymousTelemetry: final.allowAnonymousTelemetry,
     models: final.models.map((m) => ({
+      title: m.title ?? m.model,
       provider: m.providerName,
       model: m.model,
-      title: m.title ?? m.model,
       apiKey: m.apiKey,
       apiBase: m.apiBase,
+      refreshToken: m.refreshToken,
       contextLength: m.contextLength,
       template: m.template,
       completionOptions: m.completionOptions,
