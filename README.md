@@ -9,33 +9,20 @@ This is the source code for the bulk of PearAI's functionality, which is bundled
 
 ### Easily understand code sections 🤔
 
-![understand](docs/static/img/understand.gif)
+![understand](docs/static/img/pearai-CMD+L2.gif)
 
 VS Code: `cmd+L` (MacOS) / `ctrl+L` (Windows)
 
-### Tab to autocomplete code suggestions ✨
-
-![autocomplete](docs/static/img/autocomplete.gif)
-
-VS Code: `tab` (MacOS) / `tab` (Windows)
-
 ### Refactor functions where you are coding 🛠️
 
-![inline](docs/static/img/inline.gif)
+![refactor](docs/static/img/pearai-CMD+I.gif)
 
 VS Code: `cmd+I` (MacOS) / `ctrl+I` (Windows)
 
-### Ask questions about your codebase ❓
+### Ask questions by mentioning a file 📚
 
-![codebase](docs/static/img/codebase.gif)
-
-VS Code: `cmd+enter` (MacOS) / `ctrl+enter` (Windows)
-
-### Quickly use documentation as context 📚
-
-![docs](docs/static/img/docs.gif)
-
-VS Code: `@docs` (MacOS) / `@docs` (Windows)
+<!-- Specific width to match other gifs -->
+<img src="docs/static/img/pearai-@file.gif" alt="file" style="width: 1033px;">
 
 ## License
 
