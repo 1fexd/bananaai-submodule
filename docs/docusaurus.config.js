@@ -72,8 +72,9 @@ const config = {
         title: "PearAI",
         logo: {
           alt: "PearAI Logo",
-          src: "img/logo.png",
+          src: "img/logo-dark.png",
           href: "https://trypear.ai",
+          srcDark: "img/logo.png",
         },
         items: [
           {
@@ -86,13 +87,13 @@ const config = {
             to: "https://github.com/trypear/pearai-app",
             label: "GitHub",
             position: "right",
-            className: 'github-navbar',
+            className: "github-navbar",
           },
           {
-            to: "https://discord.gg/vapESyrFmJ",
+            to: "https://discord.gg/7QMraJUsQt",
             label: "Discord",
             position: "right",
-            className: 'discord-navbar',
+            className: "discord-navbar",
           },
         ],
       },
@@ -117,7 +118,7 @@ const config = {
             items: [
               {
                 label: "Discord",
-                to: "https://discord.gg/vapESyrFmJ",
+                to: "https://discord.gg/7QMraJUsQt",
               },
               {
                 label: "GitHub",
@@ -134,7 +135,7 @@ const config = {
               },
               {
                 label: "LinkedIn",
-                to: "https://linkedin.com/company/continuedev",
+                to: "https://linkedin.com/company/trypearai",
               },
             ],
           },
