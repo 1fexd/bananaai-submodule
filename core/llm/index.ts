@@ -99,6 +99,7 @@ export abstract class BaseLLM implements ILLM {
   apiBase?: string;
   capabilities?: ModelCapability
   refreshToken?: string;
+  isDefault?: boolean | undefined;
 
   engine?: string;
   apiVersion?: string;
@@ -135,7 +136,7 @@ export abstract class BaseLLM implements ILLM {
 
     const templateType =
       options.template ?? autodetectTemplateType(options.model);
-
+    this.isDefault = options.isDefault;
     this.title = options.title;
     this.uniqueId = options.uniqueId ?? "None";
     this.systemMessage = options.systemMessage;
