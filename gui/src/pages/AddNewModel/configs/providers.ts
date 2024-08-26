@@ -61,7 +61,7 @@ export const providers: Partial<Record<ModelProvider, ProviderInfo>> = {
     provider: "pearai_server",
     refPage: "pearai_server",
     description:
-      "Use PearAI's hosted services for convenient, fully-managed integration, with the current best-in-market language models.",
+      "Enjoy effortless integration and lower your costs with our reliable hosted services.",
     icon: "pearai.png",
     tags: [ModelProviderTags.Recommended, ModelProviderTags.Hosted],
     packages: [models.pearai_model],
