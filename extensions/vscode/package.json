@@ -388,8 +388,8 @@
       },
       {
         "command": "pearai.resizeAuxiliaryBarWidth",
-        "mac": "cmd+[",
-        "key": "ctrl+["
+        "mac": "cmd+\\",
+        "key": "ctrl+\\"
       },
       {
         "command": "pearai.viewHistory",
