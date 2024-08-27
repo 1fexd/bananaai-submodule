@@ -393,8 +393,8 @@
       },
       {
         "command": "pearai.viewHistory",
-        "mac": "cmd+o",
-        "key": "ctrl+o"
+        "mac": "cmd+h",
+        "key": "ctrl+h"
       }
     ],
     "submenus": [
