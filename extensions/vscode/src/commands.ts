@@ -268,7 +268,7 @@ const commandsMap: (
 
       addCodeToContextFromRange(range, sidebar.webviewProtocol, prompt);
 
-      vscode.commands.executeCommand("pearai.continueGUIView.focus");
+      vscode.commands.executeCommand("pearai.focusContinueInput")
     },
     // Passthrough for telemetry purposes
     "pearai.defaultQuickAction": async (args: QuickEditShowParams) => {
