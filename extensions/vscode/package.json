@@ -91,7 +91,7 @@
         "pearai.enableTabAutocomplete": {
           "type": "boolean",
           "default": true,
-          "markdownDescription": "Enable PearAI's tab autocomplete feature. Read our walkthrough to learn about configuration and how to share feedback: [pearai.dev › Walkthrough: Tab Autocomplete (beta)](https://trypear.ai/features/tab-autocomplete)"
+          "markdownDescription": "Enable PearAI's tab autocomplete feature. Read our walkthrough to learn about configuration and how to share feedback: [pearai.dev › Walkthrough: Tab Autocomplete (beta)](https://trypear.ai/docs/tab-autocomplete)"
         },
         "pearai.pauseTabAutocompleteOnBattery": {
           "type": "boolean",

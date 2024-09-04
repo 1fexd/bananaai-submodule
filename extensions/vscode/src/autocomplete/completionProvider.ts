@@ -35,7 +35,7 @@ export class ContinueCompletionProvider
       if (val === "Documentation") {
         vscode.env.openExternal(
           vscode.Uri.parse(
-            "https://trypear.ai/features/tab-autocomplete",
+            "https://trypear.ai/docs/tab-autocomplete",
           ),
         );
       } else if (val === "Download Ollama") {
