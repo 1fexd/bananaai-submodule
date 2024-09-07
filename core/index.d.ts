@@ -443,7 +443,7 @@ export interface IdeSettings {
 }
 
 export interface IDE {
-  getPearAuth(): Promise<PearAuth | undefined>;
+  getPearAuth(): Promise<PearAuth>;
   updatePearCredentials(auth: PearAuth): Promise<void>;
   authenticatePear(): Promise<void>;
   getIdeInfo(): Promise<IdeInfo>;
@@ -769,7 +769,7 @@ export type EmbeddingsProviderName =
   | "free-trial"
   | "gemini"
   | "continue-proxy"
-  | "deepinfra"
+  | "deepinfra";
 
 export interface EmbedOptions {
   apiBase?: string;
