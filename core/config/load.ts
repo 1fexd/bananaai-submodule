@@ -617,7 +617,7 @@ function enforceDefaultModels(config: SerializedContinueConfig): void {
   });
 }
 
-function addCustomCommands(config: SerializedContinueConfig): void {
+function addDefaultCustomCommands(config: SerializedContinueConfig): void {
   const defaultCommands = defaultCustomCommands;
   defaultCommands.forEach(defaultCommand => {
     if (!config.customCommands) {
@@ -645,11 +645,12 @@ async function loadFullConfigNode(
     overrideConfigJson,
   );
 
-  // Convert serialized to intermediate config
-  let intermediate = await serializedToIntermediateConfig(serialized, ide);
   // check and enforce default models
   enforceDefaultModels(serialized);
-  addCustomCommands(serialized);
+  addDefaultCustomCommands(serialized);
+
+  // Convert serialized to intermediate config
+  let intermediate = await serializedToIntermediateConfig(serialized, ide);
 
   // Apply config.ts to modify intermediate config
   const configJsContents = await buildConfigTs();

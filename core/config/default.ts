@@ -1,4 +1,3 @@
-// import { CustomCommand } from "@continuedev/config-types";
 import {
   ContextProviderWithParams,
   ModelDescription,
@@ -73,21 +72,6 @@ export const defaultSlashCommandsVscode: SlashCommandDescription[] = [
   },
 ];
 
-export const defaultCustomCommands: CustomCommand[] = [
-  {
-    name: "test",
-    prompt:
-      "{{{ input }}}\n\nWrite a comprehensive set of unit tests for the selected code. It should setup, run tests that check for correctness including important edge cases, and teardown. Ensure that the tests are complete and sophisticated. Give the tests just as chat output, don't edit any file.",
-    description: "Write unit tests for highlighted code",
-  },
-  {
-    name: "leetcode",
-    description: "Learn when doing leetcode. Usage: `/leetcode [LINK_TO_PROBLEM] @[LEETCODE_FILE_NAME]`",
-    prompt: "{{{ input }}}\n\nPlease analyze my attempt and provide feedback on a conceptual level, that is digestible. Remember than I want to Learn, as I am preparing for interviews. \n\nExplain what I did wrong or could improve, along with specific parts to my code I have to change. Don't tell me exactly what i need to change, show me problematic parts in a hinting manner. Then, tell me that I can ask you for more specific guidance the actual code changes to make."
-
-  },
-]
-
 export const defaultSlashCommandsJetBrains = [
   {
     name: "edit",
@@ -148,6 +132,21 @@ export const defaultConfig: SerializedContinueConfig = {
   contextProviders: defaultContextProvidersVsCode,
   slashCommands: defaultSlashCommandsVscode,
 };
+
+export const defaultCustomCommands: CustomCommand[] = [
+  {
+    name: "test",
+    prompt:
+      "{{{ input }}}\n\nWrite a comprehensive set of unit tests for the selected code. It should setup, run tests that check for correctness including important edge cases, and teardown. Ensure that the tests are complete and sophisticated. Give the tests just as chat output, don't edit any file.",
+    description: "Write unit tests for highlighted code",
+  },
+  {
+    name: "leetcode",
+    description: "Learn when doing leetcode. Usage: `/leetcode [LINK_TO_PROBLEM] @[LEETCODE_FILE_NAME]`",
+    prompt: "{{{ input }}}\n\nPlease analyze my attempt and provide feedback on a conceptual level, that is digestible. Remember than I want to Learn, as I am preparing for interviews. \n\nExplain what I did wrong or could improve, along with specific parts to my code I have to change. Don't tell me exactly what i need to change, show me problematic parts in a hinting manner. Then, tell me that I can ask you for more specific guidance the actual code changes to make."
+
+  },
+];
 
 export const defaultConfigJetBrains: SerializedContinueConfig = {
   models: FREE_TRIAL_MODELS,
