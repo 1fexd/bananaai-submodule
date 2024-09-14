@@ -58,6 +58,7 @@ import {
   defaultContextProvidersVsCode,
   defaultSlashCommandsJetBrains,
   defaultSlashCommandsVscode,
+  defaultCustomCommands,
 } from "./default.js";
 import {
   DEFAULT_PROMPTS_FOLDER,
@@ -616,6 +617,16 @@ function enforceDefaultModels(config: SerializedContinueConfig): void {
   });
 }
 
+function addDefaultCustomCommands(config: SerializedContinueConfig): void {
+  const defaultCommands = defaultCustomCommands;
+  defaultCommands.forEach(defaultCommand => {
+    if (!config.customCommands) {
+      config.customCommands = [];
+    }
+    config.customCommands.push({ ...defaultCommand });
+  });
+}
+
 async function loadFullConfigNode(
   ide: IDE,
   workspaceConfigs: ContinueRcJson[],
@@ -634,11 +645,13 @@ async function loadFullConfigNode(
     overrideConfigJson,
   );
 
-  // Convert serialized to intermediate config
-  let intermediate = await serializedToIntermediateConfig(serialized, ide);
   // check and enforce default models
   enforceDefaultModels(serialized);
-  
+  addDefaultCustomCommands(serialized);
+
+  // Convert serialized to intermediate config
+  let intermediate = await serializedToIntermediateConfig(serialized, ide);
+
   // Apply config.ts to modify intermediate config
   const configJsContents = await buildConfigTs();
   if (configJsContents) {
