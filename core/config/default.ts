@@ -71,7 +71,7 @@ export const defaultSlashCommandsVscode: SlashCommandDescription[] = [
     description: "Generate a git commit message",
   },
   {
-    name: "component",
+    name: "v0",
     description: "Generate a component using v0",
   },
 ];

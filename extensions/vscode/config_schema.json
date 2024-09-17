@@ -1278,7 +1278,7 @@
                 "http",
                 "commit",
                 "review",
-                "component"
+                "v0"
               ],
               "type": "string",
               "markdownEnumDescriptions": [

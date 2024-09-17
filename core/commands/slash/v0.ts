@@ -1,8 +1,8 @@
 import { SlashCommand } from "../../index.js";
 import { stripImages } from "../../llm/images.js";
 
-const ComponentMessageCommand: SlashCommand = {
-  name: "component",
+const V0MessageCommand: SlashCommand = {
+  name: "v0",
   description: "Generate a React component using v0",
   run: async function* ({ llm, input }) {
     if (input.trim() === "") {
@@ -37,4 +37,4 @@ You must be signed in with Vercel to generate this component.
   },
 };
 
-export default ComponentMessageCommand;
+export default V0MessageCommand;
