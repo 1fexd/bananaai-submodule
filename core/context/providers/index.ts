@@ -1,5 +1,6 @@
 import { ContextProviderName } from "../../index.js";
 import { BaseContextProvider } from "../index.js";
+import BeginnerContextProvider from "./BeginnerContextProvider.js";
 import CodeContextProvider from "./CodeContextProvider.js";
 import CodebaseContextProvider from "./CodebaseContextProvider.js";
 import ContinueProxyContextProvider from "./ContinueProxyContextProvider.js";
@@ -31,6 +32,7 @@ import URLContextProvider from "./URLContextProvider.js";
  * See this issue for details: https://github.com/continuedev/continue/issues/1365
  */
 const Providers: (typeof BaseContextProvider)[] = [
+  BeginnerContextProvider,
   DiffContextProvider,
   FileTreeContextProvider,
   GitHubIssuesContextProvider,
