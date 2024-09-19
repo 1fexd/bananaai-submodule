@@ -8,6 +8,7 @@ import { getExtensionVersion } from "../util/util";
 import { getExtensionUri } from "../util/vscode";
 import { VsCodeContinueApi } from "./api";
 import { setupInlineTips } from "./inlineTips";
+import { isFirstLaunch, importUserSettingsFromVSCode } from "../copySettings";
 
 export async function activateExtension(context: vscode.ExtensionContext) {
   // Add necessary files
@@ -20,6 +21,8 @@ export async function activateExtension(context: vscode.ExtensionContext) {
 
   const vscodeExtension = new VsCodeExtension(context);
 
+  setupPearAPPLayout();
+
   migrate("showWelcome_1", () => {
     vscode.commands.executeCommand(
       "markdown.showPreview",
@@ -28,10 +31,13 @@ export async function activateExtension(context: vscode.ExtensionContext) {
       ),
     );
 
-    vscode.commands.executeCommand("continue.focusContinueInput");
+    vscode.commands.executeCommand("pearai.focusContinueInput");
   });
 
-  // Load Continue configuration
+  vscode.commands.executeCommand("pearai.focusContinueInput");
+  importUserSettingsFromVSCode();
+
+  // Load PearAI configuration
   if (!context.globalState.get("hasBeenInstalled")) {
     context.globalState.update("hasBeenInstalled", true);
     Telemetry.capture(
@@ -57,3 +63,15 @@ export async function activateExtension(context: vscode.ExtensionContext) {
       }
     : continuePublicApi;
 }
+
+// Custom Layout settings that we want default for PearAPP
+const setupPearAPPLayout = () => {
+  if (isFirstLaunch) {
+    return;
+  }
+
+  // move pearai extension to auxiliary bar (secondary side bar)
+  vscode.commands.executeCommand("workbench.action.movePearExtensionToAuxBar");
+  // set activity bar position to top
+  vscode.commands.executeCommand("workbench.action.activityBarLocation.top");
+};

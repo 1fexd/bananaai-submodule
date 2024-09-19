@@ -64,7 +64,7 @@ const exe = os === "win32" ? ".exe" : "";
       "config_schema.json",
     ),
   );
-  // Modify and copy for .continuerc.json
+  // Modify and copy for .pearairc.json
   const schema = JSON.parse(fs.readFileSync("config_schema.json", "utf8"));
   schema.definitions.SerializedContinueConfig.properties.mergeBehavior = {
     type: "string",
@@ -72,7 +72,7 @@ const exe = os === "win32" ? ".exe" : "";
     default: "merge",
     title: "Merge behavior",
     markdownDescription:
-      "If set to 'merge', .continuerc.json will be applied on top of config.json (arrays and objects are merged). If set to 'overwrite', then every top-level property of .continuerc.json will overwrite that property from config.json.",
+      "If set to 'merge', .pearairc.json will be applied on top of config.json (arrays and objects are merged). If set to 'overwrite', then every top-level property of .pearairc.json will overwrite that property from config.json.",
   };
   fs.writeFileSync("continue_rc_schema.json", JSON.stringify(schema, null, 2));
 
@@ -406,12 +406,23 @@ const exe = os === "win32" ? ".exe" : "";
     execCmdSync(`cd node_modules/@esbuild && unzip esbuild.zip`);
     fs.unlinkSync("node_modules/@esbuild/esbuild.zip");
   } else {
-    // Download esbuild from npm in tmp and copy over
-    console.log("npm installing esbuild binary");
-    await installNodeModuleInTempDirAndCopyToCurrent(
-      "esbuild@0.17.19",
-      "@esbuild",
-    );
+    const esbuildPath = path.join("node_modules", "esbuild", "package.json");
+    let isCorrectVersion = false;
+
+    if (fs.existsSync(esbuildPath)) {
+      const esbuildPackage = JSON.parse(fs.readFileSync(esbuildPath, "utf8"));
+      isCorrectVersion = esbuildPackage.version === "0.17.19";
+    }
+    if (!isCorrectVersion) {
+      // Download esbuild from npm in tmp and copy over
+      console.log("npm installing esbuild binary");
+      await installNodeModuleInTempDirAndCopyToCurrent(
+        "esbuild@0.17.19",
+        "@esbuild",
+      );
+    } else {
+      console.log("esbuild@0.17.19 is already installed.");
+    }
   }
 
   console.log("[info] Copying sqlite node binding from core");
@@ -514,7 +525,7 @@ const exe = os === "win32" ? ".exe" : "";
 
     // Tutorial
     "media/welcome.md",
-    "continue_tutorial.py",
+    "pearai_tutorial.py",
     "config_schema.json",
 
     // Embeddings model

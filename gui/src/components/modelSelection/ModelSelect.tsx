@@ -158,6 +158,7 @@ function modelSelectTitle(model: any): string {
 interface Option {
   value: string;
   title: string;
+  isDefault: boolean;
 }
 
 function ModelSelect() {
@@ -181,6 +182,7 @@ function ModelSelect() {
         return {
           value: model.title,
           title: modelSelectTitle(model),
+          isDefault: model?.isDefault,
         };
       }),
     );
@@ -223,18 +225,29 @@ function ModelSelect() {
           </span>
         </StyledListboxButton>
         <StyledListboxOptions>
-          {options.map((option, idx) => (
+          {options.filter((option) => option.isDefault).map((option, idx) => (
             <ModelOption
               option={option}
               idx={idx}
               key={idx}
-              showDelete={options.length > 1}
+              showDelete={!option.isDefault}
             />
           ))}
 
           {selectedProfileId === "local" && (
             <>
               {options.length > 0 && <Divider />}
+
+              {options
+                .filter((option) => !option.isDefault)
+                .map((option, idx) => (
+                  <ModelOption
+                    key={idx}
+                    option={option}
+                    idx={idx}
+                    showDelete={!option.isDefault}
+                  />
+                ))}
 
               <StyledListboxOption
                 key={options.length}
@@ -263,7 +276,7 @@ function ModelSelect() {
               display: "block",
             }}
           >
-            {getMetaKeyLabel()}' to toggle
+            Press {getMetaKeyLabel()}+' to toggle
           </i>
         </StyledListboxOptions>
       </div>

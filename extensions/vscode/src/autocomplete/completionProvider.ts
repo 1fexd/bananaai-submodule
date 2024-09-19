@@ -28,14 +28,14 @@ export class ContinueCompletionProvider
 {
   private onError(e: any) {
     const options = ["Documentation"];
-    if (e.message.includes("https://ollama.ai")) {
+    if (/^https:\/\/(?:[a-zA-Z0-9-]+\.)*ollama\.ai(?:\/|$)/.test(e.message)) {
       options.push("Download Ollama");
-    }
+  }
     vscode.window.showErrorMessage(e.message, ...options).then((val) => {
       if (val === "Documentation") {
         vscode.env.openExternal(
           vscode.Uri.parse(
-            "https://docs.continue.dev/features/tab-autocomplete",
+            "https://trypear.ai/docs/tab-autocomplete",
           ),
         );
       } else if (val === "Download Ollama") {
@@ -250,7 +250,7 @@ export class ContinueCompletionProvider
         completionRange,
         {
           title: "Log Autocomplete Outcome",
-          command: "continue.logAutocompleteOutcome",
+          command: "pearai.logAutocompleteOutcome",
           arguments: [input.completionId, this.completionProvider],
         },
       );

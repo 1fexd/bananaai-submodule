@@ -16,6 +16,7 @@ export type ToIdeFromWebviewProtocol = ToIdeFromWebviewOrCoreProtocol & {
   ];
   openUrl: [string, void];
   applyToCurrentFile: [{ text: string }, void];
+  createFile: [{ path: string}, void];
   showTutorial: [undefined, void];
   showFile: [{ filepath: string }, void];
   openConfigJson: [undefined, void];
@@ -27,6 +28,13 @@ export type ToIdeFromWebviewProtocol = ToIdeFromWebviewOrCoreProtocol & {
   copyText: [{ text: string }, void];
   "jetbrains/editorInsetHeight": [{ height: number }, void];
   setGitHubAuthToken: [{ token: string }, void];
+  // for shortcuts bar
+  bigChat: [undefined, void];
+  lastChat: [undefined, void];
+  closeChat: [undefined, void];
+  openHistory: [undefined, void];
+  appendSelected: [undefined, void];
+  pearaiLogin: [undefined, void];
 };
 
 export type ToWebviewFromIdeProtocol = ToWebviewFromIdeOrCoreProtocol & {
@@ -54,6 +62,7 @@ export type ToWebviewFromIdeProtocol = ToWebviewFromIdeOrCoreProtocol & {
   viewHistory: [undefined, void];
   newSession: [undefined, void];
   setTheme: [{ theme: any }, void];
+  setThemeType: [{ themeType: string }, void];
   setColors: [{ [key: string]: string }, void];
   "jetbrains/editorInsetRefresh": [undefined, void];
   addApiKey: [undefined, void];

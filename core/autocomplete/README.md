@@ -25,7 +25,7 @@ You can also set up tab-autocomplete with a local LM Studio instance by followin
 
 Example:
 
-```json title=~/.continue/config.json
+```json title=~/.pearai/config.json
 {
   "tabAutocompleteModel": {
       "title": "Starcoder2 3b",
@@ -40,7 +40,7 @@ Example:
 
 All of the configuration options available for chat models are available to use for tab-autocomplete. For example, if you wanted to use a remote vLLM instance you would edit your `config.json` like this (note that it is not inside the models array), filling in the correct model name and vLLM endpoint:
 
-```json title=~/.continue/config.json
+```json title=~/.pearai/config.json
 {
     "tabAutocompleteModel": {
         "title": "Tab Autocomplete Model",
@@ -54,7 +54,7 @@ All of the configuration options available for chat models are available to use 
 
 As another example, say you want to use a different model, `deepseek-coder:6.7b-base`, with Ollama:
 
-```json title=~/.continue/config.json
+```json title=~/.pearai/config.json
 {
     "tabAutocompleteModel": {
         "title": "Tab Autocomplete Model",
@@ -100,7 +100,7 @@ This object allows you to customize the behavior of tab-autocomplete. The availa
 
 ### Full example
 
-```json title=~/.continue/config.json
+```json title=~/.pearai/config.json
 {
   "tabAutocompleteModel": {
     "title": "Tab Autocomplete Model",
@@ -126,12 +126,12 @@ Perhaps surprisingly, the answer is no. The models that we suggest for autocompl
 
 Follow these steps to ensure that everything is set up correctly:
 
-1. Make sure you have the "Enable Tab Autocomplete" setting checked (in VS Code, you can toggle by clicking the "Continue" button in the status bar).
+1. Make sure you have the "Enable Tab Autocomplete" setting checked (in VS Code, you can toggle by clicking the "PearAI" button in the status bar).
 2. Make sure you have downloaded Ollama.
 3. Run `ollama run starcoder:3b` to verify that the model is downloaded.
 4. Make sure that any other completion providers are disabled (e.g. Copilot), as they may interfere.
 5. Make sure that you aren't also using another Ollama model for chat. This will cause Ollama to constantly load and unload the models from memory, resulting in slow responses (or none at all) for both.
-6. Check the output of the logs to find any potential errors (cmd/ctrl+shift+p -> "Toggle Developer Tools" -> "Console" tab in VS Code, ~/.continue/core.log in JetBrains).
+6. Check the output of the logs to find any potential errors (cmd/ctrl+shift+p -> "Toggle Developer Tools" -> "Console" tab in VS Code, ~/.pearai/core.log in JetBrains).
 7. If you are still having issues, please let us know in our [Discord](https://discord.gg/vapESyrFmJ) and we'll help as soon as possible.
 
 ### Completions are slow
@@ -150,13 +150,13 @@ If you're seeing a common pattern of mistake that might be helpful to report, pl
 
 ### VS Code
 
-Click the "Continue" button in the status panel at the bottom right of the screen. The checkmark will become a "cancel" symbol and you will no longer see completions. You can click again to turn it back on.
+Click the "PearAI" button in the status panel at the bottom right of the screen. The checkmark will become a "cancel" symbol and you will no longer see completions. You can click again to turn it back on.
 
-Alternatively, open VS Code settings, search for "Continue" and uncheck the box for "Enable Tab Autocomplete".
+Alternatively, open VS Code settings, search for "PearAI" and uncheck the box for "Enable Tab Autocomplete".
 
 ### JetBrains
 
-Open Settings -> Tools -> Continue and uncheck the box for "Enable Tab Autocomplete".
+Open Settings -> Tools -> PearAI and uncheck the box for "Enable Tab Autocomplete".
 
 ### Feedback
 

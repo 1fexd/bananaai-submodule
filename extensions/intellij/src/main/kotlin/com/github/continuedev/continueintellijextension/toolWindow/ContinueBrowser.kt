@@ -60,6 +60,7 @@ class ContinueBrowser(val project: Project, url: String, useOsr: Boolean = false
         "llm/complete",
         "llm/streamComplete",
         "llm/streamChat",
+        "llm/resetPearAICredentials",
         "llm/listModels",
         "streamDiffLines",
         "stats/getTokensPerDay",
@@ -77,7 +78,7 @@ class ContinueBrowser(val project: Project, url: String, useOsr: Boolean = false
     private fun registerAppSchemeHandler() {
         CefApp.getInstance().registerSchemeHandlerFactory(
                 "http",
-                "continue",
+                "pearai",
                 CustomSchemeHandlerFactory()
         )
     }

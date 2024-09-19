@@ -1,7 +1,7 @@
 import type { FileEdit } from "core";
 import { ConfigHandler } from "core/config/ConfigHandler";
+import { getTheme, getThemeType } from "./util/getTheme";
 import * as vscode from "vscode";
-import { getTheme } from "./util/getTheme";
 import { getExtensionVersion } from "./util/util";
 import { getExtensionUri, getNonce, getUniqueId } from "./util/vscode";
 import { VsCodeWebviewProtocol } from "./webviewProtocol";
@@ -9,11 +9,11 @@ import { VsCodeWebviewProtocol } from "./webviewProtocol";
 export class ContinueGUIWebviewViewProvider
   implements vscode.WebviewViewProvider
 {
-  public static readonly viewType = "continue.continueGUIView";
+  public static readonly viewType = "pearai.continueGUIView";
   public webviewProtocol: VsCodeWebviewProtocol;
 
   private updateDebugLogsStatus() {
-    const settings = vscode.workspace.getConfiguration("continue");
+    const settings = vscode.workspace.getConfiguration("pearai");
     this.enableDebugLogs = settings.get<boolean>("enableDebugLogs", false);
     if (this.enableDebugLogs) {
       this.outputChannel.show(true);
@@ -25,8 +25,8 @@ export class ContinueGUIWebviewViewProvider
   // Show or hide the output channel on enableDebugLogs
   private setupDebugLogsListener() {
     vscode.workspace.onDidChangeConfiguration((event) => {
-      if (event.affectsConfiguration('continue.enableDebugLogs')) {
-        const settings = vscode.workspace.getConfiguration("continue");
+      if (event.affectsConfiguration('pearai.enableDebugLogs')) {
+        const settings = vscode.workspace.getConfiguration("pearai");
         const enableDebugLogs = settings.get<boolean>("enableDebugLogs", false);
         if (enableDebugLogs) {
           this.outputChannel.show(true);
@@ -39,7 +39,7 @@ export class ContinueGUIWebviewViewProvider
 
   private async handleWebviewMessage(message: any) {
   if (message.messageType === "log") {
-    const settings = vscode.workspace.getConfiguration("continue");
+    const settings = vscode.workspace.getConfiguration("pearai");
     const enableDebugLogs = settings.get<boolean>("enableDebugLogs", false);
 
     if (message.level === "debug" && !enableDebugLogs) {
@@ -164,6 +164,7 @@ export class ContinueGUIWebviewViewProvider
       if (e.affectsConfiguration("workbench.colorTheme")) {
         // Send new theme to GUI to update embedded Monaco themes
         this.webviewProtocol?.request("setTheme", { theme: getTheme() });
+        this.webviewProtocol?.request("setThemeType", { themeType: getThemeType() });
       }
     });
 

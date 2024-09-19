@@ -146,7 +146,7 @@ function ProfileSwitcher(props: {}) {
         !lastControlServerBetaEnabledStatus && enableControlServerBeta;
 
       if (shouldShowPopup) {
-        ideMessenger.ide.infoPopup("Continue for Teams enabled");
+        ideMessenger.ide.infoPopup("PearAI for Teams enabled");
       }
 
       setControlServerBetaEnabled(enableControlServerBeta);
@@ -244,7 +244,7 @@ function ProfileSwitcher(props: {}) {
             );
           }
         }}
-        text="Configure Continue"
+        text="Configure PearAI"
       >
         <Cog6ToothIcon width="1.4em" height="1.4em" />
       </HeaderButtonWithText>

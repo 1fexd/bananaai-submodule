@@ -27,23 +27,23 @@ const GradientBorder = styled.div<{
   loading: 0 | 1;
 }>`
   border-radius: ${(props) => props.borderRadius || "0"};
-  padding: 1px;
+  padding: 2px;
   background: ${(props) =>
     props.borderColor
       ? props.borderColor
       : `repeating-linear-gradient(
       101.79deg,
-      #1BBE84 0%,
-      #331BBE 16%,
-      #BE1B55 33%,
-      #A6BE1B 55%,
-      #BE1B55 67%,
-      #331BBE 85%,
-      #1BBE84 99%
+      #4DA587 0%,
+      #EBF5DF 16%,
+      #4DA587 33%,
+      #EBF5DF 55%,
+      #4DA587 67%,
+      #4DA587 85%,
+      #4DA587 99%
     )`};
   animation: ${(props) => (props.loading ? gradient : "")} 6s linear infinite;
   background-size: 200% 200%;
-  width: 100%;
+  width: 100% - 0.6rem;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -87,35 +87,26 @@ function ContinueInputBox(props: ContinueInputBoxProps) {
   return (
     <div
       style={{
-        paddingTop: "4px",
-        backgroundColor: vscBackground,
         display: props.hidden ? "none" : "inherit",
       }}
     >
-      <div
-        className="flex px-2 relative"
-        style={{
-          backgroundColor: vscBackground,
-        }}
+      <GradientBorder
+        loading={active && props.isLastUserInput ? 1 : 0}
+        isFirst={false}
+        isLast={false}
+        borderColor={
+          active && props.isLastUserInput ? undefined : vscBackground
+        }
+        borderRadius={defaultBorderRadius}
       >
-        <GradientBorder
-          loading={active && props.isLastUserInput ? 1 : 0}
-          isFirst={false}
-          isLast={false}
-          borderColor={
-            active && props.isLastUserInput ? undefined : vscBackground
-          }
-          borderRadius={defaultBorderRadius}
-        >
-          <TipTapEditor
-            editorState={props.editorState}
-            onEnter={props.onEnter}
-            isMainInput={props.isMainInput}
-            availableContextProviders={availableContextProviders}
-            availableSlashCommands={availableSlashCommands}
-          ></TipTapEditor>
-        </GradientBorder>
-      </div>
+        <TipTapEditor
+          editorState={props.editorState}
+          onEnter={props.onEnter}
+          isMainInput={props.isMainInput}
+          availableContextProviders={availableContextProviders}
+          availableSlashCommands={availableSlashCommands}
+        ></TipTapEditor>
+      </GradientBorder>
       <ContextItemsPeek contextItems={props.contextItems}></ContextItemsPeek>
     </div>
   );

@@ -21,10 +21,11 @@ import { setDefaultModel } from "../../redux/slices/stateSlice";
 import { updatedObj } from "../../util";
 import type { ProviderInfo } from "./configs/providers";
 import { providers } from "./configs/providers";
+import { useWebviewListener } from "../../hooks/useWebviewListener";
 
 const GridDiv = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: 1fr;
   grid-gap: 2rem;
   padding: 1rem;
   justify-items: center;
@@ -73,6 +74,34 @@ function ConfigureProvider() {
       setModelInfo(providers[providerName]);
     }
   }, [providerName]);
+
+  // this runs when user successfully logins pearai
+  useWebviewListener(
+    "addPearAIModel",
+    async () => {
+      const pkg = modelInfo.packages[0];
+      const dimensionChoices =
+        pkg.dimensions?.map((d) => Object.keys(d.options)[0]) || [];
+      const model = {
+        ...pkg.params,
+        ...modelInfo.params,
+        ..._.merge(
+          {},
+          ...(pkg.dimensions?.map((dimension, i) => {
+            if (!dimensionChoices?.[i]) return {};
+            return {
+              ...dimension.options[dimensionChoices[i]],
+            };
+          }) || []),
+        ),
+        provider: modelInfo.provider,
+      };
+      // ideMessenger.post("config/addModel", { model });
+      dispatch(setDefaultModel({ title: model.title, force: true }));
+      navigate("/");
+    },
+    [modelInfo, providerName],
+  );
 
   const handleContinue = () => {
     if (!modelInfo) return;
@@ -135,7 +164,7 @@ function ConfigureProvider() {
             className="inline-block ml-4 cursor-pointer"
           />
           <h3 className="text-lg font-bold m-2 inline-block">
-            Configure provider
+            Configure Provider
           </h3>
         </div>
 
@@ -159,7 +188,6 @@ function ConfigureProvider() {
             className="mt-2"
             source={modelInfo?.longDescription || modelInfo?.description}
           />
-          <br />
 
           {/* The WatsonX Authentication coukd be done by two different ways
            1 ==> Using Api key
@@ -302,67 +330,108 @@ function ConfigureProvider() {
             </details>
           )}
 
-          <h3 className="mb-2">Select a model preset</h3>
-        </div>
-        <GridDiv>
-          {modelInfo?.packages.map((pkg, idx) => {
-            return (
-              <ModelCard
-                key={idx}
-                disabled={
-                  disableModelCards() &&
-                  enablecardsForApikey() &&
-                  enablecardsForCredentials()
-                }
-                title={pkg.title}
-                description={pkg.description}
-                tags={pkg.tags}
-                refUrl={pkg.refUrl}
-                icon={pkg.icon || modelInfo.icon}
-                dimensions={pkg.dimensions}
-                onClick={(e, dimensionChoices) => {
-                  if (
-                    disableModelCards() &&
-                    enablecardsForApikey() &&
-                    enablecardsForCredentials()
-                  )
-                    return;
-                  let formParams: any = {};
-                  for (const d of modelInfo.collectInputFor || []) {
-                    const val = formMethods.watch(d.key);
-                    if (val === "" || val === undefined || val === null) {
-                      continue;
-                    }
-                    formParams = updatedObj(formParams, {
-                      [d.key]: d.inputType === "text" ? val : parseFloat(val),
-                    });
-                  }
+        {providerName === "pearai_server" ? (
+            <>
 
-                  const model = {
-                    ...pkg.params,
-                    ...modelInfo.params,
-                    ..._.merge(
-                      {},
-                      ...(pkg.dimensions?.map((dimension, i) => {
-                        if (!dimensionChoices?.[i]) return {};
-                        return {
-                          ...dimension.options[dimensionChoices[i]],
+                <CustomModelButton
+                  className="m-5"
+                  disabled={false}
+                  onClick={() =>
+                    ideMessenger.post(
+                      "openUrl",
+                      "https://trypear.ai/signin?callback=pearai://pearai.pearai/auth", // Change to http://localhost:3000 and run pear-landing-page repo to test locally
+                    )
+                  }
+                >
+                  <h3 className="text-center my-2">Sign Up / Log In</h3>
+                  <img
+                    src={`${window.vscMediaUrl}/logos/${modelInfo?.icon}`}
+                    height="24px"
+                    style={{ marginRight: "5px" }}
+                  />
+                </CustomModelButton>
+                <p style={{ color: lightGray }} className="mx-3">
+                  After login, the website should redirect you back here.
+                </p>
+                <small
+                  style={{
+                    color: lightGray,
+                    fontSize: '0.85em',
+                    display: 'block'
+                  }}
+                  className="mx-3"
+                >
+                  Note: Having trouble logging in? Open PearAI from the dashboard on the {' '}
+                  <a href="https://trypear.ai/dashboard" target="_blank" rel="noopener noreferrer">
+                    website
+                  </a>.
+                  </small>
+            </>
+            ) : (
+              <>
+              <h3 className="mb-2">Select a model preset</h3>
+              <GridDiv>
+                {modelInfo?.packages.map((pkg, idx) => {
+                  return (
+                    <ModelCard
+                      key={idx}
+                      disabled={
+                        disableModelCards() &&
+                        enablecardsForApikey() &&
+                        enablecardsForCredentials()
+                      }
+                      title={pkg.title}
+                      description={pkg.description}
+                      tags={pkg.tags}
+                      refUrl={pkg.refUrl}
+                      icon={pkg.icon || modelInfo.icon}
+                      dimensions={pkg.dimensions}
+                      onClick={(e, dimensionChoices) => {
+                        if (
+                          disableModelCards() &&
+                          enablecardsForApikey() &&
+                          enablecardsForCredentials()
+                        )
+                          return;
+                        let formParams: any = {};
+                        for (const d of modelInfo.collectInputFor || []) {
+                          const val = formMethods.watch(d.key);
+                          if (val === "" || val === undefined || val === null) {
+                            continue;
+                          }
+                          formParams = updatedObj(formParams, {
+                            [d.key]: d.inputType === "text" ? val : parseFloat(val),
+                          });
+                        }
+
+                        const model = {
+                          ...pkg.params,
+                          ...modelInfo.params,
+                          ..._.merge(
+                            {},
+                            ...(pkg.dimensions?.map((dimension, i) => {
+                              if (!dimensionChoices?.[i]) return {};
+                              return {
+                                ...dimension.options[dimensionChoices[i]],
+                              };
+                            }) || []),
+                          ),
+                          ...formParams,
+                          provider: modelInfo.provider,
                         };
-                      }) || []),
-                    ),
-                    ...formParams,
-                    provider: modelInfo.provider,
-                  };
-                  ideMessenger.post("config/addModel", { model });
-                  dispatch(
-                    setDefaultModel({ title: model.title, force: true }),
+                        ideMessenger.post("config/addModel", { model });
+                        dispatch(
+                          setDefaultModel({ title: model.title, force: true }),
+                        );
+                        navigate("/");
+                      }}
+                    />
                   );
-                  navigate("/");
-                }}
-              />
-            );
-          })}
-        </GridDiv>
+                })}
+              </GridDiv>
+            </>
+          )}
+        </div>
       </div>
     </FormProvider>
   );

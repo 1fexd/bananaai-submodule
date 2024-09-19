@@ -1,21 +1,23 @@
-# 👋 Welcome to Continue
+# 🍐 Welcome to PearAI!
 
-## ❗️ Before you get started
+Welcome to PearAI, your AI code editor!
 
-Continue is currently in the left sidebar, but we recommend moving it to the right. This way it won't cover your file explorer.
+Begin your journey by logging in on the PearAI panel (Cmd/Ctrl+;)
 
-You can move it back at any time. If you close the sidebar, it can be re-opened with <kbd>Cmd/Ctrl</kbd> + <kbd>L</kbd>.
+**For a quick tutorial on what PearAI can do, open <span style="font-size: 1.2em;">[tutorial.py](../pearai_tutorial.py)</span>.**
 
-![Move Continue to right sidebar](./sidebar.gif)
+## 🔑 Important Shortcuts
 
-## 🔑 Most important shortcuts
+| Description                        | Keybinds                                    |
+|------------------------------------|---------------------------------------------|
+| New Chat / Add Selected            | <kbd>Cmd/Ctrl</kbd> + <kbd>L</kbd>          |
+| Open/Close Pear Chat               | <kbd>Cmd/Ctrl</kbd> + <kbd>;</kbd>          |
+| Make Chat Bigger/Smaller           | <kbd>Cmd/Ctrl</kbd> + <kbd>\\</kbd>          |
+| Append Selected                    | <kbd>Cmd/Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd> |
+| Inline Prompting                   | <kbd>Cmd/Ctrl</kbd> + <kbd>I</kbd>          |
+| Add Latest Terminal Error to Chat  | <kbd>Cmd/Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> |
+| Open History                       | <kbd>Cmd/Ctrl</kbd> + <kbd>H</kbd>          |
+| Previous Chat                      | <kbd>Cmd/Ctrl</kbd> + <kbd>0</kbd>          |
+| Switch Model                       | <kbd>Cmd/Ctrl</kbd> + <kbd>'</kbd>          |
 
-> If you'd prefer different keys, these shortcuts can be customized in VS Code settings.
-
-<kbd>Cmd/Ctrl</kbd> + <kbd>L</kbd> = Select code
-
-<kbd>Cmd/Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd> = Select code for follow-up
-
-<kbd>Cmd/Ctrl</kbd> + <kbd>I</kbd> = Quick edit
-
-<kbd>Cmd/Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> = Automatically debug terminal
+> If you'd prefer different keys, these shortcuts can be customized in PearAI settings.

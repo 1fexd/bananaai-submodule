@@ -28,6 +28,7 @@ import {
   RerankerDescription,
   SerializedContinueConfig,
   SlashCommand,
+  PearAuth,
 } from "../index.js";
 import TransformersJsEmbeddingsProvider from "../indexing/embeddings/TransformersJsEmbeddingsProvider.js";
 import { allEmbeddingsProviders } from "../indexing/embeddings/index.js";
@@ -52,19 +53,27 @@ import {
   readAllGlobalPromptFiles,
 } from "../util/paths.js";
 import {
+  defaultConfig,
   defaultContextProvidersJetBrains,
   defaultContextProvidersVsCode,
   defaultSlashCommandsJetBrains,
   defaultSlashCommandsVscode,
+  defaultCustomCommands,
 } from "./default.js";
 import {
   DEFAULT_PROMPTS_FOLDER,
   getPromptFiles,
   slashCommandFromPromptFile,
 } from "./promptFile.js";
+import PearAIServer from "../llm/llms/PearAIServer.js";
 
 function resolveSerializedConfig(filepath: string): SerializedContinueConfig {
   let content = fs.readFileSync(filepath, "utf8");
+
+  // Replace "pearai-server" with "pearai_server" at the beginning
+  // This is to make v0.0.3 backwards compatible with v0.0.2
+  content = content.replace(/"pearai-server"/g, '"pearai_server"');
+
   const config = JSONC.parse(content) as unknown as SerializedContinueConfig;
   if (config.env && Array.isArray(config.env)) {
     const env = {
@@ -137,6 +146,8 @@ function loadSerializedConfig(
     ideType === "vscode"
       ? [...defaultContextProvidersVsCode]
       : [...defaultContextProvidersJetBrains];
+
+  // Slash commands are only added for existing installs if config.json is empty.
   config.slashCommands ??=
     ideType === "vscode"
       ? [...defaultSlashCommandsVscode]
@@ -179,7 +190,7 @@ async function serializedToIntermediateConfig(
       .flat()
       .filter(({ path }) => path.endsWith(".prompt"));
 
-    // Also read from ~/.continue/.prompts
+    // Also read from ~/.pearai/.prompts
     promptFiles.push(...readAllGlobalPromptFiles());
 
     for (const file of promptFiles) {
@@ -216,7 +227,7 @@ async function intermediateToFinalConfig(
   uniqueId: string,
   writeLog: (log: string) => Promise<void>,
   workOsAccessToken: string | undefined,
-  allowFreeTrial: boolean = true,
+  allowFreeTrial: boolean = false,
 ): Promise<ContinueConfig> {
   // Auto-detect models
   let models: BaseLLM[] = [];
@@ -233,6 +244,19 @@ async function intermediateToFinalConfig(
       );
       if (!llm) {
         continue;
+      }
+
+      // TODO: There is most definately a better way to do this
+      //       windows is bad so its hard to set this up locally - Ender
+      // inject callbacks to backend
+      if (llm instanceof PearAIServer) {
+        llm.getCredentials = async () => {
+          return await ide.getPearAuth();
+        };
+
+        llm.setCredentials = async (auth: PearAuth) => {
+          await ide.updatePearCredentials(auth);
+        };
       }
 
       if (llm.model === "AUTODETECT") {
@@ -311,9 +335,11 @@ async function intermediateToFinalConfig(
         (model as FreeTrial).setupGhAuthToken(ghAuthToken);
       }
     }
+    console.log("Free trial models:", freeTrialModels);
   } else {
     // Remove free trial models
     models = models.filter((model) => model.providerName !== "free-trial");
+    console.log("Models:", models);
   }
 
   // Tab autocomplete model
@@ -336,14 +362,24 @@ async function intermediateToFinalConfig(
               config.systemMessage,
             );
 
-            if (llm?.providerName === "free-trial") {
-              if (!allowFreeTrial) {
-                // This shouldn't happen
-                throw new Error("Free trial cannot be used with control plane");
-              }
-              const ghAuthToken = await ide.getGitHubAuthToken();
-              (llm as FreeTrial).setupGhAuthToken(ghAuthToken);
+            if (llm instanceof PearAIServer) {
+              llm.getCredentials = async () => {
+                return await ide.getPearAuth();
+              };
+
+              llm.setCredentials = async (auth: PearAuth) => {
+                await ide.updatePearCredentials(auth);
+              };
             }
+
+            // if (llm?.providerName === "free-trial") {
+            //   if (!allowFreeTrial) {
+            //     // This shouldn't happen
+            //     throw new Error("Free trial cannot be used with control plane");
+            //   }
+            //   const ghAuthToken = await ide.getGitHubAuthToken();
+            //   (llm as FreeTrial).setupGhAuthToken(ghAuthToken);
+            // }
             return llm;
           } else {
             return new CustomLLMClass(desc);
@@ -453,11 +489,12 @@ function finalToBrowserConfig(
   return {
     allowAnonymousTelemetry: final.allowAnonymousTelemetry,
     models: final.models.map((m) => ({
+      title: m.title ?? m.model,
       provider: m.providerName,
       model: m.model,
-      title: m.title ?? m.model,
       apiKey: m.apiKey,
       apiBase: m.apiBase,
+      refreshToken: m.refreshToken,
       contextLength: m.contextLength,
       template: m.template,
       completionOptions: m.completionOptions,
@@ -465,6 +502,7 @@ function finalToBrowserConfig(
       requestOptions: m.requestOptions,
       promptTemplates: m.promptTemplates as any,
       capabilities: m.capabilities,
+      isDefault: m.isDefault,
     })),
     systemMessage: final.systemMessage,
     completionOptions: final.completionOptions,
@@ -513,7 +551,18 @@ function getTarget() {
 }
 
 function escapeSpacesInPath(p: string): string {
-  return p.replace(/ /g, "\\ ");
+  return p
+    .split("")
+    .map((char) => {
+      if (char === " ") {
+        return "\\ ";
+      } else if (char === "\\") {
+        return "\\\\";
+      } else {
+        return char;
+      }
+    })
+    .join("");
 }
 
 async function buildConfigTs() {
@@ -548,7 +597,7 @@ async function buildConfigTs() {
     }
   } catch (e) {
     console.log(
-      `Build error. Please check your ~/.continue/config.ts file: ${e}`,
+      `Build error. Please check your ~/.pearai/config.ts file: ${e}`,
     );
     return undefined;
   }
@@ -558,6 +607,68 @@ async function buildConfigTs() {
   }
   return fs.readFileSync(getConfigJsPath(), "utf8");
 }
+function addDefaults(config: SerializedContinueConfig): void {
+  addDefaultModels(config);
+  addDefaultCustomCommands(config);
+  addDefaultContextProviders(config);
+  addDefaultSlashCommands(config);
+}
+
+function addDefaultModels(config: SerializedContinueConfig): void {
+  const defaultModels = defaultConfig.models.filter(
+    (model) => model.isDefault === true,
+  );
+  defaultModels.forEach((defaultModel) => {
+    const modelExists = config.models.some(
+      (configModel) =>
+        configModel.title === defaultModel.title &&
+        configModel.provider === defaultModel.provider,
+    );
+
+    if (!modelExists) {
+      config.models.push({ ...defaultModel });
+    }
+  });
+}
+
+function addDefaultCustomCommands(config: SerializedContinueConfig): void {
+  const defaultCommands = defaultCustomCommands;
+  defaultCommands.forEach(defaultCommand => {
+    if (!config.customCommands) {
+      config.customCommands = [];
+    }
+    config.customCommands.push({ ...defaultCommand });
+  });
+}
+
+function addDefaultContextProviders(config: SerializedContinueConfig): void {
+  const defaultContextProviders = defaultContextProvidersVsCode; // or defaultContextProvidersJetBrains based on IDE type
+  defaultContextProviders.forEach((defaultProvider) => {
+    const providerExists = config.contextProviders?.some(
+      (configProvider) => configProvider.name === defaultProvider.name,
+    );
+
+    if (!providerExists) {
+      config.contextProviders = config.contextProviders || [];
+      config.contextProviders.push({ ...defaultProvider });
+    }
+  });
+}
+
+function addDefaultSlashCommands(config: SerializedContinueConfig): void {
+  const defaultSlashCommands = defaultSlashCommandsVscode; // or defaultSlashCommandsJetBrains based on IDE type
+  defaultSlashCommands.forEach((defaultCommand) => {
+    const commandExists = config.slashCommands?.some(
+      (configCommand) => configCommand.name === defaultCommand.name,
+    );
+
+    if (!commandExists) {
+      config.slashCommands = config.slashCommands || [];
+      config.slashCommands.push({ ...defaultCommand });
+    }
+  });
+}
+
 
 async function loadFullConfigNode(
   ide: IDE,
@@ -576,6 +687,9 @@ async function loadFullConfigNode(
     ideType,
     overrideConfigJson,
   );
+
+  // check and enforce default models
+  addDefaults(serialized);
 
   // Convert serialized to intermediate config
   let intermediate = await serializedToIntermediateConfig(serialized, ide);

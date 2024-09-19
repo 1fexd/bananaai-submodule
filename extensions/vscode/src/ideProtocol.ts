@@ -13,6 +13,7 @@ import type {
   Problem,
   RangeInFile,
   Thread,
+  PearAuth,
 } from "core";
 import { Range } from "core";
 import { walkDir } from "core/indexing/walkDir";
@@ -72,7 +73,7 @@ class VsCodeIde implements IDE {
   }
 
   private authToken: string | undefined;
-  private askedForAuth = false;
+  private askedForAuth = true;
 
   async getGitHubAuthToken(): Promise<string | undefined> {
     // Saved auth token
@@ -87,106 +88,6 @@ class VsCodeIde implements IDE {
     if (session) {
       this.authToken = session.accessToken;
       return this.authToken;
-    }
-
-    try {
-      // If we haven't asked yet, give explanation of what is happening and why
-      // But don't wait to return this immediately
-      // We will use a callback to refresh the config
-      if (!this.askedForAuth) {
-        vscode.window
-          .showInformationMessage(
-            "Continue will request read access to your GitHub email so that we can prevent abuse of the free trial. If you prefer not to sign in, you can use Continue with your own API keys or local model.",
-            "Sign in",
-            "Use API key / local model",
-            "Learn more",
-          )
-          .then(async (selection) => {
-            if (selection === "Use API key / local model") {
-              await vscode.commands.executeCommand(
-                "continue.continueGUIView.focus",
-              );
-              (await this.vscodeWebviewProtocolPromise).request(
-                "openOnboarding",
-                undefined,
-              );
-
-              // Remove free trial models
-              editConfigJson((config) => {
-                let tabAutocompleteModel = undefined;
-                if (Array.isArray(config.tabAutocompleteModel)) {
-                  tabAutocompleteModel = config.tabAutocompleteModel.filter(
-                    (model) => model.provider !== "free-trial",
-                  );
-                } else if (
-                  config.tabAutocompleteModel?.provider === "free-trial"
-                ) {
-                  tabAutocompleteModel = undefined;
-                }
-
-                return {
-                  ...config,
-                  models: config.models.filter(
-                    (model) => model.provider !== "free-trial",
-                  ),
-                  tabAutocompleteModel,
-                };
-              });
-            } else if (selection === "Learn more") {
-              vscode.env.openExternal(
-                vscode.Uri.parse(
-                  "https://docs.continue.dev/reference/Model%20Providers/freetrial",
-                ),
-              );
-            } else if (selection === "Sign in") {
-              const session = await vscode.authentication.getSession(
-                "github",
-                [],
-                {
-                  createIfNone: true,
-                },
-              );
-              if (session) {
-                this.authToken = session.accessToken;
-              }
-            }
-          });
-        this.askedForAuth = true;
-        return undefined;
-      }
-
-      const session = await vscode.authentication.getSession("github", [], {
-        silent: this.askedForAuth,
-        createIfNone: !this.askedForAuth,
-      });
-      if (session) {
-        this.authToken = session.accessToken;
-        return session.accessToken;
-      } else if (!this.askedForAuth) {
-        // User cancelled the login prompt
-        // Explain that they can avoid the prompt by removing free trial models from config.json
-        vscode.window
-          .showInformationMessage(
-            "We'll only ask you to log in if using the free trial. To avoid this prompt, make sure to remove free trial models from your config.json",
-            "Remove for me",
-            "Open config.json",
-          )
-          .then((selection) => {
-            if (selection === "Remove for me") {
-              editConfigJson((configJson) => {
-                configJson.models = configJson.models.filter(
-                  (model) => model.provider !== "free-trial",
-                );
-                configJson.tabAutocompleteModel = undefined;
-                return configJson;
-              });
-            } else if (selection === "Open config.json") {
-              this.openFile(getConfigJsonPath());
-            }
-          });
-      }
-    } catch (error) {
-      console.error("Failed to get GitHub authentication session:", error);
     }
     return undefined;
   }
@@ -239,8 +140,7 @@ class VsCodeIde implements IDE {
       version: vscode.version,
       remoteName: vscode.env.remoteName || "local",
       extensionVersion:
-        vscode.extensions.getExtension("continue.continue")?.packageJSON
-          .version,
+        vscode.extensions.getExtension("pearai.pearai")?.packageJSON.version,
     });
   }
   readRangeInFile(filepath: string, range: Range): Promise<string> {
@@ -273,7 +173,7 @@ class VsCodeIde implements IDE {
     const globalEnabled = vscode.env.isTelemetryEnabled;
     const continueEnabled: boolean =
       (await vscode.workspace
-        .getConfiguration("continue")
+        .getConfiguration("pearai")
         .get("telemetryEnabled")) ?? true;
     return globalEnabled && continueEnabled;
   }
@@ -314,7 +214,7 @@ class VsCodeIde implements IDE {
     for (const workspaceDir of workspaceDirs) {
       const files = await vscode.workspace.fs.readDirectory(workspaceDir);
       for (const [filename, type] of files) {
-        if (type === vscode.FileType.File && filename === ".continuerc.json") {
+        if (type === vscode.FileType.File && filename === ".pearairc.json") {
           const contents = await this.ideUtils.readFile(
             vscode.Uri.joinPath(workspaceDir, filename).fsPath,
           );
@@ -510,7 +410,7 @@ class VsCodeIde implements IDE {
   }
 
   getIdeSettingsSync(): IdeSettings {
-    const settings = vscode.workspace.getConfiguration("continue");
+    const settings = vscode.workspace.getConfiguration("pearai");
     const remoteConfigServerUrl = settings.get<string | undefined>(
       "remoteConfigServerUrl",
       undefined,
@@ -541,6 +441,19 @@ class VsCodeIde implements IDE {
 
   async getIdeSettings(): Promise<IdeSettings> {
     return this.getIdeSettingsSync();
+  }
+
+  async getPearAuth(): Promise<PearAuth> {
+    const creds = await this.ideUtils.getPearCredentials();
+    return creds;
+  }
+
+  async updatePearCredentials(auth: PearAuth): Promise<void> {
+    await this.ideUtils.updatePearCredentials(auth);
+  }
+
+  async authenticatePear(): Promise<void> {
+    this.ideUtils.executePearLogin();
   }
 }
 

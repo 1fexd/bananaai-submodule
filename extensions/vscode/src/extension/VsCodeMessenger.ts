@@ -97,7 +97,7 @@ export class VsCodeMessenger {
     });
     this.onWebview("toggleDevTools", (msg) => {
       vscode.commands.executeCommand("workbench.action.toggleDevTools");
-      vscode.commands.executeCommand("continue.viewLogs");
+      vscode.commands.executeCommand("pearai.viewLogs");
     });
     this.onWebview("reloadWindow", (msg) => {
       vscode.commands.executeCommand("workbench.action.reloadWindow");
@@ -106,7 +106,25 @@ export class VsCodeMessenger {
       vscode.commands.executeCommand("workbench.action.focusActiveEditorGroup");
     });
     this.onWebview("toggleFullScreen", (msg) => {
-      vscode.commands.executeCommand("continue.toggleFullScreen");
+      vscode.commands.executeCommand("pearai.toggleFullScreen");
+    });
+    this.onWebview("bigChat", (msg) => {
+      vscode.commands.executeCommand("pearai.resizeAuxiliaryBarWidth");
+    });
+    this.onWebview("pearaiLogin", (msg) => {
+      vscode.commands.executeCommand("pearai.login");
+    });
+    this.onWebview("lastChat", (msg) => {
+      vscode.commands.executeCommand("pearai.loadRecentChat");
+    });
+    this.onWebview("closeChat", (msg) => {
+      vscode.commands.executeCommand("pearai.closeChat");
+    });
+    this.onWebview("openHistory", (msg) => {
+      vscode.commands.executeCommand("pearai.viewHistory");
+    });
+    this.onWebview("appendSelected", (msg) => {
+      vscode.commands.executeCommand("pearai.focusContinueInputWithoutClear");
     });
     // History
     this.onWebview("saveFile", async (msg) => {
@@ -114,6 +132,24 @@ export class VsCodeMessenger {
     });
     this.onWebview("readFile", async (msg) => {
       return await ide.readFile(msg.data.filepath);
+    });
+    this.onWebview("createFile", async (msg) => {
+      const workspaceDirs = await ide.getWorkspaceDirs();
+      if (workspaceDirs.length === 0) {
+        throw new Error(
+          "No workspace directories found. Make sure you've opened a folder in your IDE.",
+        );
+      }
+      const filePath = path.join(
+        workspaceDirs[0],
+        msg.data.path.replace(/^\//, ""),
+      );
+
+      if (!fs.existsSync(filePath)) {
+        await ide.writeFile(filePath, "");
+      }
+
+      return ide.openFile(filePath);
     });
     this.onWebview("showDiff", async (msg) => {
       return await ide.showDiff(
@@ -158,7 +194,7 @@ export class VsCodeMessenger {
     this.onWebview("showTutorial", async (msg) => {
       const tutorialPath = path.join(
         getExtensionUri().fsPath,
-        "continue_tutorial.py",
+        "pearai_tutorial.py",
       );
       // Ensure keyboard shortcuts match OS
       if (process.platform !== "darwin") {
@@ -298,6 +334,9 @@ export class VsCodeMessenger {
     this.onWebviewOrCore("getGitHubAuthToken", (msg) =>
       ide.getGitHubAuthToken(),
     );
+
+    this.onWebviewOrCore("getPearAuth", (msg) => ide.getPearAuth());
+
     this.onWebviewOrCore("getControlPlaneSessionInfo", async (msg) => {
       return getControlPlaneSessionInfo(msg.data.silent);
     });

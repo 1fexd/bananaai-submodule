@@ -1,3 +1,4 @@
+import * as fs from "node:fs";
 import { v4 as uuidv4 } from "uuid";
 import type { ContextItemId, IDE, IndexingProgressUpdate } from ".";
 import { CompletionProvider } from "./autocomplete/completionProvider";
@@ -27,6 +28,7 @@ import type { IMessenger, Message } from "./util/messenger";
 import { editConfigJson } from "./util/paths";
 import { Telemetry } from "./util/posthog";
 import { streamDiffLines } from "./util/verticalEdit";
+import PearAIServer from "./llm/llms/PearAIServer";
 
 export class Core {
   // implements IMessenger<ToCoreProtocol, FromCoreProtocol>
@@ -429,6 +431,24 @@ export class Core {
         msg.data.completionOptions,
       );
       return completion;
+    });
+
+    on("llm/resetPearAICredentials", async (msg) => {
+      const config = await this.configHandler.loadConfig();
+      const pearAIModels = config.models.filter(model => model instanceof PearAIServer) as PearAIServer[];
+
+      try {
+        if (pearAIModels.length > 0) {
+          pearAIModels.forEach(model => {
+            model.setPearAIAccessToken(undefined);
+            model.setPearAIRefreshToken(undefined);
+          });
+        }
+        return undefined;
+      } catch (e) {
+        console.warn(`Error resetting PearAI credentials: ${e}`);
+        return undefined;
+      }
     });
     on("llm/listModels", async (msg) => {
       const config = await this.configHandler.loadConfig();

@@ -64,6 +64,7 @@ export interface ILLM extends LLMOptions {
   llmRequestHook?: (model: string, prompt: string) => any;
   apiKey?: string;
   apiBase?: string;
+  refreshToken?: string;
 
   engine?: string;
   apiVersion?: string;
@@ -328,6 +329,8 @@ export interface LLMOptions {
   apiKey?: string;
   aiGatewaySlug?: string;
   apiBase?: string;
+  refreshToken?: string;
+  isDefault?: boolean;
 
   useLegacyCompletionsEndpoint?: boolean;
 
@@ -440,6 +443,9 @@ export interface IdeSettings {
 }
 
 export interface IDE {
+  getPearAuth(): Promise<PearAuth>;
+  updatePearCredentials(auth: PearAuth): Promise<void>;
+  authenticatePear(): Promise<void>;
   getIdeInfo(): Promise<IdeInfo>;
   getIdeSettings(): Promise<IdeSettings>;
   getDiff(): Promise<string>;
@@ -543,7 +549,7 @@ type ContextProviderName =
   | "open"
   | "google"
   | "search"
-  | "tree"
+  | "directory"
   | "http"
   | "codebase"
   | "problems"
@@ -603,7 +609,9 @@ type ModelProvider =
   | "azure"
   | "openai-aiohttp"
   | "msty"
-  | "watsonx";
+  | "watsonx"
+  | "pearai_server"
+  | "other";
 
 export type ModelName =
   | "AUTODETECT"
@@ -674,7 +682,8 @@ export type ModelName =
   | "starcoder-1b"
   | "starcoder-3b"
   | "starcoder2-3b"
-  | "stable-code-3b";
+  | "stable-code-3b"
+  | "pearai_model";
 
 export interface RequestOptions {
   timeout?: number;
@@ -748,6 +757,7 @@ export interface ModelDescription {
   requestOptions?: RequestOptions;
   promptTemplates?: { [key: string]: string };
   capabilities?: ModelCapability;
+  isDefault?: boolean;
 }
 
 export type EmbeddingsProviderName =
@@ -919,11 +929,11 @@ export type ContinueRcJson = Partial<SerializedContinueConfig> & {
 
 // config.ts - give users simplified interfaces
 export interface Config {
-  /** If set to true, Continue will collect anonymous usage data to improve the product. If set to false, we will collect nothing. Read here to learn more: https://docs.continue.dev/telemetry */
+  /** If set to true, PearAI will collect anonymous usage data to improve the product. If set to false, we will collect nothing. Read here to learn more: https://trypear.ai/telemetry */
   allowAnonymousTelemetry?: boolean;
   /** Each entry in this array will originally be a ModelDescription, the same object from your config.json, but you may add CustomLLMs.
    * A CustomLLM requires you only to define an AsyncGenerator that calls the LLM and yields string updates. You can choose to define either `streamCompletion` or `streamChat` (or both).
-   * Continue will do the rest of the work to construct prompt templates, handle context items, prune context, etc.
+   * PearAI will do the rest of the work to construct prompt templates, handle context items, prune context, etc.
    */
   models: (CustomLLM | ModelDescription)[];
   /** A system message to be followed by all of your models */
@@ -935,18 +945,18 @@ export interface Config {
   /** The list of slash commands that will be available in the sidebar */
   slashCommands?: SlashCommand[];
   /** Each entry in this array will originally be a ContextProviderWithParams, the same object from your config.json, but you may add CustomContextProviders.
-   * A CustomContextProvider requires you only to define a title and getContextItems function. When you type '@title <query>', Continue will call `getContextItems(query)`.
+   * A CustomContextProvider requires you only to define a title and getContextItems function. When you type '@title <query>', PearAI will call `getContextItems(query)`.
    */
   contextProviders?: (CustomContextProvider | ContextProviderWithParams)[];
-  /** If set to true, Continue will not index your codebase for retrieval */
+  /** If set to true, PearAI will not index your codebase for retrieval */
   disableIndexing?: boolean;
-  /** If set to true, Continue will not make extra requests to the LLM to generate a summary title of each session. */
+  /** If set to true, PearAI will not make extra requests to the LLM to generate a summary title of each session. */
   disableSessionTitles?: boolean;
-  /** An optional token to identify a user. Not used by Continue unless you write custom coniguration that requires such a token */
+  /** An optional token to identify a user. Not used by PearAI unless you write custom coniguration that requires such a token */
   userToken?: string;
-  /** The provider used to calculate embeddings. If left empty, Continue will use transformers.js to calculate the embeddings with all-MiniLM-L6-v2 */
+  /** The provider used to calculate embeddings. If left empty, PearAI will use transformers.js to calculate the embeddings with all-MiniLM-L6-v2 */
   embeddingsProvider?: EmbeddingsProviderDescription | EmbeddingsProvider;
-  /** The model that Continue will use for tab autocompletions. */
+  /** The model that PearAI will use for tab autocompletions. */
   tabAutocompleteModel?:
     | CustomLLM
     | ModelDescription
@@ -963,7 +973,7 @@ export interface Config {
   analytics?: AnalyticsConfig;
 }
 
-// in the actual Continue source code
+// in the actual PearAI source code
 export interface ContinueConfig {
   allowAnonymousTelemetry?: boolean;
   models: ILLM[];
@@ -1001,4 +1011,9 @@ export interface BrowserSerializedContinueConfig {
   reranker?: RerankerDescription;
   experimental?: ExperimentalConfig;
   analytics?: AnalyticsConfig;
+}
+
+export interface PearAuth {
+  accessToken?: string;
+  refreshToken?: string;
 }

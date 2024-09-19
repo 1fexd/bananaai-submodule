@@ -12,6 +12,7 @@ import {
   Range,
   RangeInFile,
   Thread,
+  PearAuth,
 } from "../index.d.js";
 
 import { getContinueGlobalPath } from "./paths.js";
@@ -63,8 +64,8 @@ class FileSystemIde implements IDE {
         dirent.isDirectory()
           ? (2 as FileType.Directory)
           : dirent.isSymbolicLink()
-          ? (64 as FileType.SymbolicLink)
-          : (1 as FileType.File),
+            ? (64 as FileType.SymbolicLink)
+            : (1 as FileType.File),
       ]);
     return Promise.resolve(all);
   }
@@ -223,6 +224,18 @@ class FileSystemIde implements IDE {
 
   async subprocess(command: string): Promise<[string, string]> {
     return ["", ""];
+  }
+
+  getPearAuth(): Promise<PearAuth> {
+    return Promise.resolve({ accessToken: undefined, refreshToken: undefined });
+  }
+
+  updatePearCredentials(auth: PearAuth): Promise<void> {
+    return Promise.resolve();
+  }
+
+  authenticatePear(): Promise<void> {
+    return Promise.resolve();
   }
 }
 

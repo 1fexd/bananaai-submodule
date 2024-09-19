@@ -122,7 +122,7 @@ export class VerticalPerLineDiffManager {
 
     this.disableDocumentChangeListener();
 
-    vscode.commands.executeCommand("setContext", "continue.diffVisible", false);
+    vscode.commands.executeCommand("setContext", "pearai.diffVisible", false);
   }
 
   async acceptRejectVerticalDiffBlock(
@@ -203,7 +203,7 @@ export class VerticalPerLineDiffManager {
     quickEdit?: string,
     range?: vscode.Range,
   ) {
-    vscode.commands.executeCommand("setContext", "continue.diffVisible", true);
+    vscode.commands.executeCommand("setContext", "pearai.diffVisible", true);
 
     let editor = vscode.window.activeTextEditor;
 
@@ -313,11 +313,7 @@ export class VerticalPerLineDiffManager {
       );
     }
 
-    vscode.commands.executeCommand(
-      "setContext",
-      "continue.streamingDiff",
-      true,
-    );
+    vscode.commands.executeCommand("setContext", "pearai.streamingDiff", true);
 
     try {
       await diffHandler.run(
@@ -334,13 +330,34 @@ export class VerticalPerLineDiffManager {
 
       // enable a listener for user edits to file while diff is open
       this.enableDocumentChangeListener();
-    } catch (e) {
+    } catch (error: any) {
       this.disableDocumentChangeListener();
-      vscode.window.showErrorMessage(`Error streaming diff: ${e}`);
+      console.error(`Error streaming diff: ${error.message}`);
+
+      if (error.message.includes("401")) {
+        vscode.window
+          .showErrorMessage(
+            `PearAI access requires login: Fetch Error: Invalid response body while trying to fetch PearAI Server`,
+            "Login to PearAI",
+          )
+          .then((selection) => {
+            if (selection === "Login to PearAI") {
+              vscode.env.openExternal(
+                vscode.Uri.parse(
+                  "https://trypear.ai/signin?callback=pearai://pearai.pearai/auth",
+                ),
+              );
+            }
+          });
+      } else {
+        vscode.window.showErrorMessage(
+          `Error streaming diff: ${error.message}`,
+        );
+      }
     } finally {
       vscode.commands.executeCommand(
         "setContext",
-        "continue.streamingDiff",
+        "pearai.streamingDiff",
         false,
       );
     }

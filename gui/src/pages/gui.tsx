@@ -81,7 +81,9 @@ const StopButton = styled.div`
   border: 0.5px solid ${lightGray};
   border-radius: ${defaultBorderRadius};
   padding: 4px 8px;
-  color: ${lightGray};
+  background: ${vscBackground};
+  z-index: 50;
+  color: var(--vscode-textPreformat-foreground);
 
   cursor: pointer;
 `;
@@ -240,6 +242,20 @@ function GUI() {
   }, [active]);
 
   useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      window.scrollTo({
+        top: topGuiDivRef.current?.scrollHeight,
+        behavior: "instant" as any,
+      });
+    }, 1);
+
+    return () => {
+      clearTimeout(timeoutId)
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [topGuiDivRef.current]);
+
+  useEffect(() => {
     // Cmd + Backspace to delete current step
     const listener = (e: any) => {
       if (
@@ -284,68 +300,68 @@ function GUI() {
       const currentCount = getLocalStorage("mainTextEntryCounter");
       if (currentCount) {
         setLocalStorage("mainTextEntryCounter", currentCount + 1);
-        if (currentCount === 300) {
-          dispatch(
-            setDialogMessage(
-              <div className="text-center p-4">
-                👋 Thanks for using Continue. We are always trying to improve
-                and love hearing from users. If you're interested in speaking,
-                enter your name and email. We won't use this information for
-                anything other than reaching out.
-                <br />
-                <br />
-                <form
-                  onSubmit={(e: any) => {
-                    e.preventDefault();
-                    posthog?.capture("user_interest_form", {
-                      name: e.target.elements[0].value,
-                      email: e.target.elements[1].value,
-                    });
-                    dispatch(
-                      setDialogMessage(
-                        <div className="text-center p-4">
-                          Thanks! We'll be in touch soon.
-                        </div>,
-                      ),
-                    );
-                  }}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "10px",
-                  }}
-                >
-                  <input
-                    style={{ padding: "10px", borderRadius: "5px" }}
-                    type="text"
-                    name="name"
-                    placeholder="Name"
-                    required
-                  />
-                  <input
-                    style={{ padding: "10px", borderRadius: "5px" }}
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    required
-                  />
-                  <button
-                    style={{
-                      padding: "10px",
-                      borderRadius: "5px",
-                      cursor: "pointer",
-                    }}
-                    type="submit"
-                  >
-                    Submit
-                  </button>
-                </form>
-              </div>,
-            ),
-          );
-          dispatch(setDialogEntryOn(false));
-          dispatch(setShowDialog(true));
-        }
+        // if (currentCount === 300) {
+        //   dispatch(
+        //     setDialogMessage(
+        //       <div className="text-center p-4">
+        //         👋 Thanks for using PearAI. We are always trying to improve
+        //         and love hearing from users. If you're interested in speaking,
+        //         enter your name and email. We won't use this information for
+        //         anything other than reaching out.
+        //         <br />
+        //         <br />
+        //         <form
+        //           onSubmit={(e: any) => {
+        //             e.preventDefault();
+        //             posthog?.capture("user_interest_form", {
+        //               name: e.target.elements[0].value,
+        //               email: e.target.elements[1].value,
+        //             });
+        //             dispatch(
+        //               setDialogMessage(
+        //                 <div className="text-center p-4">
+        //                   Thanks! We'll be in touch soon.
+        //                 </div>,
+        //               ),
+        //             );
+        //           }}
+        //           style={{
+        //             display: "flex",
+        //             flexDirection: "column",
+        //             gap: "10px",
+        //           }}
+        //         >
+        //           <input
+        //             style={{ padding: "10px", borderRadius: "5px" }}
+        //             type="text"
+        //             name="name"
+        //             placeholder="Name"
+        //             required
+        //           />
+        //           <input
+        //             style={{ padding: "10px", borderRadius: "5px" }}
+        //             type="email"
+        //             name="email"
+        //             placeholder="Email"
+        //             required
+        //           />
+        //           <button
+        //             style={{
+        //               padding: "10px",
+        //               borderRadius: "5px",
+        //               cursor: "pointer",
+        //             }}
+        //             type="submit"
+        //           >
+        //             Submit
+        //           </button>
+        //         </form>
+        //       </div>,
+        //     ),
+        //   );
+        //   dispatch(setDialogEntryOn(false));
+        //   dispatch(setShowDialog(true));
+        // }
       } else {
         setLocalStorage("mainTextEntryCounter", 1);
       }
@@ -359,7 +375,7 @@ function GUI() {
     ],
   );
 
-  const { saveSession, getLastSessionId, loadLastSession } =
+  const { saveSession, getLastSessionId, loadLastSession, loadMostRecentChat } =
     useHistory(dispatch);
 
   useWebviewListener(
@@ -369,6 +385,15 @@ function GUI() {
       mainTextInputRef.current?.focus?.();
     },
     [saveSession],
+  );
+
+  useWebviewListener(
+    "loadMostRecentChat",
+    async () => {
+      await loadMostRecentChat();
+      mainTextInputRef.current?.focus?.();
+    },
+    [loadMostRecentChat],
   );
 
   const isLastUserInput = useCallback(
@@ -388,7 +413,7 @@ function GUI() {
   return (
     <>
       <TopGuiDiv ref={topGuiDivRef} onScroll={handleScroll}>
-        <div className="max-w-3xl m-auto">
+        <div className="mx-2">
           <StepsDiv>
             {state.history.map((item, index: number) => {
               return (
@@ -474,7 +499,7 @@ function GUI() {
                                   messageType: "userInput",
                                   data: {
                                     input:
-                                      "Continue your response exactly where you left off:",
+                                      "Keep going.",
                                   },
                                 },
                                 "*",
@@ -554,7 +579,7 @@ function GUI() {
       </TopGuiDiv>
       {active && (
         <StopButton
-          className="mt-auto mb-4"
+          className="mt-auto mb-4 sticky bottom-4"
           onClick={() => {
             dispatch(setInactive());
             if (
