@@ -30,7 +30,6 @@ import HeaderButtonWithText from "./HeaderButtonWithText";
 import ProgressBar from "./loaders/ProgressBar";
 import PostHogPageView from "./PosthogPageView";
 import ProfileSwitcher from "./ProfileSwitcher";
-<<<<<<< HEAD
 import ShortcutContainer from "./ShortcutContainer";
 
 // check mac or window
@@ -40,11 +39,9 @@ const isWindows = platform.includes("win");
 
 // #region Styled Components
 const HEADER_HEIGHT = "1.55rem";
-=======
 import { isNewUserOnboarding } from "./OnboardingCard/utils";
 import { useOnboardingCard } from "./OnboardingCard";
 
->>>>>>> 7ceb05beb (Added squahs)
 const FOOTER_HEIGHT = "1.8em";
 
 const BottomMessageDiv = styled.div<{ displayOnBottom: boolean }>`
@@ -118,7 +115,6 @@ const ProfileDropdownPortalDiv = styled.div`
   font-size: ${getFontSize() - 2};
 `;
 
-<<<<<<< HEAD
 // #endregion
 
 const HIDE_FOOTER_ON_PAGES = [
@@ -129,8 +125,6 @@ const HIDE_FOOTER_ON_PAGES = [
 
 const SHOW_SHORTCUTS_ON_PAGES = ["/"];
 
-=======
->>>>>>> 7ceb05beb (Added squahs)
 const Layout = () => {
   const navigate = useNavigate();
   const location = useLocation();
