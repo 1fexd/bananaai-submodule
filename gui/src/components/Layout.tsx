@@ -31,6 +31,8 @@ import ProgressBar from "./loaders/ProgressBar";
 import PostHogPageView from "./PosthogPageView";
 import ProfileSwitcher from "./ProfileSwitcher";
 import ShortcutContainer from "./ShortcutContainer";
+import IndexingProgressBar from "./loaders/IndexingProgressBar";
+
 
 // check mac or window
 const platform = navigator.userAgent.toLowerCase();
@@ -147,6 +149,16 @@ const Layout = () => {
   const displayBottomMessageOnBottom = useSelector(
     (state: RootState) => state.uiState.displayBottomMessageOnBottom,
   );
+
+  const [indexingState, setIndexingState] = useState<IndexingProgressUpdate>({
+    desc: "Loading indexing config",
+    progress: 0.0,
+    status: "loading",
+  });
+
+  useWebviewListener("indexProgress", async (data) => {
+    setIndexingState(data);
+  });
 
   const timeline = useSelector((state: RootState) => state.state.history);
 
@@ -275,6 +287,7 @@ const Layout = () => {
                   total={FREE_TRIAL_LIMIT_REQUESTS}
                 />
               )}
+              <IndexingProgressBar indexingState={indexingState} />
             </div>
 
             <ProfileSwitcher />
@@ -289,7 +302,7 @@ const Layout = () => {
                 }
               }}
             >
-              <EllipsisHorizontalCircleIcon width="1.4em" height="1.4em" />
+              <QuestionMarkCircleIcon width="1.4em" height="1.4em" />
             </HeaderButtonWithText>
           </Footer>
         </GridDiv>
