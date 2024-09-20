@@ -135,23 +135,30 @@ function HelpPage() {
   const ideMessenger = useContext(IdeMessengerContext);
   const [session, setSession] = useState(false); // this state specifically serves to manage "Login to PearAI" text conditionally on auth status
 
-  // gets initial auth status
   useEffect(() => {
-    ideMessenger.request("getPearAuth", undefined).then((res) => {
-      const newSession = res.accessToken ? true : false;
-      setSession(newSession);
-    });
-  }, []);
+    ideMessenger.request("getPearAuth", undefined)
+      .then((result) => {
+        if (result.status === "success") {
+          const newSession = result?.content ? true : false;
+          setSession(newSession);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching auth status:", error);
+      });
+  }, []); // Don't forget to add dependencies if needed
 
   // get auth status when user opens tutorial
   const handleOpenTutorial = () => {
     ideMessenger.post("showTutorial", undefined);
-    ideMessenger.request("getPearAuth", undefined).then((res) => {
-      if (res?.accessToken) {
-        navigate("/");
-      } else {
-        navigate("/onboarding");
-      }
+    ideMessenger.request("getPearAuth", undefined).then((result) => {
+      if (result.status === "success") {
+        if (result.content.accessToken) {
+          navigate("/");
+        } else {
+          navigate("/onboarding");
+        }
+      };
     });
   };
 
