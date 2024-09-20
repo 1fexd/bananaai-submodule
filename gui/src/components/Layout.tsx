@@ -293,7 +293,7 @@ const Layout = () => {
             <ProfileSwitcher />
             <HeaderButtonWithText
               tooltipPlacement="top-end"
-              text="More"
+              text="Help"
               onClick={() => {
                 if (location.pathname === "/help") {
                   navigate("/");
