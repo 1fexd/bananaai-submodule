@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 
 export async function getUserToken(): Promise<string> {
   // Prefer manual user token first
-  const settings = vscode.workspace.getConfiguration("pearai");
+  const settings = vscode.workspace.getConfiguration("BananaAI");
   const userToken = settings.get<string | null>("userToken", null);
   if (userToken) {
     return userToken;

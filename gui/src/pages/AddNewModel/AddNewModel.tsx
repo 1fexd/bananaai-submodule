@@ -84,14 +84,14 @@ function Models() {
         {!showOtherProviders ? (
           <>
             <ModelCard
-              key="pearai_server"
-              title={providers["pearai_server"].title}
-              description={providers["pearai_server"].description}
-              tags={providers["pearai_server"].tags}
-              icon={providers["pearai_server"].icon}
+              key="BananaAI_server"
+              title={providers["BananaAI_server"].title}
+              description={providers["BananaAI_server"].description}
+              tags={providers["BananaAI_server"].tags}
+              icon={providers["BananaAI_server"].icon}
               onClick={(e) => {
-                console.log(`/addModel/provider/pearai_server`);
-                navigate(`/addModel/provider/pearai_server`);
+                console.log(`/addModel/provider/BananaAI_server`);
+                navigate(`/addModel/provider/BananaAI_server`);
               }}
             />
             <ModelCard
@@ -106,7 +106,7 @@ function Models() {
         ) : (
           <>
             {Object.entries(providers).map(([providerName, modelInfo], i) => (
-              providerName !== "pearai_server" && providerName !== "other" && (
+              providerName !== "BananaAI_server" && providerName !== "other" && (
                 <ModelCard
                   key={`${providerName}-${i}`}
                   title={modelInfo.title}

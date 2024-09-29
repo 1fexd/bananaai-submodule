@@ -1,10 +1,10 @@
 import type {
   ArtifactType,
   EmbeddingsCacheResponse,
-  IPearAIServerClient,
+  IBananaAIServerClient,
 } from "../interface.js";
 
-export class PearAIServerClient implements IPearAIServerClient {
+export class BananaAIServerClient implements IBananaAIServerClient {
   url: URL | undefined;
 
   constructor(
@@ -17,7 +17,7 @@ export class PearAIServerClient implements IPearAIServerClient {
           ? undefined
           : new URL(serverUrl);
     } catch (e) {
-      console.warn("Invalid PearAI server url", e);
+      console.warn("Invalid BananaAI server url", e);
       this.url = undefined;
     }
   }

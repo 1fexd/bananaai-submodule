@@ -24,12 +24,12 @@ export class DiffViewerCodeLensProvider implements vscode.CodeLensProvider {
       codeLenses.push(
         new vscode.CodeLens(range, {
           title: `Accept All ✅ (${getMetaKeyLabel()}⇧⏎)`,
-          command: "pearai.acceptDiff",
+          command: "BananaAI.acceptDiff",
           arguments: [document.uri.fsPath],
         }),
         new vscode.CodeLens(range, {
           title: `Reject All ❌ (${getMetaKeyLabel()}⇧⌫)`,
-          command: "pearai.rejectDiff",
+          command: "BananaAI.rejectDiff",
           arguments: [document.uri.fsPath],
         }),
       );

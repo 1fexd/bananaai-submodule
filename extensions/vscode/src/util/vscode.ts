@@ -22,7 +22,7 @@ export function getNonce() {
 }
 
 export function getExtensionUri(): vscode.Uri {
-  return vscode.extensions.getExtension("pearai.pearai")!.extensionUri;
+  return vscode.extensions.getExtension("BananaAI.BananaAI")!.extensionUri;
 }
 
 export function getViewColumnOfFile(

@@ -12,10 +12,10 @@ describe("Extension Test Suite", () => {
 
   test("Get the default model from webview", async () => {
     const continueExtensionApi =
-      vscode.extensions.getExtension("pearai.pearai");
+      vscode.extensions.getExtension("BananaAI.BananaAI");
     const extension: VsCodeExtension = continueExtensionApi?.exports.extension;
     await new Promise((resolve) => setTimeout(resolve, 400));
-    await vscode.commands.executeCommand("pearai.focusContinueInput");
+    await vscode.commands.executeCommand("BananaAI.focusContinueInput");
     await new Promise((resolve) => setTimeout(resolve, 400));
     const title = await (
       await extension.webviewProtocolPromise

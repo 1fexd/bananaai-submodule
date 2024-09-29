@@ -158,8 +158,8 @@ function Settings() {
               ideMessenger.post("showFile", {
                 filepath:
                   getPlatform() == "windows"
-                    ? "~\\.pearai\\config.json"
-                    : "~/.pearai/config.json",
+                    ? "~\\.BananaAI\\config.json"
+                    : "~/.BananaAI/config.json",
               });
             }}
           >

@@ -62,7 +62,7 @@ function PreWithToolbar(props: {
       setCheckedForCreateFile(true);
     }
 
-    if (lines[0].startsWith("pearCreateFile:")) {
+    if (lines[0].startsWith("bananaCreateFile:")) {
       setIsCreateFile(true);
     } else {
       setIsCreateFile(false);

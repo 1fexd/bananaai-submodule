@@ -16,7 +16,7 @@ const TEST_SLASH_COMMANDS = [
   },
   {
     name: "help",
-    description: "Get help using PearAI",
+    description: "Get help using BananaAI",
   },
 ];
 

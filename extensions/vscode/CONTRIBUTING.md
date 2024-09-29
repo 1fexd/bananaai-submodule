@@ -1,9 +1,9 @@
-# PearAI VS Code Extension
+# BananaAI VS Code Extension
 
-This is the PearAI VS Code Extension. Its primary jobs are
+This is the BananaAI VS Code Extension. Its primary jobs are
 
-1. Implement the IDE side of the PearAI IDE protocol, allowing a PearAI server to interact natively in an IDE. This happens in `src/continueIdeClient.ts`.
-2. Open the PearAI React app in a side panel. The React app's source code lives in the `gui` directory. The panel is opened by the `continue.openContinueGUI` command, as defined in `src/commands.ts`.
+1. Implement the IDE side of the BananaAI IDE protocol, allowing a BananaAI server to interact natively in an IDE. This happens in `src/continueIdeClient.ts`.
+2. Open the BananaAI React app in a side panel. The React app's source code lives in the `gui` directory. The panel is opened by the `continue.openContinueGUI` command, as defined in `src/commands.ts`.
 
 # How to run the extension
 

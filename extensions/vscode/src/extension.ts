@@ -15,13 +15,13 @@ async function dynamicImportAndActivate(context: vscode.ExtensionContext) {
     console.log("Error activating extension: ", e);
     vscode.window
       .showInformationMessage(
-        "Error activating the PearAI extension.",
+        "Error activating the BananaAI extension.",
         "View Logs",
         "Retry",
       )
       .then((selection) => {
         if (selection === "View Logs") {
-          vscode.commands.executeCommand("pearai.viewLogs");
+          vscode.commands.executeCommand("BananaAI.viewLogs");
         } else if (selection === "Retry") {
           // Reload VS Code window
           vscode.commands.executeCommand("workbench.action.reloadWindow");

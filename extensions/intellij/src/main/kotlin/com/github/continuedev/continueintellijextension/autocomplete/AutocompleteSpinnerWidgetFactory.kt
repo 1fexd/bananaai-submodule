@@ -57,7 +57,7 @@ class AutocompleteSpinnerWidget(project: Project): EditorBasedWidget(project), S
     }
 
     override fun getIcon(): Icon = if (isLoading) animatedIcon else
-        IconLoader.getIcon("/icons/pearai.svg", javaClass)
+        IconLoader.getIcon("/icons/BananaAI.svg", javaClass)
 
     fun setLoading(loading: Boolean) {
         isLoading = loading

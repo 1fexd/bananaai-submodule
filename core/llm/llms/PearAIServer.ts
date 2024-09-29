@@ -1,10 +1,10 @@
-import { getHeaders } from "../../pearaiServer/stubs/headers.js";
+import { getHeaders } from "../../BananaAIServer/stubs/headers.js";
 import {
   ChatMessage,
   CompletionOptions,
   LLMOptions,
   ModelProvider,
-  PearAuth,
+  BananaAuth,
 } from "../../index.js";
 import { SERVER_URL } from "../../util/parameters.js";
 import { Telemetry } from "../../util/posthog.js";
@@ -19,28 +19,28 @@ import {
 } from "./../countTokens.js";
 
 
-class PearAIServer extends BaseLLM {
-  getCredentials: (() => Promise<PearAuth | undefined>) | undefined = undefined;
-  setCredentials: (auth: PearAuth) => Promise<void> = async () => {};
-  pearAIAccessToken: string | undefined = undefined;
-  pearAIRefreshToken: string | undefined = undefined;
+class BananaAIServer extends BaseLLM {
+  getCredentials: (() => Promise<BananaAuth | undefined>) | undefined = undefined;
+  setCredentials: (auth: BananaAuth) => Promise<void> = async () => {};
+  BananaAIAccessToken: string | undefined = undefined;
+  BananaAIRefreshToken: string | undefined = undefined;
 
 
-  static providerName: ModelProvider = "pearai_server";
+  static providerName: ModelProvider = "BananaAI_server";
   constructor(options: LLMOptions) {
     super(options);
-    this.pearAIAccessToken = undefined;
-    this.pearAIRefreshToken = undefined;
+    this.BananaAIAccessToken = undefined;
+    this.BananaAIRefreshToken = undefined;
   }
 
-  // Public setter for pearAIAccessToken
-  public setPearAIAccessToken(value: string | undefined): void {
-    this.pearAIAccessToken = value;
+  // Public setter for BananaAIAccessToken
+  public setBananaAIAccessToken(value: string | undefined): void {
+    this.BananaAIAccessToken = value;
   }
 
-  // Public setter for pearAIRefreshToken
-  public setPearAIRefreshToken(value: string | undefined): void {
-    this.pearAIRefreshToken = value;
+  // Public setter for BananaAIRefreshToken
+  public setBananaAIRefreshToken(value: string | undefined): void {
+    this.BananaAIRefreshToken = value;
   }
 
   private async _getHeaders() {
@@ -132,7 +132,7 @@ class PearAIServer extends BaseLLM {
       method: "POST",
       headers: {
         ...(await this._getHeaders()),
-        Authorization: `Bearer ${this.pearAIAccessToken}`,
+        Authorization: `Bearer ${this.BananaAIAccessToken}`,
       },
       body: body,
     });
@@ -188,7 +188,7 @@ class PearAIServer extends BaseLLM {
         ...(await this._getHeaders()),
         "Content-Type": "application/json",
         Accept: "application/json",
-        Authorization: `Bearer ${this.pearAIAccessToken}`,
+        Authorization: `Bearer ${this.BananaAIAccessToken}`,
       },
     });
     let completion = "";
@@ -200,7 +200,7 @@ class PearAIServer extends BaseLLM {
 
   async listModels(): Promise<string[]> {
     return [
-      "pearai_model",
+      "BananaAI_model",
     ];
   }
   supportsFim(): boolean {
@@ -213,37 +213,37 @@ class PearAIServer extends BaseLLM {
       let creds = undefined;
 
 
-      if (this.getCredentials && this.pearAIAccessToken === undefined) {
+      if (this.getCredentials && this.BananaAIAccessToken === undefined) {
         console.log("Attempting to get credentials...");
         creds = await this.getCredentials();
 
         if (creds && creds.accessToken && creds.refreshToken) {
-          this.pearAIAccessToken = creds.accessToken;
-          this.pearAIRefreshToken = creds.refreshToken;
+          this.BananaAIAccessToken = creds.accessToken;
+          this.BananaAIRefreshToken = creds.refreshToken;
         }
         else {
           return false;
         }
       }
 
-      const tokens = await checkTokens(this.pearAIAccessToken, this.pearAIRefreshToken);
+      const tokens = await checkTokens(this.BananaAIAccessToken, this.BananaAIRefreshToken);
 
-      if (tokens.accessToken !== this.pearAIAccessToken || tokens.refreshToken !== this.pearAIRefreshToken) {
-        if (tokens.accessToken !== this.pearAIAccessToken) {
-          this.pearAIAccessToken = tokens.accessToken;
+      if (tokens.accessToken !== this.BananaAIAccessToken || tokens.refreshToken !== this.BananaAIRefreshToken) {
+        if (tokens.accessToken !== this.BananaAIAccessToken) {
+          this.BananaAIAccessToken = tokens.accessToken;
           console.log(
-            "PearAI access token changed from:",
-            this.pearAIAccessToken,
+            "BananaAI access token changed from:",
+            this.BananaAIAccessToken,
             "to:",
             tokens.accessToken,
           );
         }
 
-        if (tokens.refreshToken !== this.pearAIRefreshToken) {
-          this.pearAIRefreshToken = tokens.refreshToken;
+        if (tokens.refreshToken !== this.BananaAIRefreshToken) {
+          this.BananaAIRefreshToken = tokens.refreshToken;
           console.log(
-            "PearAI refresh token changed from:",
-            this.pearAIRefreshToken,
+            "BananaAI refresh token changed from:",
+            this.BananaAIRefreshToken,
             "to:",
             tokens.refreshToken,
           );
@@ -273,7 +273,7 @@ class PearAIServer extends BaseLLM {
       method: "POST",
       headers: {
         ...(await this._getHeaders()),
-        Authorization: `Bearer ${this.pearAIAccessToken}`,
+        Authorization: `Bearer ${this.BananaAIAccessToken}`,
       },
       body: JSON.stringify({
         kind,
@@ -284,4 +284,4 @@ class PearAIServer extends BaseLLM {
   }
 }
 
-export default PearAIServer;
+export default BananaAIServer;

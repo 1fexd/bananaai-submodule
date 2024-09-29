@@ -99,30 +99,30 @@ export const defaultSlashCommandsJetBrains = [
 export const defaultConfig: SerializedContinueConfig = {
   models: [
     {
-      model: "pearai_model",
+      model: "BananaAI_model",
       contextLength: 300000,
-      title: "PearAI Model",
+      title: "BananaAI Model",
       systemMessage:
         "You are an expert software developer. You give helpful and concise responses.",
-      provider: "pearai_server",
+      provider: "BananaAI_server",
       isDefault: true,
     },
     {
       model: "gpt-4o",
       contextLength: 300000,
-      title: "GPT-4o (PearAI)",
+      title: "GPT-4o (BananaAI)",
       systemMessage:
         "You are an expert software developer. You give helpful and concise responses.",
-      provider: "pearai_server",
+      provider: "BananaAI_server",
       isDefault: true,
     },
     {
       model: "claude-3-5-sonnet-20240620",
       contextLength: 3000000,
-      title: "Claude 3.5 Sonnet (PearAI)",
+      title: "Claude 3.5 Sonnet (BananaAI)",
       systemMessage:
         "You are an expert software developer. You give helpful and concise responses.",
-      provider: "pearai_server",
+      provider: "BananaAI_server",
       isDefault: true,
     },
   ],
@@ -136,9 +136,9 @@ export const defaultConfig: SerializedContinueConfig = {
   ],
   // WIP: Add autocomplete by default
   // tabAutocompleteModel: {
-  //   title: "PearAI Autocomplete",
-  //   provider: "pearai_server",
-  //   model: "pearai_autocomplete",
+  //   title: "BananaAI Autocomplete",
+  //   provider: "BananaAI_server",
+  //   model: "BananaAI_autocomplete",
   // },
   contextProviders: defaultContextProvidersVsCode,
   slashCommands: defaultSlashCommandsVscode,

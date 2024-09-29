@@ -7,7 +7,7 @@ import fs from "fs";
  */
 export function cleanSlate(context: ExtensionContext) {
   // Commented just to be safe
-  // // Remove ~/.pearai
+  // // Remove ~/.BananaAI
   // const continuePath = getContinueGlobalPath();
   // if (fs.existsSync(continuePath)) {
   //   fs.rmSync(continuePath, { recursive: true, force: true });

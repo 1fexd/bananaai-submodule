@@ -33,7 +33,7 @@ let fullScreenPanel: vscode.WebviewPanel | undefined;
 function getFullScreenTab() {
   const tabs = vscode.window.tabGroups.all.flatMap((tabGroup) => tabGroup.tabs);
   return tabs.find((tab) =>
-    (tab.input as any)?.viewType?.endsWith("pearai.continueGUIView"),
+    (tab.input as any)?.viewType?.endsWith("BananaAI.continueGUIView"),
   );
 }
 
@@ -224,7 +224,7 @@ const commandsMap: (
   }
 
   return {
-    "pearai.openPearAiWelcome": async () => {
+    "BananaAI.openBananaAIWelcome": async () => {
       vscode.commands.executeCommand(
         "markdown.showPreview",
         vscode.Uri.file(
@@ -232,7 +232,7 @@ const commandsMap: (
         ),
       );
     },
-    "pearai.acceptDiff": async (newFilepath?: string | vscode.Uri) => {
+    "BananaAI.acceptDiff": async (newFilepath?: string | vscode.Uri) => {
       captureCommandTelemetry("acceptDiff");
 
       if (newFilepath instanceof vscode.Uri) {
@@ -241,7 +241,7 @@ const commandsMap: (
       verticalDiffManager.clearForFilepath(newFilepath, true);
       await diffManager.acceptDiff(newFilepath);
     },
-    "pearai.rejectDiff": async (newFilepath?: string | vscode.Uri) => {
+    "BananaAI.rejectDiff": async (newFilepath?: string | vscode.Uri) => {
       captureCommandTelemetry("rejectDiff");
 
       if (newFilepath instanceof vscode.Uri) {
@@ -250,15 +250,15 @@ const commandsMap: (
       verticalDiffManager.clearForFilepath(newFilepath, false);
       await diffManager.rejectDiff(newFilepath);
     },
-    "pearai.acceptVerticalDiffBlock": (filepath?: string, index?: number) => {
+    "BananaAI.acceptVerticalDiffBlock": (filepath?: string, index?: number) => {
       captureCommandTelemetry("acceptVerticalDiffBlock");
       verticalDiffManager.acceptRejectVerticalDiffBlock(true, filepath, index);
     },
-    "pearai.rejectVerticalDiffBlock": (filepath?: string, index?: number) => {
+    "BananaAI.rejectVerticalDiffBlock": (filepath?: string, index?: number) => {
       captureCommandTelemetry("rejectVerticalDiffBlock");
       verticalDiffManager.acceptRejectVerticalDiffBlock(false, filepath, index);
     },
-    "pearai.quickFix": async (
+    "BananaAI.quickFix": async (
       range: vscode.Range,
       diagnosticMessage: string,
     ) => {
@@ -268,14 +268,14 @@ const commandsMap: (
 
       addCodeToContextFromRange(range, sidebar.webviewProtocol, prompt);
 
-      vscode.commands.executeCommand("pearai.focusContinueInput");
+      vscode.commands.executeCommand("BananaAI.focusContinueInput");
     },
     // Passthrough for telemetry purposes
-    "pearai.defaultQuickAction": async (args: QuickEditShowParams) => {
+    "BananaAI.defaultQuickAction": async (args: QuickEditShowParams) => {
       captureCommandTelemetry("defaultQuickAction");
-      vscode.commands.executeCommand("pearai.quickEdit", args);
+      vscode.commands.executeCommand("BananaAI.quickEdit", args);
     },
-    "pearai.customQuickActionSendToChat": async (
+    "BananaAI.customQuickActionSendToChat": async (
       prompt: string,
       range: vscode.Range,
     ) => {
@@ -283,9 +283,9 @@ const commandsMap: (
 
       addCodeToContextFromRange(range, sidebar.webviewProtocol, prompt);
 
-      vscode.commands.executeCommand("pearai.continueGUIView.focus");
+      vscode.commands.executeCommand("BananaAI.continueGUIView.focus");
     },
-    "pearai.customQuickActionStreamInlineEdit": async (
+    "BananaAI.customQuickActionStreamInlineEdit": async (
       prompt: string,
       range: vscode.Range,
     ) => {
@@ -293,23 +293,23 @@ const commandsMap: (
 
       streamInlineEdit("docstring", prompt, false, range);
     },
-    "pearai.toggleAuxiliaryBar": () => {
+    "BananaAI.toggleAuxiliaryBar": () => {
       vscode.commands.executeCommand("workbench.action.toggleAuxiliaryBar");
     },
-    "pearai.codebaseForceReIndex": async () => {
+    "BananaAI.codebaseForceReIndex": async () => {
       core.invoke("index/forceReIndex", undefined);
     },
-    "pearai.docsIndex": async () => {
+    "BananaAI.docsIndex": async () => {
       core.invoke("context/indexDocs", { reIndex: false });
     },
-    "pearai.docsReIndex": async () => {
+    "BananaAI.docsReIndex": async () => {
       core.invoke("context/indexDocs", { reIndex: true });
     },
-    "pearai.focusContinueInput": async () => {
+    "BananaAI.focusContinueInput": async () => {
       const fullScreenTab = getFullScreenTab();
       if (!fullScreenTab) {
         // focus sidebar
-        vscode.commands.executeCommand("pearai.continueGUIView.focus");
+        vscode.commands.executeCommand("BananaAI.continueGUIView.focus");
       } else {
         // focus fullscreen
         fullScreenPanel?.reveal();
@@ -317,7 +317,7 @@ const commandsMap: (
       sidebar.webviewProtocol?.request("focusContinueInput", undefined);
       await addHighlightedCodeToContext(sidebar.webviewProtocol);
     },
-    "pearai.focusContinueInputWithoutClear": async () => {
+    "BananaAI.focusContinueInputWithoutClear": async () => {
       const fullScreenTab = getFullScreenTab();
 
       const isContinueInputFocused = await sidebar.webviewProtocol.request(
@@ -336,7 +336,7 @@ const commandsMap: (
         // Handle opening the GUI otherwise
         if (!fullScreenTab) {
           // focus sidebar
-          vscode.commands.executeCommand("pearai.continueGUIView.focus");
+          vscode.commands.executeCommand("BananaAI.continueGUIView.focus");
         } else {
           // focus fullscreen
           fullScreenPanel?.reveal();
@@ -350,11 +350,11 @@ const commandsMap: (
         await addHighlightedCodeToContext(sidebar.webviewProtocol);
       }
     },
-    "pearai.quickEdit": async (args: QuickEditShowParams) => {
+    "BananaAI.quickEdit": async (args: QuickEditShowParams) => {
       captureCommandTelemetry("quickEdit");
       quickEdit.show(args);
     },
-    "pearai.writeCommentsForCode": async () => {
+    "BananaAI.writeCommentsForCode": async () => {
       captureCommandTelemetry("writeCommentsForCode");
 
       streamInlineEdit(
@@ -362,7 +362,7 @@ const commandsMap: (
         "Write comments for this code. Do not change anything about the code itself.",
       );
     },
-    "pearai.writeDocstringForCode": async () => {
+    "BananaAI.writeDocstringForCode": async () => {
       captureCommandTelemetry("writeDocstringForCode");
 
       streamInlineEdit(
@@ -371,7 +371,7 @@ const commandsMap: (
         true,
       );
     },
-    "pearai.fixCode": async () => {
+    "BananaAI.fixCode": async () => {
       captureCommandTelemetry("fixCode");
 
       streamInlineEdit(
@@ -379,22 +379,22 @@ const commandsMap: (
         "Fix this code. If it is already 100% correct, simply rewrite the code.",
       );
     },
-    "pearai.optimizeCode": async () => {
+    "BananaAI.optimizeCode": async () => {
       captureCommandTelemetry("optimizeCode");
       streamInlineEdit("optimize", "Optimize this code");
     },
-    "pearai.fixGrammar": async () => {
+    "BananaAI.fixGrammar": async () => {
       captureCommandTelemetry("fixGrammar");
       streamInlineEdit(
         "fixGrammar",
         "If there are any grammar or spelling mistakes in this writing, fix them. Do not make other large changes to the writing.",
       );
     },
-    "pearai.viewLogs": async () => {
+    "BananaAI.viewLogs": async () => {
       captureCommandTelemetry("viewLogs");
 
-      // Open ~/.pearai/pearai.log
-      const logFile = path.join(os.homedir(), ".pearai", "pearai.log");
+      // Open ~/.BananaAI/BananaAI.log
+      const logFile = path.join(os.homedir(), ".BananaAI", "BananaAI.log");
       // Make sure the file/directory exist
       if (!fs.existsSync(logFile)) {
         fs.mkdirSync(path.dirname(logFile), { recursive: true });
@@ -404,40 +404,40 @@ const commandsMap: (
       const uri = vscode.Uri.file(logFile);
       await vscode.window.showTextDocument(uri);
     },
-    "pearai.debugTerminal": async () => {
+    "BananaAI.debugTerminal": async () => {
       captureCommandTelemetry("debugTerminal");
 
       const terminalContents = await ide.getTerminalContents();
 
-      vscode.commands.executeCommand("pearai.continueGUIView.focus");
+      vscode.commands.executeCommand("BananaAI.continueGUIView.focus");
 
       sidebar.webviewProtocol?.request("userInput", {
         input: `I got the following error, can you please help explain how to fix it?\n\n${terminalContents.trim()}`,
       });
     },
-    "pearai.hideInlineTip": () => {
+    "BananaAI.hideInlineTip": () => {
       vscode.workspace
-        .getConfiguration("pearai")
+        .getConfiguration("BananaAI")
         .update("showInlineTip", false, vscode.ConfigurationTarget.Global);
     },
 
     // Commands without keyboard shortcuts
-    "pearai.addModel": () => {
+    "BananaAI.addModel": () => {
       captureCommandTelemetry("addModel");
 
-      vscode.commands.executeCommand("pearai.continueGUIView.focus");
+      vscode.commands.executeCommand("BananaAI.continueGUIView.focus");
       sidebar.webviewProtocol?.request("addModel", undefined);
     },
-    "pearai.openSettingsUI": () => {
-      vscode.commands.executeCommand("pearai.continueGUIView.focus");
+    "BananaAI.openSettingsUI": () => {
+      vscode.commands.executeCommand("BananaAI.continueGUIView.focus");
       sidebar.webviewProtocol?.request("openSettings", undefined);
     },
-    "pearai.sendMainUserInput": (text: string) => {
+    "BananaAI.sendMainUserInput": (text: string) => {
       sidebar.webviewProtocol?.request("userInput", {
         input: text,
       });
     },
-    "pearai.selectRange": (startLine: number, endLine: number) => {
+    "BananaAI.selectRange": (startLine: number, endLine: number) => {
       if (!vscode.window.activeTextEditor) {
         return;
       }
@@ -448,7 +448,7 @@ const commandsMap: (
         0,
       );
     },
-    "pearai.foldAndUnfold": (
+    "BananaAI.foldAndUnfold": (
       foldSelectionLines: number[],
       unfoldSelectionLines: number[],
     ) => {
@@ -459,17 +459,17 @@ const commandsMap: (
         selectionLines: foldSelectionLines,
       });
     },
-    "pearai.sendToTerminal": (text: string) => {
+    "BananaAI.sendToTerminal": (text: string) => {
       captureCommandTelemetry("sendToTerminal");
       ide.runCommand(text);
     },
-    "pearai.newSession": () => {
+    "BananaAI.newSession": () => {
       sidebar.webviewProtocol?.request("newSession", undefined);
     },
-    "pearai.viewHistory": () => {
+    "BananaAI.viewHistory": () => {
       sidebar.webviewProtocol?.request("viewHistory", undefined);
     },
-    "pearai.toggleFullScreen": () => {
+    "BananaAI.toggleFullScreen": () => {
       // Check if full screen is already open by checking open tabs
       const fullScreenTab = getFullScreenTab();
 
@@ -496,8 +496,8 @@ const commandsMap: (
 
       //create the full screen panel
       let panel = vscode.window.createWebviewPanel(
-        "pearai.continueGUIView",
-        "PearAI",
+        "BananaAI.continueGUIView",
+        "BananaAI",
         vscode.ViewColumn.One,
         {
           retainContextWhenHidden: true,
@@ -518,35 +518,35 @@ const commandsMap: (
       panel.onDidDispose(
         () => {
           sidebar.resetWebviewProtocolWebview();
-          vscode.commands.executeCommand("pearai.focusContinueInput");
+          vscode.commands.executeCommand("BananaAI.focusContinueInput");
         },
         null,
         extensionContext.subscriptions,
       );
     },
-    "pearai.openConfigJson": () => {
+    "BananaAI.openConfigJson": () => {
       ide.openFile(getConfigJsonPath());
     },
-    "pearai.selectFilesAsContext": (
+    "BananaAI.selectFilesAsContext": (
       firstUri: vscode.Uri,
       uris: vscode.Uri[],
     ) => {
-      vscode.commands.executeCommand("pearai.continueGUIView.focus");
+      vscode.commands.executeCommand("BananaAI.continueGUIView.focus");
 
       for (const uri of uris) {
         addEntireFileToContext(uri, false, sidebar.webviewProtocol);
       }
     },
-    "pearai.logAutocompleteOutcome": (
+    "BananaAI.logAutocompleteOutcome": (
       completionId: string,
       completionProvider: CompletionProvider,
     ) => {
       completionProvider.accept(completionId);
     },
-    "pearai.toggleTabAutocompleteEnabled": () => {
+    "BananaAI.toggleTabAutocompleteEnabled": () => {
       captureCommandTelemetry("toggleTabAutocompleteEnabled");
 
-      const config = vscode.workspace.getConfiguration("pearai");
+      const config = vscode.workspace.getConfiguration("BananaAI");
       const enabled = config.get("enableTabAutocomplete");
       const pauseOnBattery = config.get<boolean>(
         "pauseTabAutocompleteOnBattery",
@@ -579,10 +579,10 @@ const commandsMap: (
         }
       }
     },
-    "pearai.openTabAutocompleteConfigMenu": async () => {
+    "BananaAI.openTabAutocompleteConfigMenu": async () => {
       captureCommandTelemetry("openTabAutocompleteConfigMenu");
 
-      const config = vscode.workspace.getConfiguration("pearai");
+      const config = vscode.workspace.getConfiguration("BananaAI");
       const quickPick = vscode.window.createQuickPick();
       const autocompleteModels =
         (await configHandler.loadConfig())?.tabAutocompleteModels ?? [];
@@ -661,17 +661,17 @@ const commandsMap: (
           );
           configHandler.reloadConfig();
         } else if (selectedOption === "$(feedback) Give feedback") {
-          vscode.commands.executeCommand("pearai.giveAutocompleteFeedback");
+          vscode.commands.executeCommand("BananaAI.giveAutocompleteFeedback");
         }
         quickPick.dispose();
       });
       quickPick.show();
     },
-    "pearai.giveAutocompleteFeedback": async () => {
+    "BananaAI.giveAutocompleteFeedback": async () => {
       const feedback = await vscode.window.showInputBox({
         ignoreFocusOut: true,
         prompt:
-          "Please share what went wrong with the last completion. The details of the completion as well as this message will be sent to PearAI in order to improve.",
+          "Please share what went wrong with the last completion. The details of the completion as well as this message will be sent to BananaAI in order to improve.",
       });
       if (feedback) {
         const client = await continueServerClientPromise;
@@ -681,8 +681,8 @@ const commandsMap: (
         client.sendFeedback(feedback, lastLines);
       }
     },
-    "pearai.debug2": async () => {
-      const extensionUrl = `${vscode.env.uriScheme}://pearai.pearai/auth?token=TOKEN&refresh=REFRESH`;
+    "BananaAI.debug2": async () => {
+      const extensionUrl = `${vscode.env.uriScheme}://BananaAI.BananaAI/auth?token=TOKEN&refresh=REFRESH`;
       const extensionUrlParsed = vscode.Uri.parse(extensionUrl);
       const callbackUri = await vscode.env.asExternalUri(
         vscode.Uri.parse(extensionUrl),
@@ -690,13 +690,13 @@ const commandsMap: (
 
       vscode.window.showInformationMessage(`${callbackUri.toString(true)}`);
 
-      const creds = await vscode.commands.executeCommand("pearai.getPearAuth");
+      const creds = await vscode.commands.executeCommand("BananaAI.getBananaAuth");
       console.log("auth:", creds);
     },
-    "pearai.getPearAuth": async () => {
+    "BananaAI.getBananaAuth": async () => {
       // TODO: This may need some work, for now we dont have vscode ExtensionContext access in the ideProtocol.ts so this will do
-      const accessToken = await extensionContext.secrets.get("pearai-token");
-      const refreshToken = await extensionContext.secrets.get("pearai-refresh");
+      const accessToken = await extensionContext.secrets.get("BananaAI-token");
+      const refreshToken = await extensionContext.secrets.get("BananaAI-refresh");
 
       const creds = {
         accessToken: accessToken ? accessToken.toString() : null,
@@ -705,8 +705,8 @@ const commandsMap: (
 
       return creds;
     },
-    "pearai.login": async () => {
-      const extensionUrl = `${vscode.env.uriScheme}://pearai.pearai/auth`;
+    "BananaAI.login": async () => {
+      const extensionUrl = `${vscode.env.uriScheme}://BananaAI.BananaAI/auth`;
       const callbackUri = await vscode.env.asExternalUri(
         vscode.Uri.parse(extensionUrl),
       );
@@ -715,59 +715,59 @@ const commandsMap: (
       await vscode.env.openExternal(
         await vscode.env.asExternalUri(
           vscode.Uri.parse(
-            `https://trypear.ai/signin?callback=${callbackUri.toString()}`, // Change to localhost if running locally
+            `https://trybanana.ai/signin?callback=${callbackUri.toString()}`, // Change to localhost if running locally
           ),
         ),
       );
     },
-    "pearai.logout": async () => {
-      await extensionContext.secrets.delete("pearai-token");
-      await extensionContext.secrets.delete("pearai-refresh");
-      core.invoke("llm/resetPearAICredentials", undefined);
-      vscode.window.showInformationMessage("PearAI: Successfully logged out!");
+    "BananaAI.logout": async () => {
+      await extensionContext.secrets.delete("BananaAI-token");
+      await extensionContext.secrets.delete("BananaAI-refresh");
+      core.invoke("llm/resetBananaAICredentials", undefined);
+      vscode.window.showInformationMessage("BananaAI: Successfully logged out!");
     },
-    "pearai.updateUserAuth": async (data: {
+    "BananaAI.updateUserAuth": async (data: {
       accessToken: string;
       refreshToken: string;
     }) => {
       // Ensure that refreshToken and accessToken are both present
       if (!data || !(data.refreshToken && data.accessToken)) {
         vscode.window.showWarningMessage(
-          "PearAI: Failed to parse user auth request!",
+          "BananaAI: Failed to parse user auth request!",
         );
         return;
       }
 
-      extensionContext.secrets.store("pearai-token", data.accessToken);
-      extensionContext.secrets.store("pearai-refresh", data.refreshToken);
-      core.invoke("llm/resetPearAICredentials", undefined);
-      sidebar.webviewProtocol?.request("addPearAIModel", undefined);
-      vscode.window.showInformationMessage("PearAI: Successfully logged in!");
+      extensionContext.secrets.store("BananaAI-token", data.accessToken);
+      extensionContext.secrets.store("BananaAI-refresh", data.refreshToken);
+      core.invoke("llm/resetBananaAICredentials", undefined);
+      sidebar.webviewProtocol?.request("addBananaAIModel", undefined);
+      vscode.window.showInformationMessage("BananaAI: Successfully logged in!");
     },
-    "pearai.closeChat": () => {
+    "BananaAI.closeChat": () => {
       vscode.commands.executeCommand("workbench.action.toggleAuxiliaryBar");
     },
-    "pearai.loadRecentChat": () => {
+    "BananaAI.loadRecentChat": () => {
       sidebar.webviewProtocol?.request("loadMostRecentChat", undefined);
       sidebar.webviewProtocol?.request("focusContinueInput", undefined);
     },
-    "pearai.resizeAuxiliaryBarWidth": () => {
+    "BananaAI.resizeAuxiliaryBarWidth": () => {
       vscode.commands.executeCommand(
         "workbench.action.resizeAuxiliaryBarWidth",
       );
     },
-    "pearai.winshortcutResizeAuxiliaryBarWidth": () => {
-      vscode.commands.executeCommand("pearai.resizeAuxiliaryBarWidth");
+    "BananaAI.winshortcutResizeAuxiliaryBarWidth": () => {
+      vscode.commands.executeCommand("BananaAI.resizeAuxiliaryBarWidth");
     },
-    "pearai.macResizeAuxiliaryBarWidth": () => {
-      vscode.commands.executeCommand("pearai.resizeAuxiliaryBarWidth");
+    "BananaAI.macResizeAuxiliaryBarWidth": () => {
+      vscode.commands.executeCommand("BananaAI.resizeAuxiliaryBarWidth");
     },
-    "pearai.patchWSL": async () => {
+    "BananaAI.patchWSL": async () => {
       if (process.platform !== 'win32') {
         vscode.window.showWarningMessage("WSL is for Windows only.");
         return;
       }
-      
+
       const wslExtension = vscode.extensions.getExtension('ms-vscode-remote.remote-wsl');
 
       if (!wslExtension) {
@@ -776,25 +776,25 @@ const commandsMap: (
       }
 
       const wslExtensionPath = wslExtension.extensionPath;
-      const pearExtensionPath = extensionContext.extensionPath;
+      const bananaExtensionPath = extensionContext.extensionPath;
       const wslDownloadScript = path.join( wslExtensionPath, "scripts", "wslDownload.sh" );
-      const patchScript = path.join(pearExtensionPath, "wsl-scripts/wslPatch.sh");
+      const patchScript = path.join(bananaExtensionPath, "wsl-scripts/wslPatch.sh");
 
       if (!fs.existsSync(patchScript)) {
         vscode.window.showWarningMessage("Patch script not found.");
         return;
       }
 
-      let PEAR_COMMIT_ID = "";
+      let BANANA_COMMIT_ID = "";
       let VSC_COMMIT_ID = "";
       const productJsonPath = path.join(vscode.env.appRoot, "product.json");
       try {
         const productJson = JSON.parse(
           fs.readFileSync(productJsonPath, "utf8"),
         );
-        PEAR_COMMIT_ID = productJson.commit;
+        BANANA_COMMIT_ID = productJson.commit;
         VSC_COMMIT_ID = productJson.VSCodeCommit;
-        // testing commit ids - its for VSC version 1.89 most probably. 
+        // testing commit ids - its for VSC version 1.89 most probably.
         // VSC_COMMIT_ID = "4849ca9bdf9666755eb463db297b69e5385090e3";
         // PEAR_COMMIT_ID="58996b5e761a7fe74bdfb4ac468e4b91d4d27294";
         vscode.window.showInformationMessage(`VSC commit: ${VSC_COMMIT_ID}`);
@@ -803,9 +803,9 @@ const commandsMap: (
         console.error("Error reading product.json:", error);
       }
 
-      if (!PEAR_COMMIT_ID) {
+      if (!BANANA_COMMIT_ID) {
         vscode.window.showWarningMessage(
-          "Unable to retrieve PEAR commit ID.",
+          "Unable to retrieve BANANA commit ID.",
         );
         return;
       }
@@ -831,7 +831,7 @@ const commandsMap: (
         return;
       }
 
-      terminal.sendText(`$(wslpath '${patchScript}') $(wslpath '${wslDownloadScript}') '${PEAR_COMMIT_ID}' '${VSC_COMMIT_ID}'`);
+      terminal.sendText(`$(wslpath '${patchScript}') $(wslpath '${wslDownloadScript}') '${BANANA_COMMIT_ID}' '${VSC_COMMIT_ID}'`);
       terminal.show();
     },
   };

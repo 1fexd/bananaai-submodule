@@ -31,19 +31,19 @@ export interface ModelPackage {
 }
 
 export const models: { [key: string]: ModelPackage } = {
-  pearai_model: {
-    title: "PearAI Model",
+  BananaAI_model: {
+    title: "BananaAI Model",
     description:
-      "Experience seamless, fully-managed LLM integration with PearAI, featuring the most advanced and current best-in-market language model.",
+      "Experience seamless, fully-managed LLM integration with BananaAI, featuring the most advanced and current best-in-market language model.",
     params: {
-      model: "pearai_model",
+      model: "BananaAI_model",
       contextLength: 300_000,
-      title: "PearAI Model",
+      title: "BananaAI Model",
       systemMessage:
         "You are an expert software developer. You give helpful and concise responses.",
     },
-    providerOptions: ["pearai_server"],
-    icon: "pearai.png",
+    providerOptions: ["BananaAI_server"],
+    icon: "BananaAI.png",
     isOpenSource: false,
   },
   llama31Chat: {

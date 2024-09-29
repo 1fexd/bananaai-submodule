@@ -10,7 +10,7 @@ import { getExtensionUri } from "./util/vscode";
 export async function showTutorial() {
   const tutorialPath = path.join(
     getExtensionUri().fsPath,
-    "pearai_tutorial.py",
+    "BananaAI_tutorial.py",
   );
   // Ensure keyboard shortcuts match OS
   if (process.platform !== "darwin") {
@@ -108,27 +108,27 @@ export class VsCodeWebviewProtocol
 
           if (e.cause) {
             if (e.cause.name === "ConnectTimeoutError") {
-              message = `Connection timed out. If you expect it to take a long time to connect, you can increase the timeout in config.json by setting "requestOptions": { "timeout": 10000 }. You can find the full config reference here: https://trypear.ai/reference/config`;
+              message = `Connection timed out. If you expect it to take a long time to connect, you can increase the timeout in config.json by setting "requestOptions": { "timeout": 10000 }. You can find the full config reference here: https://trybanana.ai/reference/config`;
             } else if (e.cause.code === "ECONNREFUSED") {
-              message = `Connection was refused. This likely means that there is no server running at the specified URL. If you are running your own server you may need to set the "apiBase" parameter in config.json. For example, you can set up an OpenAI-compatible server like here: https://trypear.ai/reference/Model%20Providers/openai#openai-compatible-servers--apis`;
+              message = `Connection was refused. This likely means that there is no server running at the specified URL. If you are running your own server you may need to set the "apiBase" parameter in config.json. For example, you can set up an OpenAI-compatible server like here: https://trybanana.ai/reference/Model%20Providers/openai#openai-compatible-servers--apis`;
             } else {
-              message = `The request failed with "${e.cause.name}": ${e.cause.message}. If you're having trouble setting up PearAI, please see the troubleshooting guide for help.`;
+              message = `The request failed with "${e.cause.name}": ${e.cause.message}. If you're having trouble setting up BananaAI, please see the troubleshooting guide for help.`;
             }
           }
-          // PearAI login issues
-          else if (message.includes("401") && message.includes("PearAI")) {
+          // BananaAI login issues
+          else if (message.includes("401") && message.includes("BananaAI")) {
             vscode.window
               .showErrorMessage(
                 message,
-                'Login To PearAI',
+                'Login To BananaAI',
                 'Show Logs',
               )
               .then((selection) => {
-                if (selection === 'Login To PearAI') {
+                if (selection === 'Login To BananaAI') {
                   // Redirect to auth login URL
                   vscode.env.openExternal(
                     vscode.Uri.parse(
-                      'https://trypear.ai/signin?callback=pearai://pearai.pearai/auth',
+                      'https://trybanana.ai/signin?callback=BananaAI://BananaAI.BananaAI/auth',
                     ),
                   );
                 } else if (selection === 'Show Logs') {
@@ -138,20 +138,20 @@ export class VsCodeWebviewProtocol
                 }
               });
           }
-          // PearAI Free trial ended case
-          else if (message.includes("403") && message.includes("PearAI")) {
+          // BananaAI Free trial ended case
+          else if (message.includes("403") && message.includes("BananaAI")) {
             vscode.window
               .showErrorMessage(
                 message,
-                'View PearAI Pricing',
+                'View BananaAI Pricing',
                 'Show Logs',
               )
               .then((selection) => {
-                if (selection === 'View PearAI Pricing') {
+                if (selection === 'View BananaAI Pricing') {
                   // Redirect to auth login URL
                   vscode.env.openExternal(
                     vscode.Uri.parse(
-                      'https://trypear.ai/pricing',
+                      'https://trybanana.ai/pricing',
                     ),
                   );
                 } else if (selection === 'Show Logs') {
@@ -168,7 +168,7 @@ export class VsCodeWebviewProtocol
             } catch {}
             if (message.includes("exceeded")) {
               message +=
-                " To keep using PearAI, you can set up a local model or use your own API key.";
+                " To keep using BananaAI, you can set up a local model or use your own API key.";
             }
 
             vscode.window
@@ -215,7 +215,7 @@ export class VsCodeWebviewProtocol
                 } else if (selection === "Troubleshooting") {
                   vscode.env.openExternal(
                     vscode.Uri.parse(
-                      "https://trypear.ai/troubleshooting",
+                      "https://trybanana.ai/troubleshooting",
                     ),
                   );
                 }

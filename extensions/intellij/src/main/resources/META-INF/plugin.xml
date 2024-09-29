@@ -7,7 +7,7 @@
     <idea-version since-build="223.0"/>
 
     <extensions defaultExtensionNs="JavaScript.JsonSchema">
-        <ProviderFactory implementation="com.github.continuedev.continueintellijextension.pearai.ConfigJsonSchemaProviderFactory"/>
+        <ProviderFactory implementation="com.github.continuedev.continueintellijextension.BananaAI.ConfigJsonSchemaProviderFactory"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
@@ -35,14 +35,14 @@
                 parentId="tools"
                 instance="com.github.continuedev.continueintellijextension.services.ContinueExtensionConfigurable"
                 id="com.github.continuedev.continueintellijextension.services.ContinueExtensionConfigurable"
-                displayName="PearAI"/>
+                displayName="BananaAI"/>
         <applicationService
                 serviceImplementation="com.github.continuedev.continueintellijextension.services.ContinueExtensionSettings"/>
     </extensions>
 
     <actions>
         <action class="com.github.continuedev.continueintellijextension.editor.InlineEditAction"
-                id="pearai.inlineEdit"
+                id="BananaAI.inlineEdit"
                 description="Inline Edit"
                 text="Inline Edit">
             <keyboard-shortcut keymap="$default"
@@ -52,7 +52,7 @@
         </action>
 
         <action class="com.github.continuedev.continueintellijextension.editor.ToggleInlineEditAction"
-                id="pearai.toggleInlineEdit"
+                id="BananaAI.toggleInlineEdit"
                 description="Toggle Inline Edit"
                 text="Toggle Inline Edit">
             <keyboard-shortcut keymap="$default"
@@ -61,7 +61,7 @@
                                first-keystroke="meta shift I"/>
         </action>
 
-        <action id="pearai.acceptDiff"
+        <action id="BananaAI.acceptDiff"
                 class="com.github.continuedev.continueintellijextension.actions.AcceptDiffAction"
                 text="Accept Diff" description="Accept Diff">
             <keyboard-shortcut keymap="$default"
@@ -69,7 +69,7 @@
             <keyboard-shortcut keymap="Mac OS X"
                                first-keystroke="alt shift Y"/>
         </action>
-        <action id="pearai.rejectDiff"
+        <action id="BananaAI.rejectDiff"
                 class="com.github.continuedev.continueintellijextension.actions.RejectDiffAction"
                 text="Reject Diff" description="Reject Diff">
             <keyboard-shortcut keymap="$default"
@@ -77,7 +77,7 @@
             <keyboard-shortcut keymap="Mac OS X"
                                first-keystroke="alt shift N"/>
         </action>
-        <action id="pearai.quickTextEntry"
+        <action id="BananaAI.quickTextEntry"
                 class="com.github.continuedev.continueintellijextension.actions.QuickTextEntryAction"
                 text="Quick Text Entry" description="Quick Text Entry">
             <keyboard-shortcut keymap="$default"
@@ -85,14 +85,14 @@
             <keyboard-shortcut keymap="Mac OS X"
                                first-keystroke="alt shift J"/>
         </action>
-        <action id="pearai.viewLogs"
+        <action id="BananaAI.viewLogs"
                 class="com.github.continuedev.continueintellijextension.actions.ViewLogsAction"
                 text="View Continue Server Logs"
                 description="View Continue Server Logs">
             <!-- No shortcut defined -->
         </action>
-       
-        <action id="pearai.focusContinueInputWithoutClear"
+
+        <action id="BananaAI.focusContinueInputWithoutClear"
                 class="com.github.continuedev.continueintellijextension.actions.FocusContinueInputWithoutClearAction"
                 text="Add selected code to context"
                 description="Focus Continue Input With Edit">
@@ -105,20 +105,20 @@
 <!--        <action id="InsertLiveTemplate" class="com.intellij.openapi.actionSystem.EmptyAction" />-->
 <!--        <action id="SurroundWithLiveTemplate" class="com.intellij.openapi.actionSystem.EmptyAction"/>-->
 
-        <action id="pearai.newContinueSession"
+        <action id="BananaAI.newContinueSession"
                 class="com.github.continuedev.continueintellijextension.actions.NewContinueSessionAction"
                 text="Start New Continue Session"
                 icon="AllIcons.General.Add"
                 description="Start New Continue Session">
         </action>
 
-        <action id="pearai.viewHistory"
+        <action id="BananaAI.viewHistory"
                 class="com.github.continuedev.continueintellijextension.actions.ViewHistoryAction"
                 text="View History"
                 icon="AllIcons.Vcs.History"
                 description="View History">
         </action>
-        <action id="pearai.focusContinueInput"
+        <action id="BananaAI.focusContinueInput"
                 class="com.github.continuedev.continueintellijextension.actions.FocusContinueInputAction"
                 text="Add selected code to context"
                 description="Focus Continue Input">
@@ -130,8 +130,8 @@
         </action>
 
         <group id="ContinueSidebarActionsGroup">
-            <reference ref="pearai.newContinueSession"/>
-            <reference ref="pearai.viewHistory"/>
+            <reference ref="BananaAI.newContinueSession"/>
+            <reference ref="BananaAI.viewHistory"/>
         </group>
 
         <action id="com.github.continuedev.continueintellijextension.autocomplete.AcceptAutocompleteAction"

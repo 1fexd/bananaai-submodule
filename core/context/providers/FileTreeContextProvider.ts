@@ -87,7 +87,7 @@ class FileTreeContextProvider extends BaseContextProvider {
         <file creation instruction start (only use this if there's a need to create files)> 
         For each file, use a code block formatted as plaintext.
         The code block should contain only one line in the format
-        pearCreateFile: path/to/file.ext
+        bananaCreateFile: path/to/file.ext
 
         For each file, the file content should be placed in a separate code block immediately after the create file one,
         this way my code editor will parse the pearCreateFile instruction, and display a create file button, followed by the generated file content.

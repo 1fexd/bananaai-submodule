@@ -74,12 +74,12 @@ export class QuickActionsCodeLensProvider implements vscode.CodeLensProvider {
       return sendToChat
         ? {
             title,
-            command: "pearai.customQuickActionSendToChat",
+            command: "BananaAI.customQuickActionSendToChat",
             arguments: [prompt, range],
           }
         : {
             title,
-            command: "pearai.customQuickActionStreamInlineEdit",
+            command: "BananaAI.customQuickActionStreamInlineEdit",
             arguments: [prompt, range],
           };
     });
@@ -87,7 +87,7 @@ export class QuickActionsCodeLensProvider implements vscode.CodeLensProvider {
 
   getDefaultCommand(range: vscode.Range): vscode.Command[] {
     const quickEdit: vscode.Command = {
-      command: "pearai.defaultQuickAction",
+      command: "BananaAI.defaultQuickAction",
       title: "Continue",
       arguments: [{ range } as QuickEditShowParams],
     };

@@ -13,7 +13,7 @@ import type {
   Problem,
   RangeInFile,
   Thread,
-  PearAuth,
+  BananaAuth,
 } from "core";
 import { Range } from "core";
 import { walkDir } from "core/indexing/walkDir";
@@ -140,7 +140,7 @@ class VsCodeIde implements IDE {
       version: vscode.version,
       remoteName: vscode.env.remoteName || "local",
       extensionVersion:
-        vscode.extensions.getExtension("pearai.pearai")?.packageJSON.version,
+        vscode.extensions.getExtension("BananaAI.BananaAI")?.packageJSON.version,
     });
   }
   readRangeInFile(filepath: string, range: Range): Promise<string> {
@@ -173,7 +173,7 @@ class VsCodeIde implements IDE {
     const globalEnabled = vscode.env.isTelemetryEnabled;
     const continueEnabled: boolean =
       (await vscode.workspace
-        .getConfiguration("pearai")
+        .getConfiguration("BananaAI")
         .get("telemetryEnabled")) ?? true;
     return globalEnabled && continueEnabled;
   }
@@ -214,7 +214,7 @@ class VsCodeIde implements IDE {
     for (const workspaceDir of workspaceDirs) {
       const files = await vscode.workspace.fs.readDirectory(workspaceDir);
       for (const [filename, type] of files) {
-        if (type === vscode.FileType.File && filename === ".pearairc.json") {
+        if (type === vscode.FileType.File && filename === ".BananaAIrc.json") {
           const contents = await this.ideUtils.readFile(
             vscode.Uri.joinPath(workspaceDir, filename).fsPath,
           );
@@ -410,7 +410,7 @@ class VsCodeIde implements IDE {
   }
 
   getIdeSettingsSync(): IdeSettings {
-    const settings = vscode.workspace.getConfiguration("pearai");
+    const settings = vscode.workspace.getConfiguration("BananaAI");
     const remoteConfigServerUrl = settings.get<string | undefined>(
       "remoteConfigServerUrl",
       undefined,
@@ -443,17 +443,17 @@ class VsCodeIde implements IDE {
     return this.getIdeSettingsSync();
   }
 
-  async getPearAuth(): Promise<PearAuth> {
-    const creds = await this.ideUtils.getPearCredentials();
+  async getBananaAuth(): Promise<BananaAuth> {
+    const creds = await this.ideUtils.getBananaCredentials();
     return creds;
   }
 
-  async updatePearCredentials(auth: PearAuth): Promise<void> {
-    await this.ideUtils.updatePearCredentials(auth);
+  async updateBananaCredentials(auth: BananaAuth): Promise<void> {
+    await this.ideUtils.updateBananaCredentials(auth);
   }
 
-  async authenticatePear(): Promise<void> {
-    this.ideUtils.executePearLogin();
+  async authenticateBanana(): Promise<void> {
+    this.ideUtils.executeBananaLogin();
   }
 }
 

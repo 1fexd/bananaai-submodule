@@ -9,7 +9,7 @@
     "test": "jest",
     "build": "tsc"
   },
-  "author": "PearAI",  "license": "EE",
+  "author": "BananaAI",  "license": "EE",
   "dependencies": {
     "@continuedev/config-types": "^1.0.5",
     "follow-redirects": "^1.15.6",

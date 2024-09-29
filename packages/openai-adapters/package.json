@@ -9,7 +9,7 @@
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "build": "tsc"
   },
-  "author": "PearAI",  "license": "EE",
+  "author": "BananaAI",  "license": "EE",
   "dependencies": {
     "@azure/openai": "^1.0.0-beta.12",
     "@continuedev/config-types": "^1.0.5",

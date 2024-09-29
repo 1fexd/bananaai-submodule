@@ -11,9 +11,9 @@ body:
     attributes:
       label: Before submitting your bug report
       options:
-        - label: I believe this is a bug. I'll try to join the [PearAI Discord](https://discord.gg/7QMraJUsQt) for questions
+        - label: I believe this is a bug. I'll try to join the [BananaAI Discord](https://discord.gg//XndZet2pWF) for questions
           required: false
-        - label: I'm not able to find an [open issue](https://github.com/trypear/pearai-app/issues?q=is%3Aopen+is%3Aissue) that reports the same bug
+        - label: I'm not able to find an [open issue](https://github.com/trybanana/BananaAI-app/issues?q=is%3Aopen+is%3Aissue) that reports the same bug
           required: false
   - type: textarea
     attributes:

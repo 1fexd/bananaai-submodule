@@ -1,5 +1,5 @@
 """
-Welcome to a 1 minute tutorial for PearAI!
+Welcome to a 1 minute tutorial for BananaAI!
 
 You can click the gray buttons, starting with "Highlight the function" to follow along.
 """
@@ -17,7 +17,7 @@ def mysterious_function(y, z):
     return -1
 
 """Step 2: Use the keyboard shortcut [Cmd+L] to
-select the code and toggle the PearAI input box"""
+select the code and toggle the BananaAI input box"""
 
 """Step 3: Ask a question like "What does this code do?" and press Enter"""
 """Note that you can include context of your codebase by pressing Cmd+Enter"""
@@ -52,7 +52,7 @@ accept [Cmd+Shift+Enter] or reject [Cmd+Shift+Backspace] the edit"""
 # region ———————————————————————————— Part 3: Debug automatically [Cmd+Shift+R] ————————————————————————————
 
 
-"""Step 1: Run this Python file (pearai_tutorial.py), and it will error. Let's debug it!"""
+"""Step 1: Run this Python file (BananaAI_tutorial.py), and it will error. Let's debug it!"""
 def print_list(l):
     for i in range(len(l)+1):
         print(l[i])
@@ -63,4 +63,4 @@ print_list(["a", "b", "c"])
 
 # endregion
 
-# Now you know some of PearAI's basic features! Enjoy and learn more at https://trypear.ai!
+# Now you know some of BananaAI's basic features! Enjoy and learn more at https://trybanana.ai!

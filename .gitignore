@@ -135,14 +135,14 @@ cached_embeddings.pkl
 .ruff_cache
 codeql
 
-**/.pearai
+**/.BananaAI
 .DS_Store
 .continue
 .test
 .tiktoken_cache
 
 
-# IntelliJ Plugin 
+# IntelliJ Plugin
 **/**/.gradle
 **/**/.qodana
 **/**/build

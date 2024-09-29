@@ -12,7 +12,7 @@ import {
   Range,
   RangeInFile,
   Thread,
-  PearAuth,
+  BananaAuth,
 } from "../index.d.js";
 
 import { getContinueGlobalPath } from "./paths.js";
@@ -226,15 +226,15 @@ class FileSystemIde implements IDE {
     return ["", ""];
   }
 
-  getPearAuth(): Promise<PearAuth> {
+  getBananaAuth(): Promise<BananaAuth> {
     return Promise.resolve({ accessToken: undefined, refreshToken: undefined });
   }
 
-  updatePearCredentials(auth: PearAuth): Promise<void> {
+  updateBananaCredentials(auth: BananaAuth): Promise<void> {
     return Promise.resolve();
   }
 
-  authenticatePear(): Promise<void> {
+  authenticateBanana(): Promise<void> {
     return Promise.resolve();
   }
 }

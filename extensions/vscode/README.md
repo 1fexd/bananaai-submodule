@@ -1,10 +1,10 @@
-![readme](media/PearAIImage.png)
+![readme](media/BananaAIImage.png)
 
-<h1 align="center">Pear AI</h1>
+<h1 align="center">Banana AI</h1>
 
 <div align="center">
 
-**[PearAI](https://trypear.ai) is the leading open-source AI code assistant. You can connect any models and any context to build custom autocomplete and chat experiences inside [VS Code](https://marketplace.visualstudio.com/items?itemName=Continue.continue).**
+**[BananaAI](https://trybanana.ai) is the leading open-source AI code assistant. You can connect any models and any context to build custom autocomplete and chat experiences inside [VS Code](https://marketplace.visualstudio.com/items?itemName=Continue.continue).**
 
 </div>
 
@@ -44,10 +44,10 @@
 
 ## Getting Started
 
-You can try out PearAI with our free trial models before configuring your setup.
+You can try out BananaAI with our free trial models before configuring your setup.
 
-Learn more about the models and providers [here](https://pearai.dev/docs/setup/overview).
+Learn more about the models and providers [here](https://BananaAI.dev/docs/setup/overview).
 
 ## License
 
-[Apache 2.0 © 2023-2024 PearAI.](./LICENSE)
+[Apache 2.0 © 2023-2024 BananaAI.](./LICENSE)

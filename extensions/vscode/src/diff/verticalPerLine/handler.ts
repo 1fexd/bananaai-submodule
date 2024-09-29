@@ -228,7 +228,7 @@ export class VerticalPerLineDiffHandler implements vscode.Disposable {
   async clear(accept: boolean) {
     vscode.commands.executeCommand(
       "setContext",
-      "pearai.streamingDiff",
+      "BananaAI.streamingDiff",
       false,
     );
     const rangesToDelete = accept

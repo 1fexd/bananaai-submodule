@@ -1,23 +1,23 @@
 {
-  "name": "pearai",
-  "publisher": "pearai",
+  "name": "BananaAI",
+  "publisher": "BananaAI",
   "icon": "media/icon.png",
   "version": "1.2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/trypear/pearai-submodule"
+    "url": "https://github.com/trybanana/BananaAI-submodule"
   },
   "extensionKind": [
     "ui",
     "workspace"
   ],
   "bugs": {
-    "url": "https://github.com/trypear/pearai-app/issues"
+    "url": "https://github.com/trybanana/BananaAI-app/issues"
   },
-  "homepage": "https://trypear.ai",
-  "qna": "https://github.com/trypear/pearai-app/issues/new/choose",
+  "homepage": "https://trybanana.ai",
+  "qna": "https://github.com/trybanana/BananaAI-app/issues/new/choose",
   "license": "EE",
-  "displayName": "PearAI",
+  "displayName": "BananaAI",
   "pricing": "Free",
   "description": "Supercharge your development with AI",
   "engines": {
@@ -60,65 +60,65 @@
       {
         "filenames": [
           "config.json",
-          ".pearairc.json"
+          ".BananaAIrc.json"
         ],
         "id": "jsonc"
       }
     ],
     "configuration": {
-      "title": "PearAI",
+      "title": "BananaAI",
       "properties": {
-        "pearai.telemetryEnabled": {
+        "BananaAI.telemetryEnabled": {
           "type": "boolean",
           "default": true,
-          "markdownDescription": "PearAI collects anonymous usage data, cleaned of PII, to help us improve the product for our users. Read more  at [pearai.dev › Telemetry](https://trypear.ai/telemetry)."
+          "markdownDescription": "BananaAI collects anonymous usage data, cleaned of PII, to help us improve the product for our users. Read more  at [BananaAI.dev › Telemetry](https://trybanana.ai/telemetry)."
         },
-        "pearai.enableContinueForTeams": {
+        "BananaAI.enableContinueForTeams": {
           "type": "boolean",
           "default": false,
-          "markdownDescription": "_(Requires window reload)_ Enable PearAI for teams beta features. To sign in, click the person icon in the bottom right of the sidebar."
+          "markdownDescription": "_(Requires window reload)_ Enable BananaAI for teams beta features. To sign in, click the person icon in the bottom right of the sidebar."
         },
-        "pearai.showInlineTip": {
+        "BananaAI.showInlineTip": {
           "type": "boolean",
           "default": true,
-          "description": "Show inline suggestion to use the PearAI keyboard shortcuts (e.g. \"Cmd/Ctrl L to select code, Cmd/Ctrl I to edit\")."
+          "description": "Show inline suggestion to use the BananaAI keyboard shortcuts (e.g. \"Cmd/Ctrl L to select code, Cmd/Ctrl I to edit\")."
         },
-        "pearai.enableQuickActions": {
+        "BananaAI.enableQuickActions": {
           "type": "boolean",
           "default": false,
-          "markdownDescription": "Enable the experimental Quick Actions feature. Read our walkthrough to learn about configuration and how to share feedback: [pearai.dev › Walkthrough: Quick Actions (experimental)](https://trypear.ai/features/quick-actions)"
+          "markdownDescription": "Enable the experimental Quick Actions feature. Read our walkthrough to learn about configuration and how to share feedback: [BananaAI.dev › Walkthrough: Quick Actions (experimental)](https://trybanana.ai/features/quick-actions)"
         },
-        "pearai.enableTabAutocomplete": {
+        "BananaAI.enableTabAutocomplete": {
           "type": "boolean",
           "default": true,
-          "markdownDescription": "Enable PearAI's tab autocomplete feature. Read our walkthrough to learn about configuration and how to share feedback: [pearai.dev › Walkthrough: Tab Autocomplete (beta)](https://trypear.ai/docs/tab-autocomplete)"
+          "markdownDescription": "Enable BananaAI's tab autocomplete feature. Read our walkthrough to learn about configuration and how to share feedback: [BananaAI.dev › Walkthrough: Tab Autocomplete (beta)](https://trybanana.ai/docs/tab-autocomplete)"
         },
-        "pearai.pauseTabAutocompleteOnBattery": {
+        "BananaAI.pauseTabAutocompleteOnBattery": {
           "type": "boolean",
           "default": false,
-          "markdownDescription": "Pause PearAI's tab autocomplete feature when your battery is low."
+          "markdownDescription": "Pause BananaAI's tab autocomplete feature when your battery is low."
         },
-        "pearai.pauseCodebaseIndexOnStart": {
+        "BananaAI.pauseCodebaseIndexOnStart": {
           "type": "boolean",
           "default": false,
-          "markdownDescription": "Pause PearAI's codebase index on start."
+          "markdownDescription": "Pause BananaAI's codebase index on start."
         },
-        "pearai.enableDebugLogs": {
+        "BananaAI.enableDebugLogs": {
           "type": "boolean",
           "default": false,
-          "markdownDescription": "Enable PearAI Debug Logs in the Output panel."
+          "markdownDescription": "Enable BananaAI Debug Logs in the Output panel."
         },
-        "pearai.remoteConfigServerUrl": {
+        "BananaAI.remoteConfigServerUrl": {
           "type": "string",
           "default": null,
           "markdownDescription": "If your team is set up to use shared configuration, enter the server URL here and your user token below to enable automatic syncing."
         },
-        "pearai.userToken": {
+        "BananaAI.userToken": {
           "type": "string",
           "default": null,
           "markdownDescription": "If your team is set up to use shared configuration, enter your user token here and your server URL above to enable automatic syncing."
         },
-        "pearai.remoteConfigSyncPeriod": {
+        "BananaAI.remoteConfigSyncPeriod": {
           "type": "number",
           "default": 60,
           "description": "The period of time in minutes between automatic syncs."
@@ -127,185 +127,185 @@
     },
     "commands": [
       {
-        "command": "pearai.acceptDiff",
-        "category": "PearAI",
+        "command": "BananaAI.acceptDiff",
+        "category": "BananaAI",
         "title": "Accept Diff",
-        "group": "PearAI"
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.rejectDiff",
-        "category": "PearAI",
+        "command": "BananaAI.rejectDiff",
+        "category": "BananaAI",
         "title": "Reject Diff",
-        "group": "PearAI",
+        "group": "BananaAI",
         "icon": "$(stop)"
       },
       {
-        "command": "pearai.acceptVerticalDiffBlock",
-        "category": "PearAI",
+        "command": "BananaAI.acceptVerticalDiffBlock",
+        "category": "BananaAI",
         "title": "Accept Vertical Diff Block",
-        "group": "PearAI"
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.rejectVerticalDiffBlock",
-        "category": "PearAI",
+        "command": "BananaAI.rejectVerticalDiffBlock",
+        "category": "BananaAI",
         "title": "Reject Vertical Diff Block",
-        "group": "PearAI"
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.quickEdit",
-        "category": "PearAI",
+        "command": "BananaAI.quickEdit",
+        "category": "BananaAI",
         "title": "Generate Code",
-        "group": "PearAI"
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.focusContinueInput",
-        "category": "PearAI",
+        "command": "BananaAI.focusContinueInput",
+        "category": "BananaAI",
         "title": "Add Highlighted Code to Context",
-        "group": "PearAI"
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.focusContinueInputWithoutClear",
-        "category": "PearAI",
+        "command": "BananaAI.focusContinueInputWithoutClear",
+        "category": "BananaAI",
         "title": "Add Highlighted Code to Context",
-        "group": "PearAI"
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.debugTerminal",
-        "category": "PearAI",
-        "title": "PearAI: Debug Terminal",
-        "group": "PearAI"
+        "command": "BananaAI.debugTerminal",
+        "category": "BananaAI",
+        "title": "BananaAI: Debug Terminal",
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.toggleFullScreen",
-        "category": "PearAI",
+        "command": "BananaAI.toggleFullScreen",
+        "category": "BananaAI",
         "title": "Toggle Full Screen",
         "icon": "$(fullscreen)",
-        "group": "PearAI"
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.openConfigJson",
-        "category": "PearAI",
+        "command": "BananaAI.openConfigJson",
+        "category": "BananaAI",
         "title": "Open config.json",
-        "group": "PearAI"
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.openPearAiWelcome",
-        "category": "PearAI",
-        "title": "Open Welcome page for PearAI",
-        "group": "PearAI"
+        "command": "BananaAI.openBananaAIWelcome",
+        "category": "BananaAI",
+        "title": "Open Welcome page for BananaAI",
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.toggleTabAutocompleteEnabled",
-        "category": "PearAI",
+        "command": "BananaAI.toggleTabAutocompleteEnabled",
+        "category": "BananaAI",
         "title": "Toggle Autocomplete Enabled",
-        "group": "PearAI"
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.selectFilesAsContext",
-        "category": "PearAI",
-        "title": "PearAI: Select Files as Context",
-        "group": "PearAI"
+        "command": "BananaAI.selectFilesAsContext",
+        "category": "BananaAI",
+        "title": "BananaAI: Select Files as Context",
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.newSession",
-        "category": "PearAI",
+        "command": "BananaAI.newSession",
+        "category": "BananaAI",
         "title": "New Session",
         "icon": "$(add)",
-        "group": "PearAI"
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.viewHistory",
-        "category": "PearAI",
+        "command": "BananaAI.viewHistory",
+        "category": "BananaAI",
         "title": "View History",
         "icon": "$(history)",
-        "group": "PearAI"
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.writeCommentsForCode",
-        "category": "PearAI",
+        "command": "BananaAI.writeCommentsForCode",
+        "category": "BananaAI",
         "title": "Write Comments for this Code",
-        "group": "PearAI"
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.writeDocstringForCode",
-        "category": "PearAI",
+        "command": "BananaAI.writeDocstringForCode",
+        "category": "BananaAI",
         "title": "Write a Docstring for this Code",
-        "group": "PearAI"
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.fixCode",
-        "category": "PearAI",
+        "command": "BananaAI.fixCode",
+        "category": "BananaAI",
         "title": "Fix this Code",
-        "group": "PearAI"
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.optimizeCode",
-        "category": "PearAI",
+        "command": "BananaAI.optimizeCode",
+        "category": "BananaAI",
         "title": "Optimize this Code",
-        "group": "PearAI"
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.fixGrammar",
-        "category": "PearAI",
+        "command": "BananaAI.fixGrammar",
+        "category": "BananaAI",
         "title": "Fix Grammar / Spelling",
-        "group": "PearAI"
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.codebaseForceReIndex",
-        "category": "PearAI",
+        "command": "BananaAI.codebaseForceReIndex",
+        "category": "BananaAI",
         "title": "Codebase Force Re-Index",
-        "group": "PearAI"
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.docsIndex",
-        "category": "PearAI",
+        "command": "BananaAI.docsIndex",
+        "category": "BananaAI",
         "title": "Docs Index",
-        "group": "PearAI"
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.docsReIndex",
-        "category": "PearAI",
+        "command": "BananaAI.docsReIndex",
+        "category": "BananaAI",
         "title": "Docs Force Re-Index",
-        "group": "PearAI"
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.login",
-        "category": "PearAI",
-        "title": "Login to PearAI",
-        "group": "PearAI"
+        "command": "BananaAI.login",
+        "category": "BananaAI",
+        "title": "Login to BananaAI",
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.logout",
-        "category": "PearAI",
-        "title": "Logout of PearAI",
-        "group": "PearAI"
+        "command": "BananaAI.logout",
+        "category": "BananaAI",
+        "title": "Logout of BananaAI",
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.loadRecentChat",
-        "category": "PearAI",
+        "command": "BananaAI.loadRecentChat",
+        "category": "BananaAI",
         "title": "Load Recent Chat",
-        "group": "PearAI"
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.resizeAuxiliaryBarWidth",
-        "category": "PearAI",
+        "command": "BananaAI.resizeAuxiliaryBarWidth",
+        "category": "BananaAI",
         "title": "Resize Chat",
-        "group": "PearAI"
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.macResizeAuxiliaryBarWidth",
-        "category": "PearAI",
+        "command": "BananaAI.macResizeAuxiliaryBarWidth",
+        "category": "BananaAI",
         "title": "Big Chat - CMD + [",
-        "group": "PearAI"
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.winResizeAuxiliaryBarWidth",
-        "category": "PearAI",
+        "command": "BananaAI.winResizeAuxiliaryBarWidth",
+        "category": "BananaAI",
         "title": "Big Chat - CTRL + [",
-        "group": "PearAI"
+        "group": "BananaAI"
       },
       {
-        "command": "pearai.patchWSL",
+        "command": "BananaAI.patchWSL",
         "category": "Shell",
         "title": "Patch WSL",
         "group": "Shell"
@@ -313,201 +313,201 @@
     ],
     "keybindings": [
       {
-        "command": "pearai.focusContinueInput",
+        "command": "BananaAI.focusContinueInput",
         "mac": "cmd+l",
         "key": "ctrl+l"
       },
       {
-        "command": "pearai.focusContinueInputWithoutClear",
+        "command": "BananaAI.focusContinueInputWithoutClear",
         "mac": "cmd+shift+l",
         "key": "ctrl+shift+l"
       },
       {
-        "command": "pearai.toggleAuxiliaryBar",
+        "command": "BananaAI.toggleAuxiliaryBar",
         "mac": "alt+cmd+l",
         "key": "alt+ctrl+l"
       },
       {
-        "command": "pearai.acceptDiff",
+        "command": "BananaAI.acceptDiff",
         "mac": "shift+cmd+enter",
         "key": "shift+ctrl+enter"
       },
       {
-        "command": "pearai.rejectDiff",
+        "command": "BananaAI.rejectDiff",
         "mac": "shift+cmd+backspace",
         "key": "shift+ctrl+backspace"
       },
       {
-        "command": "pearai.rejectDiff",
+        "command": "BananaAI.rejectDiff",
         "mac": "cmd+z",
         "key": "ctrl+z",
-        "when": "pearai.diffVisible"
+        "when": "BananaAI.diffVisible"
       },
       {
-        "command": "pearai.quickEditHistoryUp",
+        "command": "BananaAI.quickEditHistoryUp",
         "mac": "up",
         "key": "up",
-        "when": "false && pearai.quickEditHistoryFocused"
+        "when": "false && BananaAI.quickEditHistoryFocused"
       },
       {
-        "command": "pearai.quickEditHistoryDown",
+        "command": "BananaAI.quickEditHistoryDown",
         "mac": "down",
         "key": "down",
-        "when": "false && pearai.quickEditHistoryFocused"
+        "when": "false && BananaAI.quickEditHistoryFocused"
       },
       {
-        "command": "pearai.acceptVerticalDiffBlock",
+        "command": "BananaAI.acceptVerticalDiffBlock",
         "mac": "alt+cmd+y",
         "key": "alt+ctrl+y"
       },
       {
-        "command": "pearai.rejectVerticalDiffBlock",
+        "command": "BananaAI.rejectVerticalDiffBlock",
         "mac": "alt+cmd+n",
         "key": "alt+ctrl+n"
       },
       {
-        "command": "pearai.quickEdit",
+        "command": "BananaAI.quickEdit",
         "mac": "cmd+i",
         "key": "ctrl+i"
       },
       {
-        "command": "pearai.debugTerminal",
+        "command": "BananaAI.debugTerminal",
         "mac": "cmd+shift+r",
         "key": "ctrl+shift+r"
       },
       {
-        "command": "pearai.toggleFullScreen",
+        "command": "BananaAI.toggleFullScreen",
         "mac": "cmd+k cmd+m",
         "key": "ctrl+k ctrl+m",
         "when": "!terminalFocus"
       },
       {
-        "command": "pearai.toggleTabAutocompleteEnabled",
+        "command": "BananaAI.toggleTabAutocompleteEnabled",
         "mac": "cmd+k cmd+a",
         "key": "ctrl+k ctrl+a",
         "when": "!terminalFocus"
       },
       {
-        "command": "pearai.loadRecentChat",
+        "command": "BananaAI.loadRecentChat",
         "mac": "cmd+0",
         "key": "ctrl+0"
       },
       {
-        "command": "pearai.resizeAuxiliaryBarWidth",
+        "command": "BananaAI.resizeAuxiliaryBarWidth",
         "mac": "cmd+\\",
         "key": "ctrl+\\"
       },
       {
-        "command": "pearai.viewHistory",
+        "command": "BananaAI.viewHistory",
         "mac": "cmd+h",
         "key": "ctrl+h"
       }
     ],
     "submenus": [
       {
-        "id": "pearai.continueSubMenu",
-        "label": "PearAI"
+        "id": "BananaAI.continueSubMenu",
+        "label": "BananaAI"
       }
     ],
     "menus": {
       "commandPalette": [
         {
-          "command": "pearai.quickEdit"
+          "command": "BananaAI.quickEdit"
         },
         {
-          "command": "pearai.focusContinueInput"
+          "command": "BananaAI.focusContinueInput"
         },
         {
-          "command": "pearai.focusContinueInputWithoutClear"
+          "command": "BananaAI.focusContinueInputWithoutClear"
         },
         {
-          "command": "pearai.debugTerminal"
+          "command": "BananaAI.debugTerminal"
         },
         {
-          "command": "pearai.toggleFullScreen"
+          "command": "BananaAI.toggleFullScreen"
         },
         {
-          "command": "pearai.newSession"
+          "command": "BananaAI.newSession"
         }
       ],
       "editor/context": [
         {
-          "submenu": "pearai.continueSubMenu",
+          "submenu": "BananaAI.continueSubMenu",
           "group": "0_acontinue"
         }
       ],
       "editor/title/run": [
         {
-          "command": "pearai.rejectDiff",
-          "group": "PearAI",
-          "when": "pearai.streamingDiff"
+          "command": "BananaAI.rejectDiff",
+          "group": "BananaAI",
+          "when": "BananaAI.streamingDiff"
         }
       ],
-      "pearai.continueSubMenu": [
+      "BananaAI.continueSubMenu": [
         {
-          "command": "pearai.focusContinueInputWithoutClear",
-          "group": "PearAI",
+          "command": "BananaAI.focusContinueInputWithoutClear",
+          "group": "BananaAI",
           "when": "editorHasSelection"
         },
         {
-          "command": "pearai.writeCommentsForCode",
-          "group": "PearAI",
+          "command": "BananaAI.writeCommentsForCode",
+          "group": "BananaAI",
           "when": "editorHasSelection"
         },
         {
-          "command": "pearai.writeDocstringForCode",
-          "group": "PearAI",
+          "command": "BananaAI.writeDocstringForCode",
+          "group": "BananaAI",
           "when": "editorHasSelection"
         },
         {
-          "command": "pearai.fixCode",
-          "group": "PearAI",
+          "command": "BananaAI.fixCode",
+          "group": "BananaAI",
           "when": "editorHasSelection"
         },
         {
-          "command": "pearai.optimizeCode",
-          "group": "PearAI",
+          "command": "BananaAI.optimizeCode",
+          "group": "BananaAI",
           "when": "editorHasSelection"
         },
         {
-          "command": "pearai.fixGrammar",
-          "group": "PearAI",
+          "command": "BananaAI.fixGrammar",
+          "group": "BananaAI",
           "when": "editorHasSelection && editorLangId == 'markdown'"
         }
       ],
       "explorer/context": [
         {
-          "command": "pearai.selectFilesAsContext",
+          "command": "BananaAI.selectFilesAsContext",
           "group": "1_debug@1"
         }
       ],
       "view/title": [
         {
-          "command": "pearai.newSession",
+          "command": "BananaAI.newSession",
           "group": "navigation@1",
-          "when": "view == pearai.continueGUIView"
+          "when": "view == BananaAI.continueGUIView"
         },
         {
-          "command": "pearai.toggleFullScreen",
+          "command": "BananaAI.toggleFullScreen",
           "group": "navigation@1",
-          "when": "view == pearai.continueGUIView"
+          "when": "view == BananaAI.continueGUIView"
         },
         {
-          "command": "pearai.viewHistory",
+          "command": "BananaAI.viewHistory",
           "group": "navigation@1",
-          "when": "view == pearai.continueGUIView"
+          "when": "view == BananaAI.continueGUIView"
         }
       ],
       "editor/title": [
         {
-          "command": "pearai.toggleFullScreen",
+          "command": "BananaAI.toggleFullScreen",
           "group": "navigation@1",
-          "when": "activeWebviewPanelId == pearai.continueGUIView"
+          "when": "activeWebviewPanelId == BananaAI.continueGUIView"
         }
       ],
       "terminal/context": [
         {
-          "command": "pearai.debugTerminal",
+          "command": "BananaAI.debugTerminal",
           "group": "navigation@top"
         }
       ]
@@ -515,17 +515,17 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "PearAI",
-          "title": "PearAI",
+          "id": "BananaAI",
+          "title": "BananaAI",
           "icon": "media/sidebar-icon.png"
         }
       ]
     },
     "views": {
-      "PearAI": [
+      "BananaAI": [
         {
           "type": "webview",
-          "id": "pearai.continueGUIView",
+          "id": "BananaAI.continueGUIView",
           "name": "",
           "visibility": "visible"
         }
@@ -537,7 +537,7 @@
         "url": "./config_schema.json"
       },
       {
-        "fileMatch": ".pearairc.json",
+        "fileMatch": ".BananaAIrc.json",
         "url": "./continue_rc_schema.json"
       }
     ]

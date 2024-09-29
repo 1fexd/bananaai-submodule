@@ -7,21 +7,21 @@ const darkCodeTheme = themes.dracula;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "PearAI",
+  title: "BananaAI",
   tagline:
     "the open-source library for accelerating software development with language models",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
-  url: "https://trypear.ai",
+  url: "https://trybanana.ai",
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: "/",
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: "trypearai", // Usually your GitHub org/user name.
-  projectName: "pearai", // Usually your repo name.
+  organizationName: "tryBananaAI", // Usually your GitHub org/user name.
+  projectName: "BananaAI", // Usually your repo name.
 
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
@@ -44,7 +44,7 @@ const config = {
         docs: {
           routeBasePath: "/",
           sidebarPath: require.resolve("./sidebars.js"),
-          editUrl: "https://github.com/trypear/pearai-app/tree/main/docs",
+          editUrl: "https://github.com/trybanana/BananaAI-app/tree/main/docs",
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
@@ -67,13 +67,13 @@ const config = {
         },
       ],
       // Replace with your project's social card
-      image: "https://trypear.ai/img/continue-social-card.png",
+      image: "https://trybanana.ai/img/continue-social-card.png",
       navbar: {
-        title: "PearAI",
+        title: "BananaAI",
         logo: {
-          alt: "PearAI Logo",
+          alt: "BananaAI Logo",
           src: "img/logo-dark.png",
-          href: "https://trypear.ai",
+          href: "https://trybanana.ai",
           srcDark: "img/logo.png",
         },
         items: [
@@ -84,13 +84,13 @@ const config = {
             label: "Docs",
           },
           {
-            to: "https://github.com/trypear/pearai-app",
+            to: "https://github.com/trybanana/BananaAI-app",
             label: "GitHub",
             position: "right",
             className: "github-navbar",
           },
           {
-            to: "https://discord.gg/7QMraJUsQt",
+            to: "https://discord.gg//XndZet2pWF",
             label: "Discord",
             position: "right",
             className: "discord-navbar",
@@ -105,7 +105,7 @@ const config = {
             items: [
               {
                 label: "VS Code",
-                to: "https://marketplace.visualstudio.com/items?itemName=PearAI.continue",
+                to: "https://marketplace.visualstudio.com/items?itemName=BananaAI.continue",
               },
               {
                 label: "JetBrains",
@@ -118,11 +118,11 @@ const config = {
             items: [
               {
                 label: "Discord",
-                to: "https://discord.gg/7QMraJUsQt",
+                to: "https://discord.gg//XndZet2pWF",
               },
               {
                 label: "GitHub",
-                to: "https://github.com/trypear/pearai-app",
+                to: "https://github.com/trybanana/BananaAI-app",
               },
             ],
           },
@@ -135,12 +135,12 @@ const config = {
               },
               {
                 label: "LinkedIn",
-                to: "https://linkedin.com/company/trypearai",
+                to: "https://linkedin.com/company/tryBananaAI",
               },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} PearAI Dev, Inc.`,
+        copyright: `Copyright © ${new Date().getFullYear()} BananaAI Dev, Inc.`,
       },
       prism: {
         theme: lightCodeTheme,
@@ -154,7 +154,7 @@ const config = {
         // Public API key: it is safe to commit it
         apiKey: "6795de0f612eebe17018f8061a9ef18e",
 
-        indexName: "pearai",
+        indexName: "BananaAI",
 
         // Optional: see doc section below
         contextualSearch: true,

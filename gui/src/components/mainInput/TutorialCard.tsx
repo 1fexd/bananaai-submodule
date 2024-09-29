@@ -64,7 +64,7 @@ export function TutorialCard({ onClose }: TutorialCardProps) {
             className="align-middle pr-3"
           />
           <span>
-            Click the gear icon in the bottom right to configure PearAI
+            Click the gear icon in the bottom right to configure BananaAI
           </span>
         </li>
         <li className="flex items-start">
@@ -74,7 +74,7 @@ export function TutorialCard({ onClose }: TutorialCardProps) {
             className="align-middle pr-3"
           />
           <span>
-            <a href="https://trypear.ai" target="_blank">
+            <a href="https://trybanana.ai" target="_blank">
               Read our documentation
             </a>{" "}
             to learn more

@@ -97,7 +97,7 @@ export class VsCodeMessenger {
     });
     this.onWebview("toggleDevTools", (msg) => {
       vscode.commands.executeCommand("workbench.action.toggleDevTools");
-      vscode.commands.executeCommand("pearai.viewLogs");
+      vscode.commands.executeCommand("BananaAI.viewLogs");
     });
     this.onWebview("reloadWindow", (msg) => {
       vscode.commands.executeCommand("workbench.action.reloadWindow");
@@ -106,25 +106,25 @@ export class VsCodeMessenger {
       vscode.commands.executeCommand("workbench.action.focusActiveEditorGroup");
     });
     this.onWebview("toggleFullScreen", (msg) => {
-      vscode.commands.executeCommand("pearai.toggleFullScreen");
+      vscode.commands.executeCommand("BananaAI.toggleFullScreen");
     });
     this.onWebview("bigChat", (msg) => {
-      vscode.commands.executeCommand("pearai.resizeAuxiliaryBarWidth");
+      vscode.commands.executeCommand("BananaAI.resizeAuxiliaryBarWidth");
     });
-    this.onWebview("pearaiLogin", (msg) => {
-      vscode.commands.executeCommand("pearai.login");
+    this.onWebview("BananaAILogin", (msg) => {
+      vscode.commands.executeCommand("BananaAI.login");
     });
     this.onWebview("lastChat", (msg) => {
-      vscode.commands.executeCommand("pearai.loadRecentChat");
+      vscode.commands.executeCommand("BananaAI.loadRecentChat");
     });
     this.onWebview("closeChat", (msg) => {
-      vscode.commands.executeCommand("pearai.closeChat");
+      vscode.commands.executeCommand("BananaAI.closeChat");
     });
     this.onWebview("openHistory", (msg) => {
-      vscode.commands.executeCommand("pearai.viewHistory");
+      vscode.commands.executeCommand("BananaAI.viewHistory");
     });
     this.onWebview("appendSelected", (msg) => {
-      vscode.commands.executeCommand("pearai.focusContinueInputWithoutClear");
+      vscode.commands.executeCommand("BananaAI.focusContinueInputWithoutClear");
     });
     // History
     this.onWebview("saveFile", async (msg) => {
@@ -196,7 +196,7 @@ export class VsCodeMessenger {
     this.onWebview("showTutorial", async (msg) => {
       const tutorialPath = path.join(
         getExtensionUri().fsPath,
-        "pearai_tutorial.py",
+        "BananaAI_tutorial.py",
       );
       // Ensure keyboard shortcuts match OS
       if (process.platform !== "darwin") {
@@ -337,7 +337,7 @@ export class VsCodeMessenger {
       ide.getGitHubAuthToken(),
     );
 
-    this.onWebviewOrCore("getPearAuth", (msg) => ide.getPearAuth());
+    this.onWebviewOrCore("getBananaAuth", (msg) => ide.getBananaAuth());
 
     this.onWebviewOrCore("getControlPlaneSessionInfo", async (msg) => {
       return getControlPlaneSessionInfo(msg.data.silent);

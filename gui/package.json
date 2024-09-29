@@ -2,7 +2,7 @@
   "name": "gui",
   "private": true,
   "type": "module",
-  "author": "PearAI",
+  "author": "BananaAI",
   "license": "EE",
   "scripts": {
     "dev": "vite",

@@ -10,7 +10,7 @@ import type {
   Range,
   RangeInFile,
   Thread,
-  PearAuth,
+  BananaAuth,
 } from "../index.js";
 import { ToIdeFromWebviewOrCoreProtocol } from "../protocol/ide.js";
 import { FromIdeProtocol } from "../protocol/index.js";
@@ -202,15 +202,15 @@ export class MessageIde implements IDE {
     return this.request("getBranch", { dir });
   }
 
-  getPearAuth(): Promise<PearAuth> {
-    return this.request("getPearAuth", undefined);
+  getBananaAuth(): Promise<BananaAuth> {
+    return this.request("getBananaAuth", undefined);
   }
 
-  updatePearCredentials(auth: PearAuth): Promise<void> {
-    return this.request("updatePearCredentials", auth);
+  updateBananaCredentials(auth: BananaAuth): Promise<void> {
+    return this.request("updateBananaCredentials", auth);
   }
 
-  authenticatePear(): Promise<void> {
-    return this.request("authenticatePear", undefined);
+  authenticateBanana(): Promise<void> {
+    return this.request("authenticateBanana", undefined);
   }
 }

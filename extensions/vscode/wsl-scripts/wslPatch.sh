@@ -13,18 +13,18 @@
 
 wslUser=$(whoami)
 wslDownloadScript=$1
-PEAR_COMMIT_ID=$2
+BANANA_COMMIT_ID=$2
 VSC_COMMIT_ID=$3
-quality="stable" # pear only has stable right now, no insiders.
+quality="stable" # banana only has stable right now, no insiders.
 
-echo "PEAR_COMMIT_ID: $PEAR_COMMIT_ID"
+echo "BANANA_COMMIT_ID: $BANANA_COMMIT_ID"
 echo "VSC_COMMIT_ID: $VSC_COMMIT_ID"
 
 # ----------------------------
 
-pearServerLocation="/home/$wslUser/.pearai-server/bin"
-productJsonFile="$pearServerLocation/$VSC_COMMIT_ID/product.json"
-serverFile="$pearServerLocation/$VSC_COMMIT_ID/out/vs/server/node/server.main.js"
+bananaServerLocation="/home/$wslUser/.BananaAI-server/bin"
+productJsonFile="$bananaServerLocation/$VSC_COMMIT_ID/product.json"
+serverFile="$bananaServerLocation/$VSC_COMMIT_ID/out/vs/server/node/server.main.js"
 
 # ----------------------------
 
@@ -35,7 +35,7 @@ if [ ! -f "$wslDownloadScript" ]; then
 fi
 
 echo "Running wslDownloadScript: $wslDownloadScript"
-bash "$wslDownloadScript" "$VSC_COMMIT_ID" "$quality" "$pearServerLocation" 
+bash "$wslDownloadScript" "$VSC_COMMIT_ID" "$quality" "$bananaServerLocation"
 if [ $? -eq 0 ]; then
     echo "wslDownloadScript executed successfully"
 else
@@ -71,7 +71,7 @@ if [ ! -f "$productJsonFile" ]; then
 fi
 
 # patch the productJsonFile
-sed -i "s/\"commit\": \"[^\"]*\"/\"commit\": \"$PEAR_COMMIT_ID\"/" "$productJsonFile"
+sed -i "s/\"commit\": \"[^\"]*\"/\"commit\": \"$BANANA_COMMIT_ID\"/" "$productJsonFile"
 
 # Check if the sed command was successful
 if [ $? -eq 0 ]; then
@@ -83,26 +83,26 @@ fi
 
 # ----------------------------
 
-# Rename the server folder to PEAR_COMMIT_ID
-if [ -d "$pearServerLocation/$VSC_COMMIT_ID" ]; then
-    mv "$pearServerLocation/$VSC_COMMIT_ID" "$pearServerLocation/$PEAR_COMMIT_ID"
+# Rename the server folder to BANANA_COMMIT_ID
+if [ -d "$bananaServerLocation/$VSC_COMMIT_ID" ]; then
+    mv "$bananaServerLocation/$VSC_COMMIT_ID" "$bananaServerLocation/$BANANA_COMMIT_ID"
     if [ $? -eq 0 ]; then
-        echo "Successfully renamed server folder to $pearServerLocation/$PEAR_COMMIT_ID"
+        echo "Successfully renamed server folder to $bananaServerLocation/$BANANA_COMMIT_ID"
     else
         echo "Failed to rename server folder"
         exit 1
     fi
 else
-    echo "server folder $pearServerLocation/$VSC_COMMIT_ID does not exist"
+    echo "server folder $bananaServerLocation/$VSC_COMMIT_ID does not exist"
     exit 1
 fi
 
 # ----------------------------
 
 # new paths now -
-serverFile="$pearServerLocation/$PEAR_COMMIT_ID/out/vs/server/node/server.main.js"
-productJsonFile="$pearServerLocation/$PEAR_COMMIT_ID/product.json"
+serverFile="$bananaServerLocation/$BANANA_COMMIT_ID/out/vs/server/node/server.main.js"
+productJsonFile="$bananaServerLocation/$BANANA_COMMIT_ID/product.json"
 
 # ----------------------------
 
-echo -e "\nWSL INSTALLED AND PATCHED - you can close this terminal now" 
+echo -e "\nWSL INSTALLED AND PATCHED - you can close this terminal now"

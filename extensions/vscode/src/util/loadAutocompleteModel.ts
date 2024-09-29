@@ -42,7 +42,7 @@ export class TabAutocompleteModel {
               if (value === "Documentation") {
                 vscode.env.openExternal(
                   vscode.Uri.parse(
-                    "https://trypear.ai/docs/tab-autocomplete",
+                    "https://trybanana.ai/docs/tab-autocomplete",
                   ),
                 );
               } else if (value === "Copy Command") {

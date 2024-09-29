@@ -42,11 +42,11 @@ const statusBarItemText = (status: StatusBarStatus | undefined) => {
   switch (status) {
     case undefined:
     case StatusBarStatus.Disabled:
-      return "$(circle-slash) PearAI";
+      return "$(circle-slash) BananaAI";
     case StatusBarStatus.Enabled:
-      return "$(check) PearAI";
+      return "$(check) BananaAI";
     case StatusBarStatus.Paused:
-      return "$(debug-pause) PearAI";
+      return "$(debug-pause) BananaAI";
   }
 };
 
@@ -89,10 +89,10 @@ export function setupStatusBar(
   }
 
   statusBarItem.text = loading
-    ? "$(loading~spin) PearAI"
+    ? "$(loading~spin) BananaAI"
     : statusBarItemText(status);
   statusBarItem.tooltip = statusBarItemTooltip(status ?? statusBarStatus);
-  statusBarItem.command = "pearai.openTabAutocompleteConfigMenu";
+  statusBarItem.command = "BananaAI.openTabAutocompleteConfigMenu";
 
   statusBarItem.show();
   if (status !== undefined) {
@@ -120,7 +120,7 @@ export function getStatusBarStatus(): StatusBarStatus | undefined {
 
 export function monitorBatteryChanges(battery: Battery): vscode.Disposable {
   return battery.onChangeAC((acConnected: boolean) => {
-    const config = vscode.workspace.getConfiguration("pearai");
+    const config = vscode.workspace.getConfiguration("BananaAI");
     const enabled = config.get<boolean>("enableTabAutocomplete");
     if (!!enabled) {
       const pauseOnBattery = config.get<boolean>(

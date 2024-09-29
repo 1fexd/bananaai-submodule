@@ -49,7 +49,7 @@ export const CustomModelButton = styled.div<{ disabled: boolean }>`
 `;
 
 enum ModelType {
-  PearAI,
+  BananaAI,
   Other,
 }
 
@@ -90,8 +90,8 @@ function Onboarding() {
     });
 
     switch (selectedModel) {
-      case ModelType.PearAI:
-        navigate("/addModel/provider/pearai_server", {
+      case ModelType.BananaAI:
+        navigate("/addModel/provider/BananaAI_server", {
           state: { referrer: "/onboarding" },
         });
         break;
@@ -105,11 +105,11 @@ function Onboarding() {
     }
   };
 
-  const modelInfo = providers["pearai_server"];
+  const modelInfo = providers["BananaAI_server"];
 
-  // this runs when user successfully logins pearai
+  // this runs when user successfully logins BananaAI
   useWebviewListener(
-    "addPearAIModel",
+    "addBananaAIModel",
     async () => {
       const pkg = modelInfo.packages[0];
       const dimensionChoices =
@@ -139,13 +139,13 @@ function Onboarding() {
 
   return (
     <div className="max-w-96  mx-auto leading-normal">
-      <h1 className="text-center">Welcome to PearAI!</h1>
+      <h1 className="text-center">Welcome to BananaAI!</h1>
       <h3 className="mx-3 text-center">Begin your journey by logging in!</h3>
       <CustomModelButton
         className="m-5"
         disabled={false}
         onClick={() => {
-          ideMessenger.post("pearaiLogin", undefined);
+          ideMessenger.post("BananaAILogin", undefined);
         }}
       >
         <h3 className="text-center my-2">Sign Up / Log In</h3>
@@ -166,9 +166,9 @@ function Onboarding() {
         }}
         className="mx-3"
       >
-        Note: Having trouble logging in? Open PearAI from the dashboard on the{" "}
+        Note: Having trouble logging in? Open BananaAI from the dashboard on the{" "}
         <a
-          href="https://trypear.ai/dashboard"
+          href="https://trybanana.ai/dashboard"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -179,17 +179,17 @@ function Onboarding() {
       {/* <div>
         <Div
           selected={false}
-          onClick={() => handleSelect(ModelType.PearAI)}
-          onMouseEnter={() => setHovered(ModelType.PearAI)}
+          onClick={() => handleSelect(ModelType.BananaAI)}
+          onMouseEnter={() => setHovered(ModelType.BananaAI)}
           onMouseLeave={() => setHovered(-1)}
         >
           <div className="flex items-center">
             <img
-              src={`${window.vscMediaUrl}/logos/pearai-color.png`}
+              src={`${window.vscMediaUrl}/logos/BananaAI-color.png`}
               className="mr-1"
               height="24px"
             ></img>
-            <h3>PearAI Server </h3>
+            <h3>BananaAI Server </h3>
           </div>
           <p className="mt-0">
             Convenient, fully-managed integration, with the current

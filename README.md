@@ -1,29 +1,31 @@
 
-# PearAI Submodule / Extension
+# BananaAI Submodule / Extension
 
-This is the source code for the bulk of PearAI's functionality, which is bundled as a VSCode / PearAI extension. It is a fork of Continue.
+This is the source code for the bulk of BananaAI's functionality, which is bundled as a VSCode / BananaAI extension. It is a fork of Continue.
 
-## 🌐 **For how to setup, build, and run PearAI, please visit [PearAI Contributing](https://github.com/trypear/pearai-app/blob/main/CONTRIBUTING.md)!**
+## 🌐 **For how to setup, build, and run BananaAI, please visit [BananaAI Contributing](https://github.com/trybanana/BananaAI-app/blob/main/CONTRIBUTING.md)!**
 
 ## Features 🚀
 
 ### Easily understand code sections 🤔
 
-![understand](docs/static/img/pearai-CMD+L2.gif)
+![understand](docs/static/img/BananaAI-CMD+L2.gif)
 
 VS Code: `cmd+L` (MacOS) / `ctrl+L` (Windows)
 
 ### Refactor functions where you are coding 🛠️
 
-![refactor](docs/static/img/pearai-CMD+I.gif)
+![refactor](docs/static/img/BananaAI-CMD+I.gif)
 
 VS Code: `cmd+I` (MacOS) / `ctrl+I` (Windows)
 
 ### Ask questions by mentioning a file 📚
 
 <!-- Specific width to match other gifs -->
-<img src="docs/static/img/pearai-@file.gif" alt="file" style="width: 1033px;">
+<img src="docs/static/img/BananaAI-@file.gif" alt="file" style="width: 1033px;">
 
 ## License
 
-[Apache 2.0 © 2024 PearAI](./LICENSE)
+[Apache 2.0 © 2024 BananaAI](./LICENSE)
+
+![yes](media/lefunny.jpeg)

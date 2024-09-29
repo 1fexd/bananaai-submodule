@@ -1,7 +1,7 @@
 ---
 title: ⏩ Important Shortcuts
-description: PearAI is the open-source autopilot for software development
-keywords: [shortcuts, pearai, important shortcuts, pear ai shortcuts]
+description: BananaAI is the open-source autopilot for software development
+keywords: [shortcuts, BananaAI, important shortcuts, banana ai shortcuts]
 ---
 
 # ⏩ Important shortcuts
@@ -17,4 +17,4 @@ keywords: [shortcuts, pearai, important shortcuts, pear ai shortcuts]
 | `CMD+;`       | Close                            |
 | `CMD+SHIFT+L` | Append selected                  |
 
-All shortcuts can be seen within PearAI itself by `CMD+SHIFT+P` → `Keyboard shortcuts`
+All shortcuts can be seen within BananaAI itself by `CMD+SHIFT+P` → `Keyboard shortcuts`

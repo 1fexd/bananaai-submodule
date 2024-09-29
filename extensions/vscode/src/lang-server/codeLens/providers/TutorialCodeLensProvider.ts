@@ -10,7 +10,7 @@ interface TutorialCodeLensItems {
   commands: vscode.Command[];
 }
 
-const TUTORIAL_FILE_NAME = "pearai_tutorial.py";
+const TUTORIAL_FILE_NAME = "BananaAI_tutorial.py";
 
 const cmdCtrl = getPlatform() === "mac" ? "Cmd" : "Ctrl";
 
@@ -20,7 +20,7 @@ const actions: TutorialCodeLensItems[] = [
     commands: [
       {
         title: `${cmdCtrl}+L`,
-        command: "pearai.focusContinueInput",
+        command: "BananaAI.focusContinueInput",
       },
     ],
   },
@@ -29,12 +29,12 @@ const actions: TutorialCodeLensItems[] = [
     commands: [
       {
         title: `"what does this code do?"`,
-        command: "pearai.sendMainUserInput",
+        command: "BananaAI.sendMainUserInput",
         arguments: ["what does this code do?"],
       },
       {
         title: `"what is an alternative to this?"`,
-        command: "pearai.sendMainUserInput",
+        command: "BananaAI.sendMainUserInput",
         arguments: ["what is an alternative to this?"],
       },
     ],
@@ -44,7 +44,7 @@ const actions: TutorialCodeLensItems[] = [
     commands: [
       {
         title: `${cmdCtrl}+I`,
-        command: "pearai.quickEdit",
+        command: "BananaAI.quickEdit",
         arguments: [{ initialPrompt: "Add comments" } as QuickEditShowParams],
       },
     ],
@@ -54,11 +54,11 @@ const actions: TutorialCodeLensItems[] = [
     commands: [
       {
         title: "Run the file",
-        command: "pearai.sendToTerminal",
+        command: "BananaAI.sendToTerminal",
         arguments: [
           `python ${path.join(
             getExtensionUri().fsPath,
-            "pearai_tutorial.py",
+            "BananaAI_tutorial.py",
           )}\n`,
         ],
       },
@@ -69,7 +69,7 @@ const actions: TutorialCodeLensItems[] = [
     commands: [
       {
         title: "Debug the error",
-        command: "pearai.debugTerminal",
+        command: "BananaAI.debugTerminal",
       },
     ],
   },
@@ -78,7 +78,7 @@ const actions: TutorialCodeLensItems[] = [
     commands: [
       {
         title: `${cmdCtrl}+Shift+R`,
-        command: "pearai.debugTerminal",
+        command: "BananaAI.debugTerminal",
       },
     ],
   },
@@ -122,7 +122,7 @@ export class TutorialCodeLensProvider implements vscode.CodeLensProvider {
       codeLenses.push(
         new vscode.CodeLens(range, {
           title: "Highlight the function",
-          command: "pearai.selectRange",
+          command: "BananaAI.selectRange",
           arguments: [lineOf10 + 1, lineOf10 + 8],
         }),
       );
@@ -135,7 +135,7 @@ export class TutorialCodeLensProvider implements vscode.CodeLensProvider {
       codeLenses.push(
         new vscode.CodeLens(range, {
           title: "Highlight the function",
-          command: "pearai.selectRange",
+          command: "BananaAI.selectRange",
           arguments: [lineOf30 + 1, lineOf30 + 12],
         }),
       );
@@ -157,7 +157,7 @@ export class TutorialCodeLensProvider implements vscode.CodeLensProvider {
     //   codeLenses.push(
     //     new vscode.CodeLens(range, {
     //       title: `Begin Section`,
-    //       command: "pearai.foldAndUnfold",
+    //       command: "BananaAI.foldAndUnfold",
     //       arguments: [linesToFold, [lineOfRegion, lineOfRegion + 1]],
     //     }),
     //   );

@@ -23,13 +23,13 @@ function MigrationPage() {
         For a summary of what changed and examples of <code>config.json</code>,
         please see the{" "}
         <a
-          href="https://trypear.ai/walkthroughs/config-file-migration"
+          href="https://trybanana.ai/walkthroughs/config-file-migration"
           target="_blank"
         >
           migration walkthrough
         </a>
         , and if you have any questions please reach out to us on{" "}
-        <a href="https://discord.gg/Y83xkG3uUW" target="_blank">
+        <a href="https://discord.gg//XndZet2pWF" target="_blank">
           Discord
         </a>
         .

@@ -84,7 +84,7 @@ export class VsCodeExtension {
     // Sidebar
     context.subscriptions.push(
       vscode.window.registerWebviewViewProvider(
-        "pearai.continueGUIView",
+        "BananaAI.continueGUIView",
         this.sidebar,
         {
           webviewOptions: { retainContextWhenHidden: true },
@@ -95,7 +95,7 @@ export class VsCodeExtension {
 
     // Config Handler with output channel
     const outputChannel = vscode.window.createOutputChannel(
-      "PearAI",
+      "BananaAI",
     );
     const inProcessMessenger = new InProcessMessenger<
       ToCoreProtocol,
@@ -140,10 +140,10 @@ export class VsCodeExtension {
         handleUri(uri: vscode.Uri) {
           console.log(uri);
           console.log("Received a custom URI!");
-          if (uri.authority === "pearai.pearai") {
+          if (uri.authority === "BananaAI.BananaAI") {
             if (uri.path === "/ping") {
               vscode.window.showInformationMessage(
-                "PearAI received a custom URI!",
+                "BananaAI received a custom URI!",
               );
             } else if (uri.path === "/auth") {
               const queryParams = new URLSearchParams(uri.query);
@@ -152,7 +152,7 @@ export class VsCodeExtension {
                 refreshToken: queryParams.get("refreshToken"),
               };
 
-              vscode.commands.executeCommand("pearai.updateUserAuth", data);
+              vscode.commands.executeCommand("BananaAI.updateUserAuth", data);
             }
           }
         },
@@ -188,7 +188,7 @@ export class VsCodeExtension {
     });
 
     // Tab autocomplete
-    const config = vscode.workspace.getConfiguration("pearai");
+    const config = vscode.workspace.getConfiguration("BananaAI");
     const enabled = config.get<boolean>("enableTabAutocomplete");
 
     // Register inline completion provider
@@ -284,7 +284,7 @@ export class VsCodeExtension {
       }
 
       if (
-        filepath.endsWith(".pearairc.json") ||
+        filepath.endsWith(".BananaAIrc.json") ||
         filepath.endsWith(".prompt")
       ) {
         this.configHandler.reloadConfig();
@@ -308,7 +308,7 @@ export class VsCodeExtension {
     vscode.authentication.onDidChangeSessions(async (e) => {
       if (e.provider.id === "github") {
         this.configHandler.reloadConfig();
-      } else if (e.provider.id === "pearai") {
+      } else if (e.provider.id === "BananaAI") {
         const sessionInfo = await getControlPlaneSessionInfo(true);
         this.webviewProtocolPromise.then(async (webviewProtocol) => {
           webviewProtocol.request("didChangeControlPlaneSessionInfo", {
@@ -371,7 +371,7 @@ export class VsCodeExtension {
     });
   }
 
-  static continueVirtualDocumentScheme = "pearai";
+  static continueVirtualDocumentScheme = "BananaAI";
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   private PREVIOUS_BRANCH_FOR_WORKSPACE_DIR: { [dir: string]: string } = {};

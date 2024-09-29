@@ -27,12 +27,12 @@ pub fn local_find_gitignores(workspace_dir: &Path) -> io::Result<HashMap<PathBuf
 fn main() -> io::Result<()> {
     let workspace_dir = Path::new("path/to/workspace");
     let gitignore_map = local_find_gitignores(workspace_dir)?;
-    
+
     // Print out the result (optional)
     for (path, contents) in gitignore_map {
         println!("{}:\n{}", path.display(), contents);
     }
-    
+
     Ok(())
 }
 
@@ -49,7 +49,7 @@ mod tests {
         let temp_dir = tempdir()?;
         let temp_path = temp_dir.path();
 
-        // Create some directories and .gitignore/.pearaiignore files
+        // Create some directories and .gitignore/.BananaAIignore files
         let dir_structure = [
             ("dir1", Some(".gitignore"), "node_modules/"),
             ("dir2", Some(".continueignore"), "target/"),

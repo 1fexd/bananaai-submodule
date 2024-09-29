@@ -44,7 +44,7 @@ const PROVIDER_HANDLES_TEMPLATING: ModelProvider[] = [
   "bedrock",
   "continue-proxy",
   "mistral",
-  "pearai_server"
+  "BananaAI_server"
 ];
 
 const PROVIDER_SUPPORTS_IMAGES: ModelProvider[] = [
@@ -56,7 +56,7 @@ const PROVIDER_SUPPORTS_IMAGES: ModelProvider[] = [
   "anthropic",
   "bedrock",
   "continue-proxy",
-  "pearai_server",
+  "BananaAI_server",
 ];
 
 const MODEL_SUPPORTS_IMAGES: string[] = [
@@ -72,7 +72,7 @@ const MODEL_SUPPORTS_IMAGES: string[] = [
   "sonnet",
   "opus",
   "haiku",
-  "pearai_model",
+  "BananaAI_model",
 ];
 
 function modelSupportsImages(
@@ -207,7 +207,7 @@ function autodetectTemplateType(model: string): TemplateType | undefined {
     return "neural-chat";
   }
 
-  if (lower.includes("pearai")) {
+  if (lower.includes("BananaAI")) {
     return "none";
   }
 

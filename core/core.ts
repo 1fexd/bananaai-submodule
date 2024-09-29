@@ -28,7 +28,7 @@ import type { IMessenger, Message } from "./util/messenger";
 import { editConfigJson } from "./util/paths";
 import { Telemetry } from "./util/posthog";
 import { streamDiffLines } from "./util/verticalEdit";
-import PearAIServer from "./llm/llms/PearAIServer";
+import BananaAIServer from "./llm/llms/BananaAIServer";
 
 export class Core {
   // implements IMessenger<ToCoreProtocol, FromCoreProtocol>
@@ -433,20 +433,20 @@ export class Core {
       return completion;
     });
 
-    on("llm/resetPearAICredentials", async (msg) => {
+    on("llm/resetBananaAICredentials", async (msg) => {
       const config = await this.configHandler.loadConfig();
-      const pearAIModels = config.models.filter(model => model instanceof PearAIServer) as PearAIServer[];
+      const BananaAIModels = config.models.filter(model => model instanceof BananaAIServer) as BananaAIServer[];
 
       try {
-        if (pearAIModels.length > 0) {
-          pearAIModels.forEach(model => {
-            model.setPearAIAccessToken(undefined);
-            model.setPearAIRefreshToken(undefined);
+        if (BananaAIModels.length > 0) {
+          BananaAIModels.forEach(model => {
+            model.setBananaAIAccessToken(undefined);
+            model.setBananaAIRefreshToken(undefined);
           });
         }
         return undefined;
       } catch (e) {
-        console.warn(`Error resetting PearAI credentials: ${e}`);
+        console.warn(`Error resetting BananaAI credentials: ${e}`);
         return undefined;
       }
     });

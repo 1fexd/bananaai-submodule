@@ -21,7 +21,7 @@ export async function activateExtension(context: vscode.ExtensionContext) {
 
   const vscodeExtension = new VsCodeExtension(context);
 
-  setupPearAPPLayout();
+  setupBananaAPPLayout();
 
   migrate("showWelcome_1", () => {
     vscode.commands.executeCommand(
@@ -31,13 +31,13 @@ export async function activateExtension(context: vscode.ExtensionContext) {
       ),
     );
 
-    vscode.commands.executeCommand("pearai.focusContinueInput");
+    vscode.commands.executeCommand("BananaAI.focusContinueInput");
   });
 
-  vscode.commands.executeCommand("pearai.focusContinueInput");
+  vscode.commands.executeCommand("BananaAI.focusContinueInput");
   importUserSettingsFromVSCode();
 
-  // Load PearAI configuration
+  // Load BananaAI configuration
   if (!context.globalState.get("hasBeenInstalled")) {
     context.globalState.update("hasBeenInstalled", true);
     Telemetry.capture(
@@ -64,14 +64,14 @@ export async function activateExtension(context: vscode.ExtensionContext) {
     : continuePublicApi;
 }
 
-// Custom Layout settings that we want default for PearAPP
-const setupPearAPPLayout = () => {
+// Custom Layout settings that we want default for BananaAPP
+const setupBananaAPPLayout = () => {
   if (isFirstLaunch) {
     return;
   }
 
-  // move pearai extension to auxiliary bar (secondary side bar)
-  vscode.commands.executeCommand("workbench.action.movePearExtensionToAuxBar");
+  // move BananaAI extension to auxiliary bar (secondary side bar)
+  vscode.commands.executeCommand("workbench.action.moveBananaExtensionToAuxBar");
   // set activity bar position to top
   vscode.commands.executeCommand("workbench.action.activityBarLocation.top");
 };

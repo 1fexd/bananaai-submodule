@@ -1,12 +1,12 @@
 ---
 title: 🎬 Demos
-description: Getting started with PearAI
+description: Getting started with BananaAI
 keywords: [demos, example, install, vscode, jetbrains]
 ---
 
 # 🎬 Demos
 
-Explore this collection of demo videos showcasing various use cases of PearAI. Each video walks you through different features, providing insights into how PearAI can streamline your workflow and improve productivity. Start by watching the video below to see PearAI in action.
+Explore this collection of demo videos showcasing various use cases of BananaAI. Each video walks you through different features, providing insights into how BananaAI can streamline your workflow and improve productivity. Start by watching the video below to see BananaAI in action.
 
 ## Quick Onboarding & Documentation Creation
 

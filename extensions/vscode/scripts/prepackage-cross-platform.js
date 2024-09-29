@@ -164,7 +164,7 @@ async function package(target, os, arch, exe) {
 
     // Tutorial
     "media/welcome.md",
-    "pearai_tutorial.py",
+    "BananaAI_tutorial.py",
     "config_schema.json",
 
     // Embeddings model

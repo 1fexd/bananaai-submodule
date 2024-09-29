@@ -18,7 +18,7 @@ class ContinueQuickFixProvider implements vscode.CodeActionProvider {
     const diagnostic = context.diagnostics[0];
 
     const quickFix = new vscode.CodeAction(
-      "Ask PearAI",
+      "Ask BananaAI",
       vscode.CodeActionKind.QuickFix,
     );
 
@@ -32,8 +32,8 @@ class ContinueQuickFixProvider implements vscode.CodeActionProvider {
     );
 
     quickFix.command = {
-      command: "pearai.quickFix",
-      title: "PearAI Quick Fix",
+      command: "BananaAI.quickFix",
+      title: "BananaAI Quick Fix",
       arguments: [surroundingRange, diagnostic.message],
     };
 

@@ -11,7 +11,7 @@ import type {
   Range,
   RangeInFile,
   Thread,
-  PearAuth,
+  BananaAuth,
 } from "../index.js";
 
 export type ToIdeFromWebviewOrCoreProtocol = {
@@ -83,9 +83,9 @@ export type ToIdeFromWebviewOrCoreProtocol = {
   ];
   logoutOfControlPlane: [undefined, void];
   pathSep: [undefined, string];
-  getPearAuth: [undefined, PearAuth];
-  updatePearCredentials: [PearAuth, void];
-  authenticatePear: [undefined, void];
+  getBananaAuth: [undefined, BananaAuth];
+  updateBananaCredentials: [BananaAuth, void];
+  authenticateBanana: [undefined, void];
 };
 
 export type ToWebviewOrCoreFromIdeProtocol = {

@@ -32,15 +32,15 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.extensions.PluginId
 
 fun showTutorial(project: Project) {
-    ContinuePluginStartupActivity::class.java.getClassLoader().getResourceAsStream("pearai_tutorial.py").use { `is` ->
+    ContinuePluginStartupActivity::class.java.getClassLoader().getResourceAsStream("BananaAI_tutorial.py").use { `is` ->
         if (`is` == null) {
-            throw IOException("Resource not found: pearai_tutorial.py")
+            throw IOException("Resource not found: BananaAI_tutorial.py")
         }
         var content = StreamUtil.readText(`is`, StandardCharsets.UTF_8)
         if (!System.getProperty("os.name").toLowerCase().contains("mac")) {
             content = content.replace("⌘", "⌃")
         }
-        val filepath = Paths.get(getContinueGlobalPath(), "pearai_tutorial.py").toString()
+        val filepath = Paths.get(getContinueGlobalPath(), "BananaAI_tutorial.py").toString()
         File(filepath).writeText(content)
         val virtualFile = LocalFileSystem.getInstance().findFileByPath(filepath)
 
@@ -78,12 +78,12 @@ class ContinuePluginStartupActivity : StartupActivity, Disposable, DumbAware {
         val actionIds = keymap.getActionIds(keyStroke)
 
         // If Continue has been re-assigned to another key, don't remove the shortcut
-        if (!actionIds.any { it.startsWith("pearai") }) {
+        if (!actionIds.any { it.startsWith("BananaAI") }) {
             return
         }
 
         for (actionId in actionIds) {
-             if (actionId.startsWith("pearai")) {
+             if (actionId.startsWith("BananaAI")) {
                  continue
              }
              val shortcuts = keymap.getShortcuts(actionId)
@@ -108,7 +108,7 @@ class ContinuePluginStartupActivity : StartupActivity, Disposable, DumbAware {
                     ServiceManager.getService(ContinueExtensionSettings::class.java)
             if (!settings.continueState.shownWelcomeDialog) {
                 settings.continueState.shownWelcomeDialog = true
-                // Open pearai_tutorial.py
+                // Open BananaAI_tutorial.py
                 showTutorial(project)
             }
 

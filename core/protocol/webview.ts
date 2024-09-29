@@ -1,7 +1,7 @@
 import type { ContextItemWithId, IndexingProgressUpdate } from "../index.js";
 
 export type ToWebviewFromIdeOrCoreProtocol = {
-  addPearAIModel: [undefined, void];
+  addBananaAIModel: [undefined, void];
   configUpdate: [undefined, void];
   getDefaultModelTitle: [undefined, string];
   loadMostRecentChat: [undefined, void];

@@ -1,6 +1,6 @@
 ---
 title: ⚡️ Quickstart
-description: Getting started with PearAI
+description: Getting started with BananaAI
 keywords: [quickstart, start, install, vscode, jetbrains]
 ---
 
@@ -8,24 +8,24 @@ keywords: [quickstart, start, install, vscode, jetbrains]
 
 1. Open the app and the chat window should appear on the right side (might load for a brief period on the first time).
 
-2. Select PearAI server and log in.
+2. Select BananaAI server and log in.
 
    :::tip
 
-   If login issues arise, use `CMD+SHIFT+P` (`CTRL+SHIFT+P` for Windows) and select "Login to PearAI" to authenticate again.
+   If login issues arise, use `CMD+SHIFT+P` (`CTRL+SHIFT+P` for Windows) and select "Login to BananaAI" to authenticate again.
 
    :::
 
    <video width="400" controls>
-      <source src="/videos/pearai-onboard-login.webm" type="video/webm" />
+      <source src="/videos/BananaAI-onboard-login.webm" type="video/webm" />
       Your browser does not support the video tag.
    </video>
 
 3. You're now ready to start prompting!
 
-4. Optional: put PearAI in your path so you can open within directories with `pearai .`
+4. Optional: put BananaAI in your path so you can open within directories with `BananaAI .`
 
-   <img src="/img/pearai-path-dark.webp" alt="pearai path" width="400"/>
+   <img src="/img/BananaAI-path-dark.webp" alt="BananaAI path" width="400"/>
 
 5. Try out the 2 core features below!
 
@@ -35,7 +35,7 @@ keywords: [quickstart, start, install, vscode, jetbrains]
          Your browser does not support the video tag.
       </video>
 
-   2. `CMD+L` (PearAI chat)
+   2. `CMD+L` (BananaAI chat)
       <video width="400" controls>
          <source src="/videos/cmd+l-documentation.webm" type="video/webm" />
          Your browser does not support the video tag.

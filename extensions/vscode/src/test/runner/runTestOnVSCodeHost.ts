@@ -18,7 +18,7 @@ const continueGlobalDir = path.resolve(
   "src",
   "test",
   "fixtures",
-  ".pearai",
+  ".BananaAI",
 );
 
 function setupTestWorkspace() {

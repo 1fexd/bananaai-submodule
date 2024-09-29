@@ -1,4 +1,4 @@
-import type { FileEdit, RangeInFile, Thread, PearAuth } from "core";
+import type { FileEdit, RangeInFile, Thread, BananaAuth } from "core";
 import path from "node:path";
 import * as vscode from "vscode";
 import { threadStopped } from "../debug/debug";
@@ -138,7 +138,7 @@ export class VsCodeIdeUtils {
   showMultiFileEdit(edits: FileEdit[]) {
     vscode.commands.executeCommand("workbench.action.closeAuxiliaryBar");
     const panel = vscode.window.createWebviewPanel(
-      "pearai.continueGUIView",
+      "BananaAI.continueGUIView",
       "Continue",
       vscode.ViewColumn.One,
     );
@@ -186,20 +186,20 @@ export class VsCodeIdeUtils {
 
   async getUserSecret(key: string) {
     // Check if secret already exists in VS Code settings (global)
-    let secret = vscode.workspace.getConfiguration("pearai").get(key);
+    let secret = vscode.workspace.getConfiguration("BananaAI").get(key);
     if (typeof secret !== "undefined" && secret !== null) {
       return secret;
     }
 
     // If not, ask user for secret
     secret = await vscode.window.showInputBox({
-      prompt: `Either enter secret for ${key} or press enter to try PearAI for free.`,
+      prompt: `Either enter secret for ${key} or press enter to try BananaAI for free.`,
       password: true,
     });
 
     // Add secret to VS Code settings
     vscode.workspace
-      .getConfiguration("pearai")
+      .getConfiguration("BananaAI")
       .update(key, secret, vscode.ConfigurationTarget.Global);
 
     return secret;
@@ -658,21 +658,21 @@ export class VsCodeIdeUtils {
   /**
    * Request credentials object from vscode
    */
-  async getPearCredentials(): Promise<PearAuth> {
-    return await vscode.commands.executeCommand("pearai.getPearAuth");
+  async getBananaCredentials(): Promise<BananaAuth> {
+    return await vscode.commands.executeCommand("BananaAI.getBananaAuth");
   }
 
   /**
    * Send login request to IDE via commands, this opens the website
    */
-  async executePearLogin() {
-    vscode.commands.executeCommand("pearai.login");
+  async executeBananaLogin() {
+    vscode.commands.executeCommand("BananaAI.login");
   }
 
   /**
    * Set the stored credentials in vscode
    */
-  async updatePearCredentials(auth: PearAuth) {
-    await vscode.commands.executeCommand("pearai.updateUserAuth", auth);
+  async updateBananaCredentials(auth: BananaAuth) {
+    await vscode.commands.executeCommand("BananaAI.updateUserAuth", auth);
   }
 }

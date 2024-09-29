@@ -25,7 +25,7 @@ const FileCreateChip = ({ rawCodeBlock }) => {
 
   useEffect(() => {
     const lines = rawCodeBlock.trim().split("\n");
-    if (lines[0].startsWith("pearCreateFile:")) {
+    if (lines[0].startsWith("bananaCreateFile:")) {
       let path = lines[0].split(":")[1].trim();
       // path = path.replace(/\\/g, "/");
       // let pathSegments = path.split("/");

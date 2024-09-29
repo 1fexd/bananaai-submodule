@@ -71,7 +71,7 @@ class RejectDiffAction : AnAction() {
     private var textArea: JTextArea? = null
      init {
          init()
-         title = "PearAI Quick Input"
+         title = "BananaAI Quick Input"
      }
 
      override fun getPreferredFocusedComponent(): JComponent? {
@@ -146,7 +146,7 @@ class QuickTextEntryAction : AnAction() {
              val project = e.project
              if (project != null) {
                  val toolWindowManager = ToolWindowManager.getInstance(project)
-                 val toolWindow = toolWindowManager.getToolWindow("PearAI")
+                 val toolWindow = toolWindowManager.getToolWindow("BananaAI")
 
                  if (toolWindow != null) {
                      if (!toolWindow.isVisible) {

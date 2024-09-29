@@ -28,7 +28,7 @@ import {
   RerankerDescription,
   SerializedContinueConfig,
   SlashCommand,
-  PearAuth,
+  BananaAuth,
 } from "../index.js";
 import TransformersJsEmbeddingsProvider from "../indexing/embeddings/TransformersJsEmbeddingsProvider.js";
 import { allEmbeddingsProviders } from "../indexing/embeddings/index.js";
@@ -65,14 +65,14 @@ import {
   getPromptFiles,
   slashCommandFromPromptFile,
 } from "./promptFile.js";
-import PearAIServer from "../llm/llms/PearAIServer.js";
+import BananaAIServer from "../llm/llms/BananaAIServer.js";
 
 function resolveSerializedConfig(filepath: string): SerializedContinueConfig {
   let content = fs.readFileSync(filepath, "utf8");
 
-  // Replace "pearai-server" with "pearai_server" at the beginning
+  // Replace "BananaAI-server" with "BananaAI_server" at the beginning
   // This is to make v0.0.3 backwards compatible with v0.0.2
-  content = content.replace(/"pearai-server"/g, '"pearai_server"');
+  content = content.replace(/"BananaAI-server"/g, '"BananaAI_server"');
 
   const config = JSONC.parse(content) as unknown as SerializedContinueConfig;
   if (config.env && Array.isArray(config.env)) {
@@ -190,7 +190,7 @@ async function serializedToIntermediateConfig(
       .flat()
       .filter(({ path }) => path.endsWith(".prompt"));
 
-    // Also read from ~/.pearai/.prompts
+    // Also read from ~/.BananaAI/.prompts
     promptFiles.push(...readAllGlobalPromptFiles());
 
     for (const file of promptFiles) {
@@ -249,13 +249,13 @@ async function intermediateToFinalConfig(
       // TODO: There is most definately a better way to do this
       //       windows is bad so its hard to set this up locally - Ender
       // inject callbacks to backend
-      if (llm instanceof PearAIServer) {
+      if (llm instanceof BananaAIServer) {
         llm.getCredentials = async () => {
-          return await ide.getPearAuth();
+          return await ide.getBananaAuth();
         };
 
-        llm.setCredentials = async (auth: PearAuth) => {
-          await ide.updatePearCredentials(auth);
+        llm.setCredentials = async (auth: BananaAuth) => {
+          await ide.updateBananaCredentials(auth);
         };
       }
 
@@ -362,13 +362,13 @@ async function intermediateToFinalConfig(
               config.systemMessage,
             );
 
-            if (llm instanceof PearAIServer) {
+            if (llm instanceof BananaAIServer) {
               llm.getCredentials = async () => {
-                return await ide.getPearAuth();
+                return await ide.getBananaAuth();
               };
 
-              llm.setCredentials = async (auth: PearAuth) => {
-                await ide.updatePearCredentials(auth);
+              llm.setCredentials = async (auth: BananaAuth) => {
+                await ide.updateBananaCredentials(auth);
               };
             }
 
@@ -597,7 +597,7 @@ async function buildConfigTs() {
     }
   } catch (e) {
     console.log(
-      `Build error. Please check your ~/.pearai/config.ts file: ${e}`,
+      `Build error. Please check your ~/.BananaAI/config.ts file: ${e}`,
     );
     return undefined;
   }

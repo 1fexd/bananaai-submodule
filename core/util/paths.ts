@@ -9,10 +9,10 @@ import { IdeType, SerializedContinueConfig } from "../index.js";
 
 dotenv.config();
 const CONTINUE_GLOBAL_DIR =
-  process.env.CONTINUE_GLOBAL_DIR ?? path.join(os.homedir(), ".pearai");
+  process.env.CONTINUE_GLOBAL_DIR ?? path.join(os.homedir(), ".BananaAI");
 
 export function getContinueGlobalPath(): string {
-  // This is ~/.pearai on mac/linux
+  // This is ~/.BananaAI on mac/linux
   const continuePath = CONTINUE_GLOBAL_DIR;
   if (!fs.existsSync(continuePath)) {
     fs.mkdirSync(continuePath);

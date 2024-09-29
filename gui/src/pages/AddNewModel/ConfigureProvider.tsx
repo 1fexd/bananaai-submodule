@@ -75,9 +75,9 @@ function ConfigureProvider() {
     }
   }, [providerName]);
 
-  // this runs when user successfully logins pearai
+  // this runs when user successfully logins BananaAI
   useWebviewListener(
-    "addPearAIModel",
+    "addBananaAIModel",
     async () => {
       const pkg = modelInfo.packages[0];
       const dimensionChoices =
@@ -330,7 +330,7 @@ function ConfigureProvider() {
             </details>
           )}
 
-        {providerName === "pearai_server" ? (
+        {providerName === "BananaAI_server" ? (
             <>
 
                 <CustomModelButton
@@ -339,7 +339,7 @@ function ConfigureProvider() {
                   onClick={() =>
                     ideMessenger.post(
                       "openUrl",
-                      "https://trypear.ai/signin?callback=pearai://pearai.pearai/auth", // Change to http://localhost:3000 and run pear-landing-page repo to test locally
+                      "https://trybanana.ai/signin?callback=BananaAI://BananaAI.BananaAI/auth", // Change to http://localhost:3000 and run banana-landing-page repo to test locally
                     )
                   }
                 >
@@ -361,8 +361,8 @@ function ConfigureProvider() {
                   }}
                   className="mx-3"
                 >
-                  Note: Having trouble logging in? Open PearAI from the dashboard on the {' '}
-                  <a href="https://trypear.ai/dashboard" target="_blank" rel="noopener noreferrer">
+                  Note: Having trouble logging in? Open BananaAI from the dashboard on the {' '}
+                  <a href="https://trybanana.ai/dashboard" target="_blank" rel="noopener noreferrer">
                     website
                   </a>.
                   </small>

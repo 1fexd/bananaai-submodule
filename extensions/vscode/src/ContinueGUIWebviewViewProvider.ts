@@ -9,11 +9,11 @@ import { VsCodeWebviewProtocol } from "./webviewProtocol";
 export class ContinueGUIWebviewViewProvider
   implements vscode.WebviewViewProvider
 {
-  public static readonly viewType = "pearai.continueGUIView";
+  public static readonly viewType = "BananaAI.continueGUIView";
   public webviewProtocol: VsCodeWebviewProtocol;
 
   private updateDebugLogsStatus() {
-    const settings = vscode.workspace.getConfiguration("pearai");
+    const settings = vscode.workspace.getConfiguration("BananaAI");
     this.enableDebugLogs = settings.get<boolean>("enableDebugLogs", false);
     if (this.enableDebugLogs) {
       this.outputChannel.show(true);
@@ -25,8 +25,8 @@ export class ContinueGUIWebviewViewProvider
   // Show or hide the output channel on enableDebugLogs
   private setupDebugLogsListener() {
     vscode.workspace.onDidChangeConfiguration((event) => {
-      if (event.affectsConfiguration('pearai.enableDebugLogs')) {
-        const settings = vscode.workspace.getConfiguration("pearai");
+      if (event.affectsConfiguration('BananaAI.enableDebugLogs')) {
+        const settings = vscode.workspace.getConfiguration("BananaAI");
         const enableDebugLogs = settings.get<boolean>("enableDebugLogs", false);
         if (enableDebugLogs) {
           this.outputChannel.show(true);
@@ -39,7 +39,7 @@ export class ContinueGUIWebviewViewProvider
 
   private async handleWebviewMessage(message: any) {
   if (message.messageType === "log") {
-    const settings = vscode.workspace.getConfiguration("pearai");
+    const settings = vscode.workspace.getConfiguration("BananaAI");
     const enableDebugLogs = settings.get<boolean>("enableDebugLogs", false);
 
     if (message.level === "debug" && !enableDebugLogs) {

@@ -21,12 +21,12 @@ export class SuggestionsCodeLensProvider implements vscode.CodeLensProvider {
       codeLenses.push(
         new vscode.CodeLens(range, {
           title: "Accept",
-          command: "pearai.acceptSuggestion",
+          command: "BananaAI.acceptSuggestion",
           arguments: [suggestion],
         }),
         new vscode.CodeLens(range, {
           title: "Reject",
-          command: "pearai.rejectSuggestion",
+          command: "BananaAI.rejectSuggestion",
           arguments: [suggestion],
         }),
       );

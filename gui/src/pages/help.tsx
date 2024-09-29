@@ -133,11 +133,11 @@ function HelpPage() {
   const navigate = useNavigate();
   const themeType = useThemeType();
   const ideMessenger = useContext(IdeMessengerContext);
-  const [session, setSession] = useState(false); // this state specifically serves to manage "Login to PearAI" text conditionally on auth status
+  const [session, setSession] = useState(false); // this state specifically serves to manage "Login to BananaAI" text conditionally on auth status
 
   // gets initial auth status
   useEffect(() => {
-    ideMessenger.request("getPearAuth", undefined).then((res) => {
+    ideMessenger.request("getBananaAuth", undefined).then((res) => {
       const newSession = res.accessToken ? true : false;
       setSession(newSession);
     });
@@ -146,7 +146,7 @@ function HelpPage() {
   // get auth status when user opens tutorial
   const handleOpenTutorial = () => {
     ideMessenger.post("showTutorial", undefined);
-    ideMessenger.request("getPearAuth", undefined).then((res) => {
+    ideMessenger.request("getBananaAuth", undefined).then((res) => {
       if (res?.accessToken) {
         navigate("/");
       } else {
@@ -178,18 +178,18 @@ function HelpPage() {
             className="inline-flex flex-shrink-0"
             themeType={themeType}
             onClick={() => {
-              ideMessenger.post("pearaiLogin", undefined);
+              ideMessenger.post("BananaAILogin", undefined);
               navigate("/");
             }}
           >
-            {session ? "Relogin to PearAI" : "Login to PearAI"}
+            {session ? "Relogin to BananaAI" : "Login to BananaAI"}
           </StyledButton>
           <StyledLink
-            href="https://trypear.ai/"
+            href="https://trybanana.ai/"
             target="_blank"
             themeType={themeType}
           >
-            PearAI Website
+            BananaAI Website
           </StyledLink>
 
           <StyledButton
@@ -210,7 +210,7 @@ function HelpPage() {
           </StyledButton>
           <StyledLink
             className="flex items-center justify-center gap-2"
-            href="https://github.com/trypear/pearai-app/"
+            href="https://github.com/trybanana/BananaAI-app/"
             target="_blank"
             themeType={themeType}
           >
@@ -221,7 +221,7 @@ function HelpPage() {
           </StyledLink>
           <StyledLink
             className="flex items-center justify-center gap-2"
-            href="https://discord.gg/Uw9mVvFUk3"
+            href="https://discord.gg//XndZet2pWF"
             target="_blank"
             themeType={themeType}
           >

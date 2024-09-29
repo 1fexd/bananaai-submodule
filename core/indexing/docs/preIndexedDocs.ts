@@ -168,11 +168,11 @@ const preIndexedDocs: Record<
     rootUrl: "https://code.visualstudio.com/api",
     faviconUrl: "https://code.visualstudio.com/favicon.ico",
   },
-  "https://trypear.ai/intro": {
+  "https://trybanana.ai/intro": {
     title: "Continue",
-    startUrl: "https://trypear.ai/intro",
-    rootUrl: "https://trypear.ai",
-    faviconUrl: "https://trypear.ai/favicon.ico",
+    startUrl: "https://trybanana.ai/intro",
+    rootUrl: "https://trybanana.ai",
+    faviconUrl: "https://trybanana.ai/favicon.ico",
   },
   "https://api.jquery.com/": {
     title: "jQuery",

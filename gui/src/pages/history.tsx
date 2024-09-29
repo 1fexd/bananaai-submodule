@@ -376,7 +376,7 @@ function History() {
         </table>
         <br />
         <i className="text-sm ml-4">
-          All session data is saved in ~/.pearai/sessions
+          All session data is saved in ~/.BananaAI/sessions
         </i>
       </div>
     </div>

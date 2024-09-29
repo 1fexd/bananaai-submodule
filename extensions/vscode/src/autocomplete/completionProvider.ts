@@ -35,7 +35,7 @@ export class ContinueCompletionProvider
       if (val === "Documentation") {
         vscode.env.openExternal(
           vscode.Uri.parse(
-            "https://trypear.ai/docs/tab-autocomplete",
+            "https://trybanana.ai/docs/tab-autocomplete",
           ),
         );
       } else if (val === "Download Ollama") {
@@ -250,7 +250,7 @@ export class ContinueCompletionProvider
         completionRange,
         {
           title: "Log Autocomplete Outcome",
-          command: "pearai.logAutocompleteOutcome",
+          command: "BananaAI.logAutocompleteOutcome",
           arguments: [input.completionId, this.completionProvider],
         },
       );

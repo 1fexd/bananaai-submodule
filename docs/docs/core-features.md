@@ -1,6 +1,6 @@
 ---
 title: ⚙️ Core Features
-description: PearAI is the open-source autopilot for software development
+description: BananaAI is the open-source autopilot for software development
 keywords: [core-features, intro, continue, autopilot, chatgpt]
 ---
 

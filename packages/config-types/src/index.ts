@@ -54,7 +54,7 @@ export const modelDescriptionSchema = z.object({
     "cloudflare",
     "azure",
     "continue-proxy",
-    "pearai_server"
+    "BananaAI_server"
   ]),
   model: z.string(),
   apiKey: z.string().optional(),

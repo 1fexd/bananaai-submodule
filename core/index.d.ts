@@ -443,9 +443,9 @@ export interface IdeSettings {
 }
 
 export interface IDE {
-  getPearAuth(): Promise<PearAuth>;
-  updatePearCredentials(auth: PearAuth): Promise<void>;
-  authenticatePear(): Promise<void>;
+  getBananaAuth(): Promise<BananaAuth>;
+  updateBananaCredentials(auth: BananaAuth): Promise<void>;
+  authenticateBanana(): Promise<void>;
   getIdeInfo(): Promise<IdeInfo>;
   getIdeSettings(): Promise<IdeSettings>;
   getDiff(): Promise<string>;
@@ -610,7 +610,7 @@ type ModelProvider =
   | "openai-aiohttp"
   | "msty"
   | "watsonx"
-  | "pearai_server"
+  | "BananaAI_server"
   | "other";
 
 export type ModelName =
@@ -683,7 +683,7 @@ export type ModelName =
   | "starcoder-3b"
   | "starcoder2-3b"
   | "stable-code-3b"
-  | "pearai_model";
+  | "BananaAI_model";
 
 export interface RequestOptions {
   timeout?: number;
@@ -929,11 +929,11 @@ export type ContinueRcJson = Partial<SerializedContinueConfig> & {
 
 // config.ts - give users simplified interfaces
 export interface Config {
-  /** If set to true, PearAI will collect anonymous usage data to improve the product. If set to false, we will collect nothing. Read here to learn more: https://trypear.ai/telemetry */
+  /** If set to true, BananaAI will collect anonymous usage data to improve the product. If set to false, we will collect nothing. Read here to learn more: https://trybanana.ai/telemetry */
   allowAnonymousTelemetry?: boolean;
   /** Each entry in this array will originally be a ModelDescription, the same object from your config.json, but you may add CustomLLMs.
    * A CustomLLM requires you only to define an AsyncGenerator that calls the LLM and yields string updates. You can choose to define either `streamCompletion` or `streamChat` (or both).
-   * PearAI will do the rest of the work to construct prompt templates, handle context items, prune context, etc.
+   * BananaAI will do the rest of the work to construct prompt templates, handle context items, prune context, etc.
    */
   models: (CustomLLM | ModelDescription)[];
   /** A system message to be followed by all of your models */
@@ -945,18 +945,18 @@ export interface Config {
   /** The list of slash commands that will be available in the sidebar */
   slashCommands?: SlashCommand[];
   /** Each entry in this array will originally be a ContextProviderWithParams, the same object from your config.json, but you may add CustomContextProviders.
-   * A CustomContextProvider requires you only to define a title and getContextItems function. When you type '@title <query>', PearAI will call `getContextItems(query)`.
+   * A CustomContextProvider requires you only to define a title and getContextItems function. When you type '@title <query>', BananaAI will call `getContextItems(query)`.
    */
   contextProviders?: (CustomContextProvider | ContextProviderWithParams)[];
-  /** If set to true, PearAI will not index your codebase for retrieval */
+  /** If set to true, BananaAI will not index your codebase for retrieval */
   disableIndexing?: boolean;
-  /** If set to true, PearAI will not make extra requests to the LLM to generate a summary title of each session. */
+  /** If set to true, BananaAI will not make extra requests to the LLM to generate a summary title of each session. */
   disableSessionTitles?: boolean;
-  /** An optional token to identify a user. Not used by PearAI unless you write custom coniguration that requires such a token */
+  /** An optional token to identify a user. Not used by BananaAI unless you write custom coniguration that requires such a token */
   userToken?: string;
-  /** The provider used to calculate embeddings. If left empty, PearAI will use transformers.js to calculate the embeddings with all-MiniLM-L6-v2 */
+  /** The provider used to calculate embeddings. If left empty, BananaAI will use transformers.js to calculate the embeddings with all-MiniLM-L6-v2 */
   embeddingsProvider?: EmbeddingsProviderDescription | EmbeddingsProvider;
-  /** The model that PearAI will use for tab autocompletions. */
+  /** The model that BananaAI will use for tab autocompletions. */
   tabAutocompleteModel?:
     | CustomLLM
     | ModelDescription
@@ -973,7 +973,7 @@ export interface Config {
   analytics?: AnalyticsConfig;
 }
 
-// in the actual PearAI source code
+// in the actual BananaAI source code
 export interface ContinueConfig {
   allowAnonymousTelemetry?: boolean;
   models: ILLM[];
@@ -1013,7 +1013,7 @@ export interface BrowserSerializedContinueConfig {
   analytics?: AnalyticsConfig;
 }
 
-export interface PearAuth {
+export interface BananaAuth {
   accessToken?: string;
   refreshToken?: string;
 }

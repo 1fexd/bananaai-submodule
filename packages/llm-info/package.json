@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc"
   },
-  "author": "PearAI",  "license": "EE",
+  "author": "BananaAI",  "license": "EE",
   "devDependencies": {
     "typescript": "^5.5.2"
   },

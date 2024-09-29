@@ -37,8 +37,8 @@ export class ReverseMessageIde {
       return this.ide.getGitHubAuthToken();
     });
 
-    this.on("getPearAuth", (data) => {
-      return this.ide.getPearAuth();
+    this.on("getBananaAuth", (data) => {
+      return this.ide.getBananaAuth();
     });
 
     this.on("getLastModified", (data) => {

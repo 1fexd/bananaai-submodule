@@ -1,17 +1,17 @@
-# 🍐 Welcome to PearAI!
+# 🍐 Welcome to BananaAI!
 
-Welcome to PearAI, your AI code editor!
+Welcome to BananaAI, your AI code editor!
 
-Begin your journey by logging in on the PearAI panel (Cmd/Ctrl+;)
+Begin your journey by logging in on the BananaAI panel (Cmd/Ctrl+;)
 
-**For a quick tutorial on what PearAI can do, open <span style="font-size: 1.2em;">[tutorial.py](../pearai_tutorial.py)</span>.**
+**For a quick tutorial on what BananaAI can do, open <span style="font-size: 1.2em;">[tutorial.py](../BananaAI_tutorial.py)</span>.**
 
 ## 🔑 Important Shortcuts
 
 | Description                        | Keybinds                                    |
 |------------------------------------|---------------------------------------------|
 | New Chat / Add Selected            | <kbd>Cmd/Ctrl</kbd> + <kbd>L</kbd>          |
-| Open/Close Pear Chat               | <kbd>Cmd/Ctrl</kbd> + <kbd>;</kbd>          |
+| Open/Close Banana Chat               | <kbd>Cmd/Ctrl</kbd> + <kbd>;</kbd>          |
 | Make Chat Bigger/Smaller           | <kbd>Cmd/Ctrl</kbd> + <kbd>\\</kbd>          |
 | Append Selected                    | <kbd>Cmd/Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd> |
 | Inline Prompting                   | <kbd>Cmd/Ctrl</kbd> + <kbd>I</kbd>          |
@@ -20,4 +20,4 @@ Begin your journey by logging in on the PearAI panel (Cmd/Ctrl+;)
 | Previous Chat                      | <kbd>Cmd/Ctrl</kbd> + <kbd>0</kbd>          |
 | Switch Model                       | <kbd>Cmd/Ctrl</kbd> + <kbd>'</kbd>          |
 
-> If you'd prefer different keys, these shortcuts can be customized in PearAI settings.
+> If you'd prefer different keys, these shortcuts can be customized in BananaAI settings.
